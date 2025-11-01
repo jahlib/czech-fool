@@ -661,6 +661,14 @@ class CardGame {
             case 'countdown_cancelled':
                 this.hideCountdown();
                 break;
+            case 'player_disconnected':
+                // Игрок временно отключился
+                this.addLogEntry(`${data.nickname} отключился`);
+                break;
+            case 'player_reconnected':
+                // Игрок переподключился
+                this.addLogEntry(`${data.nickname} переподключился`);
+                break;
             case 'error':
                 // Если ошибка связана с комнатой/игроком - показываем экран ошибки
                 if (data.message.includes('not found') || data.message.includes('не найден')) {
