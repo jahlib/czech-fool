@@ -163,16 +163,14 @@ python server.py
 chekh/
 ├── server.py              # Серверная часть на Python
 ├── requirements.txt       # Зависимости Python
-├── game_state.db          # SQLite база данных (создаётся автоматически)
 ├── client/
 │   ├── index.html        # HTML интерфейс
-│   ├── style.css         # Стили (разработка)
-│   ├── style.min.css     # Минифицированные стили (продакшн)
+│   ├── style.css         # Стили
 │   ├── game.js           # Клиентская логика
 │   ├── sw.js             # Service Worker для PWA
 │   ├── manifest.json     # PWA манифест
 │   ├── rules.md          # Правила игры (Markdown)
-│   ├── sounds/           # Звуковые эффекты (.aac)
+│   ├── sounds/           # Звуковые эффекты (.aac/.ogg)
 │   └── icons/            # Иконки для PWA
 ├── rules.md              # Правила игры
 └── README.md             # Документация
