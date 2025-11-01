@@ -914,12 +914,9 @@ input[type="text"]:focus {
 
 /* Подсветка текущего игрока */
 .opponent-area.current-turn .opponent-cards {
-    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.3)) 
-            drop-shadow(0 0 15px rgba(255, 215, 0, 0.2));
-}
-
-.opponent-area.current-turn .opponent-card {
-    animation: card-glow-pulse 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5)) 
+            drop-shadow(0 0 30px rgba(255, 215, 0, 0.3));
+    animation: cards-glow-pulse 1s ease-in-out infinite;
 }
 
 /* Свечение блока руки игрока */
@@ -947,14 +944,14 @@ input[type="text"]:focus {
     }
 }
 
-@keyframes card-glow-pulse {
+@keyframes cards-glow-pulse {
     0%, 100% { 
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 
-                    0 0 30px rgba(255, 215, 0, 0.3);
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5)) 
+                drop-shadow(0 0 30px rgba(255, 215, 0, 0.3));
     }
     50% { 
-        box-shadow: 0 0 25px rgba(255, 215, 0, 0.7), 
-                    0 0 45px rgba(255, 215, 0, 0.5);
+        filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.7)) 
+                drop-shadow(0 0 45px rgba(255, 215, 0, 0.5));
     }
 }
 
