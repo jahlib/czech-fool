@@ -1380,7 +1380,7 @@ class GameServer:
             'type': 'player_reconnected',
             'player_id': player_id,
             'nickname': player.nickname
-        }, exclude_ws=ws)
+        }, exclude_player=player_id)
         
         if room.game_started:
             # Отправляем состояние игры
