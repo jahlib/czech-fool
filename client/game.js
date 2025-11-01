@@ -462,34 +462,45 @@ class CardGame {
                 this.waitingForEight = data.waiting_for_eight || false;
                 this.eightDrawUsed = data.eight_draw_used || false;
                 this.eightDrawnCards = data.eight_drawn_cards || [];
-                this.clearLog();
-                this.addLogEntry('Игра началась!');
+                this.cardDrawnThisTurn = data.card_drawn_this_turn || false;
+                
+                // Проверяем это переподключение или новая игра
+                const isReconnect = this.gameScreen.classList.contains('active');
+                
+                if (!isReconnect) {
+                    // Новая игра - очищаем лог и добавляем сообщение
+                    this.clearLog();
+                    this.addLogEntry('Игра началась!');
+                    
+                    // Воспроизводим звук если игра началась со специальной карты
+                    if (data.top_card) {
+                        const rank = data.top_card.rank;
+                        if (rank === 'A') {
+                            this.playSound('ace');
+                        } else if (rank === '8') {
+                            this.playSound('eightplace');
+                        } else if (rank === '6') {
+                            this.playSound('six');
+                        } else if (rank === '7') {
+                            this.playSound('seven');
+                        } else if (rank === 'Q') {
+                            this.playSound('change');
+                        }
+                    }
+                    
+                    // Если кто-то принудительно взял карты при старте (6 или 7)
+                    if (data.forced_draw_player_id && data.forced_draw_count > 0) {
+                        const cardName = `${data.top_card.rank}${this.getSuitSymbol(data.top_card.suit)}`;
+                        const cardsText = data.forced_draw_count === 1 ? '1 карту' : `${data.forced_draw_count} карты`;
+                        this.addLogEntry(`${data.forced_draw_player_nickname} взял ${cardsText} от ${cardName}`);
+                    }
+                } else {
+                    // Переподключение - просто добавляем сообщение в лог
+                    this.addLogEntry('Переподключение к игре...');
+                }
+                
                 this.hideCountdown();
                 this.showScreen('game');
-                
-                // Воспроизводим звук если игра началась со специальной карты
-                if (data.top_card) {
-                    const rank = data.top_card.rank;
-                    if (rank === 'A') {
-                        this.playSound('ace');
-                    } else if (rank === '8') {
-                        this.playSound('eightplace');
-                    } else if (rank === '6') {
-                        this.playSound('six');
-                    } else if (rank === '7') {
-                        this.playSound('seven');
-                    } else if (rank === 'Q') {
-                        this.playSound('change');
-                    }
-                }
-                
-                // Если кто-то принудительно взял карты при старте (6 или 7)
-                if (data.forced_draw_player_id && data.forced_draw_count > 0) {
-                    const cardName = `${data.top_card.rank}${this.getSuitSymbol(data.top_card.suit)}`;
-                    const cardsText = data.forced_draw_count === 1 ? '1 карту' : `${data.forced_draw_count} карты`;
-                    this.addLogEntry(`${data.forced_draw_player_nickname} взял ${cardsText} от ${cardName}`);
-                }
-                
                 this.updateGameState(data);
                 break;
             case 'card_played':
