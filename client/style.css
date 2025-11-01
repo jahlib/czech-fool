@@ -1,0 +1,1906 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    /* Поддержка safe area для iOS */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Блокируем жесты только НЕ на главной странице */
+#room-screen.active ~ body,
+#game-screen.active ~ body,
+#error-screen.active ~ body {
+    overscroll-behavior: none;
+    overscroll-behavior-y: contain;
+    touch-action: pan-x pan-y;
+    overflow: hidden;
+    height: 100%;
+}
+
+.screen {
+    display: none;
+    min-height: 100vh;
+    padding: 0px;
+}
+
+.screen.active {
+    display: block;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    text-align: center;
+    color: #667eea;
+    margin-bottom: 40px;
+    font-size: 3em;
+}
+
+h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Inputs and Buttons */
+input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #d0d0d0;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Create Room Section */
+#create-room-section {
+    margin-bottom: 40px;
+}
+
+/* Bot Game Section */
+#bot-game-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+#bot-game-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #667eea;
+    font-size: 1.2em;
+}
+
+.bot-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-bot {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-bot:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-bot:active {
+    transform: translateY(0);
+}
+
+/* Rooms List */
+#rooms-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.room-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.room-card:hover {
+    border-color: #667eea;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+}
+
+.room-card h4 {
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.room-card p {
+    color: #666;
+    margin: 5px 0;
+}
+
+.room-card.room-full {
+    background: #f0f0f0;
+    border-color: #ccc;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.room-card.room-full:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #ccc;
+}
+
+.room-card.room-full h4 {
+    color: #999;
+}
+
+/* Room Screen */
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+#players-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.player-card {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+}
+
+.player-card.ready {
+    border-color: #4caf50;
+    background: #e8f5e9;
+}
+
+.player-card.current {
+    border-color: #667eea;
+    background: #e8eaf6;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+}
+
+.player-card h4 {
+    margin-bottom: 5px;
+}
+
+.player-card .status {
+    color: #666;
+    font-size: 14px;
+}
+
+.player-card.ready .status {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+.hint {
+    color: #666;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Countdown Timer */
+#countdown-display {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.countdown-timer {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+#countdown-number {
+    font-size: 72px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.countdown-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: #667eea;
+    margin-top: 20px;
+    animation: fadeInOut 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Error Screen */
+.error-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.error-content {
+    background: white;
+    padding: 60px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+}
+
+.error-content h1 {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.error-content h2 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+
+.error-content p {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.error-content .btn {
+    padding: 15px 40px;
+    font-size: 18px;
+}
+
+/* Game Screen */
+.game-container {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height для мобильных */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#game-screen {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Game Log */
+.game-log {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    min-width: 20vw;
+    max-width: 50vw;
+    max-height: 40vh;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 15px;
+    z-index: 1000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 5px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.log-entry {
+    color: white;
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: opacity 0.3s;
+}
+
+.log-entry:nth-child(1) {
+    opacity: 1;
+}
+
+.log-entry:nth-child(2) {
+    opacity: 0.95;
+}
+
+.log-entry:nth-child(3) {
+    opacity: 0.9;
+}
+
+.log-entry:nth-child(4) {
+    opacity: 0.85;
+}
+
+.log-entry:nth-child(5) {
+    opacity: 0.8;
+}
+
+.log-entry:nth-child(6) {
+    opacity: 0.75;
+}
+
+.log-entry:nth-child(7) {
+    opacity: 0.7;
+}
+
+.log-entry:nth-child(8) {
+    opacity: 0.65;
+}
+
+.log-entry:nth-child(9) {
+    opacity: 0.6;
+}
+
+.log-entry:nth-child(10) {
+    opacity: 0.55;
+}
+
+.log-entry:nth-child(n+11) {
+    display: none;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+/* Уменьшение высоты game-log на маленьких экранах */
+    @media (max-height: 780px) {
+        .game-log {
+        max-height: calc(35vh - 14px) !important;
+    }
+}
+
+/* Сообщения чата - свои сообщения */
+.log-entry.chat-player {
+    background: rgba(102, 126, 234, 0.3);
+    padding: 5px 8px;
+    border-radius: 4px;
+    border-left: 3px solid #667eea;
+    font-weight: 600;
+}
+
+/* Сообщения чата - чужие сообщения */
+.log-entry.chat-other {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 8px;
+    border-radius: 4px;
+    border-left: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Цвета для разных игроков */
+.log-entry.chat-color-1 {
+    background: rgba(76, 175, 80, 0.2);
+    border-left-color: #4caf50;
+}
+
+.log-entry.chat-color-2 {
+    background: rgba(255, 152, 0, 0.2);
+    border-left-color: #ff9800;
+}
+
+.log-entry.chat-color-3 {
+    background: rgba(156, 39, 176, 0.2);
+    border-left-color: #9c27b0;
+}
+
+.game-log.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100%);
+}
+
+/* Toggle Log Button (скрыта на десктопе) */
+.toggle-log-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #667eea;
+    transition: all 0.3s;
+    z-index: 1001;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-log-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.toggle-log-btn:active {
+    transform: scale(0.95);
+}
+
+/* Toggle Sound Button */
+.toggle-sound-btn {
+    position: fixed;
+    top: 260px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #667eea;
+    transition: all 0.3s;
+    z-index: 1001;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-sound-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.toggle-sound-btn:active {
+    transform: scale(0.95);
+}
+
+.toggle-sound-btn.muted {
+    background: rgba(255, 100, 100, 0.9);
+    border-color: #e53935;
+    color: #e53935;
+}
+
+.toggle-sound-btn.muted:hover {
+    background: #e53935;
+    color: white;
+}
+
+/* Leave Game Button */
+.leave-game-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #e74c3c;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #e74c3c;
+    transition: all 0.3s;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.leave-game-btn:hover {
+    background: #e74c3c;
+    color: white;
+    transform: scale(1.1);
+}
+
+.leave-game-btn:active {
+    transform: scale(0.95);
+}
+
+/* Fullscreen Button */
+.fullscreen-btn {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #667eea;
+    transition: all 0.3s;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.fullscreen-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.fullscreen-btn:active {
+    transform: scale(0.95);
+}
+
+/* Rules Button */
+.rules-btn {
+    position: fixed;
+    top: 140px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #667eea;
+    transition: all 0.3s;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.rules-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.rules-btn:active {
+    transform: scale(0.95);
+}
+
+/* Chat Button */
+.chat-btn {
+    position: fixed;
+    top: 200px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #667eea;
+    transition: all 0.3s;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.chat-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.chat-btn:active {
+    transform: scale(0.95);
+}
+
+/* Game Table - Круговой стол */
+.game-table {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height для мобильных */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: none; /* Отключаем жесты браузера */
+}
+
+/* Центральный круг */
+.game-circle {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #2d5016 0%, #1a3d0f 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.3);
+    border: 8px solid #8b6914;
+}
+
+.center-area {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.center-card-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.center-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.deck-area {
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.card-pile {
+    margin-bottom: 5px;
+}
+
+.deck-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-sm {
+    min-width: 70px;
+    max-width: 120px;
+    padding: 28px 32px;
+    font-size: 14px;
+}
+
+/* Контейнер для всех противников */
+#opponents-container {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    gap: 20px;
+    z-index: 10;
+}
+
+/* Один противник - 1 колонка */
+#opponents-container.opponents-1 {
+    grid-template-columns: 1fr;
+}
+
+/* Два противника - 2 колонки */
+#opponents-container.opponents-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* Три противника - 3 колонки */
+#opponents-container.opponents-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Позиции противников */
+.opponent-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.opponent-info {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 16px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.opponent-info.current-turn {
+    background: rgba(102, 126, 234, 0.9);
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5); }
+    50% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.8); }
+}
+
+.opponent-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.opponent-score {
+    font-size: 12px;
+    color: #666;
+}
+
+.opponent-info.current-turn .opponent-score {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Карты противников - все горизонтально */
+.opponent-cards {
+    display: flex;
+    flex-direction: row;
+    gap: -30px;
+}
+
+.opponent-card {
+    width: 60px;
+    height: 85px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid #333;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+/* Одиночная карта с счётчиком (для 3+ игроков) */
+.opponent-card.single-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 90px;
+    font-size: 32px;
+}
+
+.opponent-card.single-card .card-back-icon {
+    font-size: 40px;
+}
+
+.opponent-card.single-card .card-count {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(255, 215, 0, 0.95);
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+    min-width: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Подсветка текущего игрока */
+.opponent-area.current-turn .opponent-cards {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.3)) 
+            drop-shadow(0 0 15px rgba(255, 215, 0, 0.2));
+}
+
+.opponent-area.current-turn .opponent-card {
+    animation: card-glow-pulse 1.5s ease-in-out infinite;
+}
+
+/* Свечение блока руки игрока */
+.player-hand.current-turn {
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3),
+                0 0 15px rgba(255, 215, 0, 0.3),
+                0 0 25px rgba(255, 215, 0, 0.2),
+                0 0 35px rgba(255, 215, 0, 0.1);
+    animation: hand-glow-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes hand-glow-pulse {
+    0%, 100% { 
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3),
+                    0 0 15px rgba(255, 215, 0, 0.3),
+                    0 0 25px rgba(255, 215, 0, 0.2),
+                    0 0 35px rgba(255, 215, 0, 0.1);
+    }
+    50% { 
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3),
+                    0 0 20px rgba(255, 215, 0, 0.4),
+                    0 0 30px rgba(255, 215, 0, 0.3),
+                    0 0 40px rgba(255, 215, 0, 0.15);
+    }
+}
+
+@keyframes card-glow-pulse {
+    0%, 100% { 
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+    50% { 
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
+    }
+}
+
+/* Счётчик карт в колоде */
+.deck-count-badge {
+position: absolute;
+top: -30px;
+left: 50%;
+transform: translateX(-50%);
+background: rgba(255, 215, 0, 0.95);
+color: #333;
+padding: 5px 15px;
+border-radius: 20px;
+font-weight: bold;
+font-size: 16px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+border: 2px solid #ffd700;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 215, 0, 0.95);
+    color: #333;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 2px solid #ffd700;
+}
+
+/* Индикатор выбранной масти */
+#chosen-suit-indicator {
+    font-size: 48px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 3px solid #ffd700;
+    margin-bottom: 15px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Suit Indicator */
+.suit-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.suit-arrow {
+    font-size: 32px;
+    color: #667eea;
+    font-weight: bold;
+}
+
+.suit-symbol {
+    font-size: 48px;
+    padding: 15px;
+    background: white;
+    border: 3px solid #333;
+    border-radius: 10px;
+    min-width: 80px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.suit-symbol.hearts,
+.suit-symbol.diamonds {
+    color: #e53935;
+}
+
+.suit-symbol.clubs,
+.suit-symbol.spades {
+    color: #000;
+}
+
+/* Cards */
+.card {
+    width: 100px;
+    height: 120px;
+    background: white;
+    border: 3px solid #333;
+    border-radius: 10px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-back {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 48px;
+    cursor: default;
+}
+
+.card.hearts, .card.diamonds {
+    color: #e53935;
+}
+
+.card.clubs, .card.spades {
+    color: #000;
+}
+
+.card:hover:not(.card-back) {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.card.disabled:hover {
+    transform: none;
+}
+
+.card-rank {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.card-suit {
+    font-size: 40px;
+}
+
+.player-hand {
+    position: absolute;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 11px 11px 0 0;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    max-height: 30vh;
+    padding: 20px 10px 10px 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+}
+
+#hand-cards {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    position: relative;
+}
+
+/* Стили скроллбара для руки игрока на десктопе */
+.player-hand::-webkit-scrollbar {
+    width: 8px;
+}
+
+.player-hand::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.player-hand::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5);
+    border-radius: 4px;
+}
+
+.player-hand::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.8);
+}
+
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h2, .modal-content h3 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Модалка чата */
+.chat-modal-content {
+    max-width: 400px;
+}
+
+.chat-modal-content textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease;
+}
+
+.chat-modal-content textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.chat-modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.chat-modal-buttons .btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+}
+
+/* Модалка правил */
+.rules-modal-content {
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    position: relative;
+}
+
+.close-modal-btn {
+    position: sticky;
+    top: 10px;
+    float: right;
+    margin: 10px 10px 0 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #667eea;
+    color: #667eea;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 10;
+    padding: 0;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-modal-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.close-modal-btn:active {
+    transform: scale(0.95);
+}
+
+.rules-content {
+    text-align: left;
+    line-height: 1.6;
+    margin: 20px 0;
+}
+
+.rules-content h1,
+.rules-content h2,
+.rules-content h3 {
+    color: #667eea;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.rules-content h1 {
+    font-size: 24px;
+}
+
+.rules-content h2 {
+    font-size: 20px;
+}
+
+.rules-content h3 {
+    font-size: 18px;
+}
+
+.rules-content p {
+    margin: 10px 0;
+}
+
+.rules-content ul,
+.rules-content ol {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.rules-content li {
+    margin: 5px 0;
+}
+
+.rules-content strong {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.rules-content code {
+    background: rgba(102, 126, 234, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.suit-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.suit-btn {
+    padding: 20px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.suit-btn:hover {
+    border-color: #667eea;
+    background: #f0f0f0;
+    transform: scale(1.05);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.modal-buttons .btn {
+    flex: 1;
+}
+
+#results-content {
+    margin: 20px 0;
+}
+
+.result-item {
+    padding: 15px;
+    margin: 10px 0;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+.result-item.winner {
+    background: #e8f5e9;
+    border-left-color: #4caf50;
+}
+
+.result-item h4 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.result-item p {
+    color: #666;
+    margin: 3px 0;
+}
+
+.result-cards {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.result-card {
+    width: 50px;
+    height: 70px;
+    background: white;
+    border: 2px solid #333;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.result-card .card-rank {
+    font-size: 14px;
+}
+
+.result-card .card-suit {
+    font-size: 18px;
+}
+
+.result-card.hearts,
+.result-card.diamonds {
+    color: #e53935;
+}
+
+.result-card.clubs,
+.result-card.spades {
+    color: #000;
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+    /* Квадратные маленькие карты для средних экранов */
+    .card {
+        width: 70px;
+        height: 70px;
+        font-size: 14px;
+        border-width: 2px;
+        border-radius: 8px;
+    }
+    
+    .card-rank {
+        font-size: 18px;
+    }
+    
+    .card-suit {
+        font-size: 24px;
+    }
+    
+    /* Центральные карты на поле */
+    .center-card .card {
+        width: 85px;
+        height: 85px;
+        font-size: 16px;
+    }
+    
+    .center-card .card-rank {
+        font-size: 22px;
+    }
+    
+    .center-card .card-suit {
+        font-size: 30px;
+    }
+    
+    /* Рука игрока для средних экранов */
+    .player-hand {
+        max-height: calc((70px + 4px) * 4 + 30px);
+        padding: 20px 10px 10px 10px;
+        touch-action: pan-y;
+        overscroll-behavior: contain;
+    }
+    
+    #hand-cards {
+        gap: 4px;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        /* Убираем padding на мобильных для полного экрана */
+        padding: 0;
+    }
+    
+    .container {
+        padding: 14px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .game-table {
+        padding: 4px;
+        /* Учитываем safe area на iOS */
+        padding-bottom: max(4px, env(safe-area-inset-bottom));
+    }
+    
+    .game-circle {
+        width: 260px;
+        height: 260px;
+    }
+    
+    .center-area {
+        gap: 12px;
+        flex-direction: row;
+    }
+    
+    .card {
+        width: 64px;
+        height: 92px;
+        font-size: 15px;
+    }
+    
+    .card-rank {
+        font-size: 20px;
+    }
+    
+    .card-suit {
+        font-size: 24px;
+    }
+    
+    .opponent-card {
+        width: 45px;
+        height: 65px;
+        font-size: 18px;
+    }
+    
+    .opponent-info {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .opponent-name {
+        font-size: 12px;
+    }
+    
+    .opponent-score {
+        font-size: 10px;
+    }
+    
+    .player-hand {
+        padding: 15px 5px 5px 5px;
+        max-width: 100%;
+        border-radius: 4px 4px 0px 0px;
+        max-height: calc((62px + 2px) * 4 + 25px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+        overscroll-behavior: contain;
+    }
+    
+    #hand-cards {
+        gap: 2px;
+        max-width: 100%;
+    }
+    
+    /* Стили скроллбара для руки игрока */
+    .player-hand::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .player-hand::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 2px;
+    }
+    
+    .player-hand::-webkit-scrollbar-thumb {
+        background: rgba(102, 126, 234, 0.5);
+        border-radius: 2px;
+    }
+    
+    .player-hand::-webkit-scrollbar-thumb:hover {
+        background: rgba(102, 126, 234, 0.8);
+    }
+    
+    /* Квадратные карты на мобильных */
+    .card {
+        width: 62px;
+        height: 62px;
+        font-size: 13px;
+        border-width: 2px;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+    
+    .card-rank {
+        font-size: 16px;
+    }
+    
+    .card-suit {
+        font-size: 20px;
+    }
+    
+    /* Центральные карты на поле */
+    .center-card .card {
+        width: 78px;
+        height: 78px;
+        font-size: 15px;
+    }
+    
+    .center-card .card-rank {
+        font-size: 20px;
+    }
+    
+    .center-card .card-suit {
+        font-size: 28px;
+    }
+    
+    .suit-arrow {
+        font-size: 20px;
+    }
+    
+    .suit-symbol {
+        font-size: 32px;
+        padding: 10px;
+        min-width: 50px;
+    }
+    
+    /* Уменьшаем круг игрового поля */
+    .game-circle {
+        width: 360px;
+        height: 360px;
+    }
+    
+    .center-area {
+        gap: 20px;
+    }
+    
+    .deck-count-badge {
+        font-size: 12px;
+        padding: 3px 10px;
+    }
+    
+    #chosen-suit-indicator {
+        font-size: 32px;
+        padding: 6px 12px;
+        margin-bottom: 8px;
+    }
+    
+    .btn-sm {
+        min-width: 70px;
+        max-width: 70px;
+        padding: 28px 18px;
+        font-size: 12px;
+    }
+    
+    /* Toggle log button на мобильных */
+    .toggle-log-btn {
+        display: flex;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 10px;
+        left: 10px;
+    }
+    
+    /* Leave game button на мобильных */
+    .leave-game-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 10px;
+        right: 10px;
+    }
+    
+    /* Fullscreen button на мобильных */
+    .fullscreen-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 60px;
+        right: 10px;
+    }
+    
+    /* Rules button на мобильных */
+    .rules-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 110px;
+        right: 10px;
+    }
+    
+    /* Chat button на мобильных */
+    .chat-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 160px;
+        right: 10px;
+    }
+    
+    /* Toggle sound button на мобильных */
+    .toggle-sound-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 60px;
+        left: 10px;
+    }
+    
+    /* Game log на мобильных */
+    .game-log {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50vw;
+        height: calc(37vh - 14px);
+        padding: 8px;
+        background: rgba(0, 0, 0, 0.42);
+        flex-direction: column;
+        z-index: 900;
+        border-radius: 8px 8px 0 0;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    
+    .game-log.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translate(-50%, 100%);
+    }
+    
+    .log-entry {
+        font-size: 11px;
+        padding: 3px 10px;
+        text-align: center;
+    }
+    
+    .log-entry:nth-child(1) {
+        opacity: 1;
+    }
+    
+    .log-entry:nth-child(2) {
+        opacity: 0.95;
+    }
+    
+    .log-entry:nth-child(3) {
+        opacity: 0.9;
+    }
+    
+    .log-entry:nth-child(4) {
+        opacity: 0.85;
+    }
+    
+    .log-entry:nth-child(5) {
+        opacity: 0.8;
+    }
+    
+    .log-entry:nth-child(6) {
+        opacity: 0.75;
+    }
+    
+    .log-entry:nth-child(7) {
+        opacity: 0.7;
+    }
+    
+    .log-entry:nth-child(8) {
+        opacity: 0.65;
+    }
+    
+    .log-entry:nth-child(9) {
+        opacity: 0.6;
+    }
+    
+    .log-entry:nth-child(10) {
+        opacity: 0.55;
+    }
+    
+    .log-entry:nth-child(n+11) {
+        display: none;
+    }
+    
+    .deck-count-badge {
+        font-size: 14px;
+        padding: 4px 12px;
+    }
+    
+    #chosen-suit-indicator {
+        font-size: 30px;
+        padding: 6px 12px;
+        top: -48px;
+    }
+    
+    .error-content {
+        padding: 40px 30px;
+        margin: 20px;
+    }
+    
+    .error-content h1 {
+        font-size: 60px;
+    }
+    
+    .error-content h2 {
+        font-size: 24px;
+    }
+    
+    .error-content p {
+        font-size: 14px;
+    }
+    
+    .error-content .btn {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
+
+    /* Противники на мобильных */
+    #opponents-container {
+        top: 4px;
+        gap: 10px;
+    }
+    
+    .opponent-area {
+        gap: 3px;
+    }
+}
+
+/* Rules Section */
+#rules-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+#rules-section h2 {
+    text-align: center;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.rules-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    line-height: 1.6;
+}
+
+.rules-content h1 {
+    color: #667eea;
+    font-size: 2em;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.rules-content h2 {
+    color: #764ba2;
+    font-size: 1.5em;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+    padding-bottom: 8px;
+}
+
+.rules-content h3 {
+    color: #667eea;
+    font-size: 1.2em;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.rules-content h4 {
+    color: #764ba2;
+    font-size: 1.1em;
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+.rules-content p {
+    margin: 10px 0;
+}
+
+.rules-content ul, .rules-content ol {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.rules-content li {
+    margin: 8px 0;
+}
+
+.rules-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.rules-content th, .rules-content td {
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    padding: 12px;
+    text-align: left;
+}
+
+.rules-content th {
+    background: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+    font-weight: bold;
+}
+
+.rules-content code {
+    background: rgba(102, 126, 234, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.rules-content hr {
+    border: none;
+    border-top: 2px solid rgba(102, 126, 234, 0.2);
+    margin: 30px 0;
+}
+
+.rules-content strong {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.rules-content blockquote {
+    border-left: 4px solid #667eea;
+    padding-left: 15px;
+    margin: 15px 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+}

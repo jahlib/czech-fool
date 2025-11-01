@@ -1,0 +1,23 @@
+[Unit]
+Description=Card Game Server
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/czech-fool
+ExecStart=/usr/bin/python3 /opt/czech-fool/server.py --clearrooms
+Restart=always
+RestartSec=10
+
+# Переменные окружения (если нужны)
+Environment="PYTHONUNBUFFERED=1"
+
+# Логирование
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=card-game
+
+[Install]
+WantedBy=multi-user.target

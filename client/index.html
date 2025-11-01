@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Чешский</title>
+    <!-- Раскомментируйте и укажите ваш WebSocket домен если используете reverse proxy -->
+    <!-- <meta name="ws-host" content="ws.domain.com"> -->
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="shortcut icon" href="/icon-192.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#667eea">
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Экран лобби -->
+        <div id="lobby-screen" class="screen active">
+            <div class="container">
+                <h1>🎴 Чешский</h1>
+                
+                <div id="create-room-section">
+                    <h2>Создать комнату</h2>
+                    <input type="text" id="nickname-input" placeholder="Введите никнейм" maxlength="20">
+                    <button id="create-room-btn" class="btn btn-primary">Создать комнату</button>
+                    
+                    <div id="bot-game-section">
+                        <h3>🤖 Играть с ботами</h3>
+                        <div class="bot-buttons">
+                            <button id="play-with-1-bot-btn" class="btn btn-bot">Играть с 1 ботом</button>
+                            <button id="play-with-2-bots-btn" class="btn btn-bot">Играть с 2 ботами</button>
+                            <button id="play-with-3-bots-btn" class="btn btn-bot">Играть с 3 ботами</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="rooms-section">
+                    <h2>Доступные комнаты</h2>
+                    <div id="rooms-list"></div>
+                </div>
+                
+                <div id="rules-section">
+                    <h2>📖 Правила игры</h2>
+                    <div id="lobby-rules-content" class="rules-content"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Экран комнаты -->
+        <div id="room-screen" class="screen">
+            <div class="container">
+                <div class="room-header">
+                    <h2>Комната</h2>
+                    <button id="leave-room-btn" class="btn btn-secondary">Покинуть</button>
+                </div>
+                
+                <div id="players-waiting">
+                    <h3>Игроки в комнате:</h3>
+                    <div id="players-list"></div>
+                    <div id="countdown-display" style="display: none;">
+                        <div class="countdown-timer">
+                            <span id="countdown-number">6</span>
+                        </div>
+                        <p class="countdown-text">Игра начинается...</p>
+                    </div>
+                    <button id="ready-toggle-btn" class="btn btn-primary">Готов</button>
+                    <p class="hint">Игра начнётся когда все игроки будут готовы (минимум 2 игрока)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Экран ошибки -->
+        <div id="error-screen" class="screen">
+            <div class="error-container">
+                <div class="error-content">
+                    <h1>😕</h1>
+                    <h2>Комната не найдена</h2>
+                    <p id="error-message">Эта комната не существует или была удалена</p>
+                    <button id="go-home-btn" class="btn btn-primary">На главную</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Экран игры -->
+        <div id="game-screen" class="screen">
+            <div class="game-container">
+                <!-- Кнопка покинуть комнату -->
+                <button id="leave-game-btn" class="leave-game-btn" title="Покинуть комнату">
+                    <span class="leave-icon">🚪</span>
+                </button>
+                
+                <!-- Кнопка полноэкранного режима -->
+                <button id="fullscreen-btn" class="fullscreen-btn" title="Полноэкранный режим">
+                    <span class="fullscreen-icon">⛶</span>
+                </button>
+                
+                <!-- Кнопка правил -->
+                <button id="rules-btn" class="rules-btn" title="Правила игры">📖</button>
+                
+                <!-- Кнопка чата -->
+                <button id="chat-btn" class="chat-btn" title="Отправить сообщение">💬</button>
+                
+                <!-- Кнопка toggle логов (только на мобильных) -->
+                <button id="toggle-log-btn" class="toggle-log-btn" title="Показать/скрыть логи">
+                    <span class="toggle-log-icon">📋</span>
+                </button>
+                
+                <!-- Кнопка выключения звука -->
+                <button id="toggle-sound-btn" class="toggle-sound-btn" title="Включить/выключить звук">
+                    <span class="sound-icon">🔊</span>
+                </button>
+                
+                <!-- Круговое игровое поле -->
+                <div class="game-table">
+                    <!-- Игровой лог -->
+                    <div id="game-log" class="game-log"></div>
+                    
+                    <!-- Контейнер для противников -->
+                    <div id="opponents-container">
+                        <!-- Игрок слева -->
+                        <div class="opponent-area opponent-left" id="opponent-left">
+                            <div class="opponent-info">
+                                <span class="opponent-name"></span>
+                                <span class="opponent-score"></span>
+                            </div>
+                            <div class="opponent-cards"></div>
+                        </div>
+                        
+                        <!-- Игрок по центру -->
+                        <div class="opponent-area opponent-top" id="opponent-top">
+                            <div class="opponent-info">
+                                <span class="opponent-name"></span>
+                                <span class="opponent-score"></span>
+                            </div>
+                            <div class="opponent-cards"></div>
+                        </div>
+                        
+                        <!-- Игрок справа -->
+                        <div class="opponent-area opponent-right" id="opponent-right">
+                            <div class="opponent-info">
+                                <span class="opponent-name"></span>
+                                <span class="opponent-score"></span>
+                            </div>
+                            <div class="opponent-cards"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Центральный круг с картой и колодой -->
+                    <div class="game-circle">
+                        <div class="center-area">
+                            <div class="center-card-wrapper">
+                                <!-- Индикатор выбранной масти -->
+                                <div id="chosen-suit-indicator" style="display: none;"></div>
+                                <div id="discard-pile" class="center-card"></div>
+                            </div>
+                            <div class="deck-area">
+                                <div class="deck-count-badge" id="deck-count">0</div>
+                                <div id="deck" class="card-pile">
+                                    <div class="card card-back">🎴</div>
+                                </div>
+                                <div class="deck-buttons">
+                                    <button id="draw-card-btn" class="btn btn-primary btn-sm">Взять</button>
+                                    <button id="skip-turn-btn" class="btn btn-secondary btn-sm" style="display: none;">Нету</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Карты игрока внизу -->
+                    <div class="player-hand">
+                        <div id="hand-cards"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно чата -->
+        <div id="chat-modal" class="modal">
+            <div class="modal-content chat-modal-content">
+                <h3>Отправить сообщение</h3>
+                <textarea id="chat-input" placeholder="Введите сообщение..." maxlength="200"></textarea>
+                <div class="chat-modal-buttons">
+                    <button id="send-chat-btn" class="btn btn-primary">Отправить</button>
+                    <button id="close-chat-btn" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно выбора масти -->
+        <div id="suit-modal" class="modal">
+            <div class="modal-content">
+                <h3>Выберите масть</h3>
+                <div class="suit-selector">
+                    <button class="suit-btn" data-suit="hearts">♥️ Черви</button>
+                    <button class="suit-btn" data-suit="diamonds">♦️ Бубны</button>
+                    <button class="suit-btn" data-suit="clubs">♣️ Трефы</button>
+                    <button class="suit-btn" data-suit="spades">♠️ Пики</button>
+                </div>
+                <div class="modal-buttons" style="margin-top: 15px;">
+                    <button id="cancel-suit-btn" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно результатов -->
+        <div id="results-modal" class="modal">
+            <div class="modal-content">
+                <h2>Игра окончена!</h2>
+                <div id="results-content"></div>
+                <button id="close-results-btn" class="btn btn-primary">Новая игра</button>
+            </div>
+        </div>
+        
+        <!-- Модальное окно присоединения к комнате -->
+        <div id="join-modal" class="modal">
+            <div class="modal-content">
+                <h3>Присоединиться к комнате</h3>
+                <input type="text" id="join-nickname-input" placeholder="Введите никнейм" maxlength="20">
+                <div class="modal-buttons">
+                    <button id="join-confirm-btn" class="btn btn-primary">Присоединиться</button>
+                    <button id="join-cancel-btn" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно оповещения -->
+        <div id="alert-modal" class="modal">
+            <div class="modal-content">
+                <h3>Сообщение</h3>
+                <p id="alert-text" style="margin: 10px 0 20px 0;"></p>
+                <div class="modal-buttons">
+                    <button id="alert-ok-btn" class="btn btn-primary">ОК</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно подтверждения выхода -->
+        <div id="leave-confirm-modal" class="modal">
+            <div class="modal-content">
+                <h3>Покинуть комнату?</h3>
+                <p style="margin: 10px 0 20px 0;">Вы уверены, что хотите покинуть игру?</p>
+                <div class="modal-buttons">
+                    <button id="leave-confirm-btn" class="btn btn-primary">Да, выйти</button>
+                    <button id="leave-cancel-btn" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно правил -->
+        <div id="rules-modal" class="modal">
+            <div class="modal-content rules-modal-content">
+                <button id="close-rules-btn" class="close-modal-btn">✕</button>
+                <h2>📖 Правила игры</h2>
+                <div id="rules-content" class="rules-content"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/marked.min.js"></script>
+    <script src="/game.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed:', err);
+                    });
+            });
+        }
+        
+        // Функция проверки - находимся ли на главной странице (лобби)
+        function isOnLobbyScreen() {
+            const lobbyScreen = document.getElementById('lobby-screen');
+            return lobbyScreen && lobbyScreen.classList.contains('active');
+        }
+        
+        // Функция проверки - находится ли элемент внутри блока руки
+        function isInsidePlayerHand(element) {
+            while (element) {
+                if (element.classList && element.classList.contains('player-hand')) {
+                    return true;
+                }
+                element = element.parentElement;
+            }
+            return false;
+        }
+        
+        // Функция проверки - находится ли элемент внутри модалки с прокруткой
+        function isInsideScrollableModal(element) {
+            while (element) {
+                if (element.classList && (
+                    element.classList.contains('rules-modal-content') ||
+                    element.classList.contains('modal-content')
+                )) {
+                    return true;
+                }
+                element = element.parentElement;
+            }
+            return false;
+        }
+        
+        // Отключаем pull-to-refresh только НЕ на главной странице
+        let touchStartY = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: false });
+        
+        document.addEventListener('touchmove', function(e) {
+            // Разрешаем все жесты на главной странице
+            if (isOnLobbyScreen()) {
+                return;
+            }
+            
+            // Разрешаем скролл внутри блока руки игрока
+            if (isInsidePlayerHand(e.target)) {
+                return;
+            }
+            
+            // Разрешаем скролл внутри модалок
+            if (isInsideScrollableModal(e.target)) {
+                return;
+            }
+            
+            const touchY = e.touches[0].clientY;
+            const touchDiff = touchY - touchStartY;
+            
+            // Если пользователь тянет вниз на верху страницы - блокируем
+            if (touchDiff > 0 && window.scrollY === 0) {
+                e.preventDefault();
+            }
+            
+            // Блокируем мультитач
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Отключаем двойное нажатие для зума только НЕ на главной
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            // Разрешаем на главной странице
+            if (isOnLobbyScreen()) {
+                return;
+            }
+            
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Предотвращаем обновление страницы через клавиатуру только НЕ на главной
+        document.addEventListener('keydown', function(e) {
+            // Разрешаем на главной странице
+            if (isOnLobbyScreen()) {
+                return;
+            }
+            
+            if ((e.key === 'F5') || 
+                (e.ctrlKey && e.key === 'r') || 
+                (e.metaKey && e.key === 'r')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
