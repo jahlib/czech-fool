@@ -1123,7 +1123,7 @@ border: 2px solid #ffd700;
 /* Подсветка при ходе игрока */
 .player-info.current-turn {
     background: linear-gradient(135deg, #f5d742 0%, #e8c84d 100%);
-    border: 2px solid #d4af37;
+    border: 0px;
     border-bottom: none;
     box-shadow: 0 -2px 12px rgba(245, 215, 66, 0.4);
 }
