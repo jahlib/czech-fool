@@ -458,7 +458,7 @@ input[type="text"]:focus {
 /* Уменьшение высоты game-log на маленьких экранах */
     @media (max-height: 780px) {
         .game-log {
-        max-height: calc(35vh - 14px) !important;
+        max-height: calc(34vh - 16px) !important;
     }
 }
 
