@@ -455,6 +455,12 @@ class CardGame {
                 this.updatePlayersInRoom(data.room.players);
                 break;
             case 'game_started':
+                // Проверяем это переподключение или новая игра
+                // Если мы на экране комнаты или лобби - это новая игра
+                // Если мы на экране игры - это переподключение
+                const isReconnect = this.gameScreen.classList.contains('active') || 
+                                   (this.hand && this.hand.length > 0 && !this.roomScreen.classList.contains('active'));
+                
                 this.hand = data.hand;
                 this.currentPlayerId = data.current_player;
                 this.dealerId = data.dealer;
@@ -463,9 +469,6 @@ class CardGame {
                 this.eightDrawUsed = data.eight_draw_used || false;
                 this.eightDrawnCards = data.eight_drawn_cards || [];
                 this.cardDrawnThisTurn = data.card_drawn_this_turn || false;
-                
-                // Проверяем это переподключение или новая игра
-                const isReconnect = this.gameScreen.classList.contains('active');
                 
                 if (!isReconnect) {
                     // Новая игра - очищаем лог и добавляем сообщение
@@ -496,7 +499,7 @@ class CardGame {
                     }
                 } else {
                     // Переподключение - просто добавляем сообщение в лог
-                    this.addLogEntry('Переподключение к игре...');
+                    this.addLogEntry('Вы переподключились');
                 }
                 
                 this.hideCountdown();
@@ -844,6 +847,13 @@ class CardGame {
             this.chosenSuitIndicator.style.display = 'none';
         }
         
+        // Update player info
+        const currentPlayer = data.players.find(p => p.id === this.playerId);
+        if (currentPlayer) {
+            document.getElementById('player-name').textContent = currentPlayer.nickname;
+            document.getElementById('player-score').textContent = `Очки: ${currentPlayer.score}`;
+        }
+        
         // Update opponents around the table
         this.updateOpponents(data.players, this.currentPlayerId);
         
@@ -970,12 +980,15 @@ class CardGame {
             }
         });
         
-        // Подсвечиваем наши карты, если наш ход
+        // Подсвечиваем наши карты и инфо, если наш ход
         const playerHand = document.querySelector('.player-hand');
+        const playerInfo = document.querySelector('.player-info');
         if (currentPlayerId === this.playerId) {
             playerHand.classList.add('current-turn');
+            playerInfo.classList.add('current-turn');
         } else {
             playerHand.classList.remove('current-turn');
+            playerInfo.classList.remove('current-turn');
         }
     }
     

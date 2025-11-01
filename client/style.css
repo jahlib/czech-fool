@@ -1108,13 +1108,37 @@ border: 2px solid #ffd700;
     font-size: 40px;
 }
 
-.player-hand {
+/* Контейнер игрока */
+.player-container {
     position: absolute;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 1102;
+}
+
+/* Информация об игроке */
+.player-info {
+    background: rgb(255, 255, 255);
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 1102;
+    border: none;
+    border-bottom: none;
+    margin-left: 20px;
+    align-self: flex-start;
+}
+
+.player-hand {
+    width: 100%;
+    background: rgb(255, 255, 255);
     border-radius: 11px 11px 0 0;
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
-    z-index: 1100;
     max-height: 30vh;
     padding: 20px 10px 10px 10px;
     overflow-y: auto;
@@ -1122,6 +1146,33 @@ border: 2px solid #ffd700;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x pan-y;
     overscroll-behavior-y: none;
+}
+
+.player-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.player-score {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Подсветка при ходе игрока */
+.player-info.current-turn {
+    background: linear-gradient(135deg, #ffd900e1 0%, #d3c333 100%);
+    border: none;
+    border-bottom: none;
+    box-shadow: 0 -2px 12px rgba(255, 215, 0, 0.4);
+}
+
+.player-info.current-turn .player-name {
+    color: #333;
+}
+
+.player-info.current-turn .player-score {
+    color: #555;
 }
 
 #hand-cards {
@@ -1524,6 +1575,20 @@ border: 2px solid #ffd700;
     
     .opponent-score {
         font-size: 10px;
+    }
+    
+    /* Блок информации игрока на мобильных */
+    .player-info {
+        padding: 5px 12px;
+        margin-left: 8px;
+    }
+    
+    .player-name {
+        font-size: 11px;
+    }
+    
+    .player-score {
+        font-size: 9px;
     }
     
     .player-hand {
