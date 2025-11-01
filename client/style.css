@@ -823,7 +823,7 @@ input[type="text"]:focus {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.opponent-info.current-turn {
+.opponent-area.current-turn .opponent-info {
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
     color: #333;
     font-weight: 700;
@@ -854,7 +854,7 @@ input[type="text"]:focus {
     color: #666;
 }
 
-.opponent-info.current-turn .opponent-score {
+.opponent-area.current-turn .opponent-info .opponent-score {
     color: #555;
     font-weight: 600;
 }
