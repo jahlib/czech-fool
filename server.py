@@ -1373,6 +1373,14 @@ class GameServer:
         self.player_rooms[player_id] = room_id
         
         player = room.players[player_id]
+        player.ws = ws  # Обновляем WebSocket соединение игрока
+        
+        # Уведомляем других игроков о переподключении
+        await self.broadcast_to_room(room_id, {
+            'type': 'player_reconnected',
+            'player_id': player_id,
+            'nickname': player.nickname
+        }, exclude_ws=ws)
         
         if room.game_started:
             # Отправляем состояние игры
@@ -1399,6 +1407,11 @@ class GameServer:
             }
             
             await ws.send(json.dumps(message))
+            
+            # Если сейчас ход бота - запускаем его
+            current_player_id = player_ids[room.current_player_index]
+            if room.players[current_player_id].is_bot:
+                asyncio.create_task(self.make_bot_move(room_id, current_player_id))
         else:
             # Отправляем состояние комнаты
             await ws.send(json.dumps({
@@ -1538,24 +1551,37 @@ class GameServer:
                     if room_id:
                         room = self.rooms.get(room_id)
                         if room and player_id in room.players:
-                            del room.players[player_id]
-                            
-                            # Проверяем остались ли живые игроки (не боты)
-                            human_players = [p for p in room.players.values() if not p.is_bot]
-                            
-                            if len(human_players) == 0:
-                                # Если остались только боты или никого - удаляем комнату
-                                del self.rooms[room_id]
-                            else:
+                            # Если игра началась - НЕ удаляем игрока, только обнуляем WebSocket
+                            if room.game_started:
+                                room.players[player_id].ws = None
+                                # Уведомляем других о временном отключении
                                 await self.broadcast_to_room(room_id, {
-                                    'type': 'player_left',
-                                    'player_id': player_id
+                                    'type': 'player_disconnected',
+                                    'player_id': player_id,
+                                    'nickname': room.players[player_id].nickname
                                 })
-                            
-                            await self.broadcast_rooms()
-                        
-                        if player_id in self.player_rooms:
-                            del self.player_rooms[player_id]
+                                # Сохраняем комнату в БД
+                                await self.save_room_to_db(room_id)
+                            else:
+                                # Игра не началась - удаляем игрока
+                                del room.players[player_id]
+                                
+                                # Проверяем остались ли живые игроки (не боты)
+                                human_players = [p for p in room.players.values() if not p.is_bot]
+                                
+                                if len(human_players) == 0:
+                                    # Если остались только боты или никого - удаляем комнату
+                                    del self.rooms[room_id]
+                                else:
+                                    await self.broadcast_to_room(room_id, {
+                                        'type': 'player_left',
+                                        'player_id': player_id
+                                    })
+                                
+                                await self.broadcast_rooms()
+                                
+                                if player_id in self.player_rooms:
+                                    del self.player_rooms[player_id]
                 
                 # Всегда удаляем из clients
                 if ws in self.clients:
