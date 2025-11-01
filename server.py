@@ -1373,7 +1373,6 @@ class GameServer:
         self.player_rooms[player_id] = room_id
         
         player = room.players[player_id]
-        player.ws = ws  # Обновляем WebSocket соединение игрока
         
         # Уведомляем других игроков о переподключении
         await self.broadcast_to_room(room_id, {
@@ -1551,9 +1550,11 @@ class GameServer:
                     if room_id:
                         room = self.rooms.get(room_id)
                         if room and player_id in room.players:
-                            # Если игра началась - НЕ удаляем игрока, только обнуляем WebSocket
-                            if room.game_started:
-                                room.players[player_id].ws = None
+                            # Проверяем: игра идёт (game_started) ИЛИ хотя бы у одного игрока есть очки (между раундами)
+                            game_in_progress = room.game_started or any(p.score > 0 for p in room.players.values())
+                            
+                            # Если игра идёт - НЕ удаляем игрока из комнаты и player_rooms
+                            if game_in_progress:
                                 # Уведомляем других о временном отключении
                                 await self.broadcast_to_room(room_id, {
                                     'type': 'player_disconnected',
@@ -1562,8 +1563,9 @@ class GameServer:
                                 })
                                 # Сохраняем комнату в БД
                                 await self.save_room_to_db(room_id)
+                                # НЕ удаляем из player_rooms - игрок сможет переподключиться
                             else:
-                                # Игра не началась - удаляем игрока
+                                # Игра не началась и ни у кого нет очков - удаляем игрока полностью
                                 del room.players[player_id]
                                 
                                 # Проверяем остались ли живые игроки (не боты)
@@ -1580,10 +1582,11 @@ class GameServer:
                                 
                                 await self.broadcast_rooms()
                                 
+                                # Удаляем из player_rooms только если игра не началась
                                 if player_id in self.player_rooms:
                                     del self.player_rooms[player_id]
                 
-                # Всегда удаляем из clients
+                # Всегда удаляем из clients (но НЕ из player_rooms если игра идёт)
                 if ws in self.clients:
                     del self.clients[ws]
 
