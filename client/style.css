@@ -824,24 +824,12 @@ input[type="text"]:focus {
 }
 
 .opponent-area.current-turn .opponent-info {
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    background: linear-gradient(135deg, #f5d742 0%, #e8c84d 100%);
     color: #333;
     font-weight: 700;
-    animation: pulse 1s infinite;
-    border: 2px solid #ffa500;
-}
-
-@keyframes pulse {
-    0%, 100% { 
-        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6),
-                    0 0 20px rgba(255, 215, 0, 0.4);
-        transform: scale(1);
-    }
-    50% { 
-        box-shadow: 0 4px 25px rgba(255, 215, 0, 0.9),
-                    0 0 35px rgba(255, 215, 0, 0.6);
-        transform: scale(1.05);
-    }
+    border: 2px solid #d4af37;
+    box-shadow: 0 4px 15px rgba(245, 215, 66, 0.753),
+                0 0 20px rgba(245, 215, 66, 0.514);
 }
 
 .opponent-name {
@@ -914,46 +902,19 @@ input[type="text"]:focus {
 
 /* Подсветка текущего игрока */
 .opponent-area.current-turn .opponent-cards {
-    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5)) 
-            drop-shadow(0 0 30px rgba(255, 215, 0, 0.3));
-    animation: cards-glow-pulse 1s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(245, 215, 66, 0.45)) 
+            drop-shadow(0 0 30px rgba(245, 215, 66, 0.3));
 }
 
 /* Свечение блока руки игрока */
 .player-hand.current-turn {
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3),
-                0 0 25px rgba(255, 215, 0, 0.6),
-                0 0 40px rgba(255, 215, 0, 0.4),
-                0 0 60px rgba(255, 215, 0, 0.2);
-    animation: hand-glow-pulse 1s ease-in-out infinite;
-    border-top: 3px solid #ffd700;
+                0 0 25px rgba(245, 215, 66, 0.45),
+                0 0 40px rgba(245, 215, 66, 0.35),
+                0 0 60px rgba(245, 215, 66, 0.2);
+    border-top: 3px solid #f5d742;
 }
 
-@keyframes hand-glow-pulse {
-    0%, 100% { 
-        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3),
-                    0 0 25px rgba(255, 215, 0, 0.6),
-                    0 0 40px rgba(255, 215, 0, 0.4),
-                    0 0 60px rgba(255, 215, 0, 0.2);
-    }
-    50% { 
-        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.4),
-                    0 0 35px rgba(255, 215, 0, 0.8),
-                    0 0 55px rgba(255, 215, 0, 0.6),
-                    0 0 80px rgba(255, 215, 0, 0.3);
-    }
-}
-
-@keyframes cards-glow-pulse {
-    0%, 100% { 
-        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5)) 
-                drop-shadow(0 0 30px rgba(255, 215, 0, 0.3));
-    }
-    50% { 
-        filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.7)) 
-                drop-shadow(0 0 45px rgba(255, 215, 0, 0.5));
-    }
-}
 
 /* Счётчик карт в колоде */
 .deck-count-badge {
@@ -1128,7 +1089,7 @@ border: 2px solid #ffd700;
     flex-direction: column;
     gap: 2px;
     z-index: 1102;
-    border: none;
+    border: 0px;
     border-bottom: none;
     margin-left: 20px;
     align-self: flex-start;
@@ -1161,10 +1122,10 @@ border: 2px solid #ffd700;
 
 /* Подсветка при ходе игрока */
 .player-info.current-turn {
-    background: linear-gradient(135deg, #ffd900e1 0%, #d3c333 100%);
-    border: none;
+    background: linear-gradient(135deg, #f5d742 0%, #e8c84d 100%);
+    border: 2px solid #d4af37;
     border-bottom: none;
-    box-shadow: 0 -2px 12px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 -2px 12px rgba(245, 215, 66, 0.4);
 }
 
 .player-info.current-turn .player-name {
