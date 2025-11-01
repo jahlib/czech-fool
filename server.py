@@ -1377,7 +1377,13 @@ class GameServer:
         if room.game_started:
             # Отправляем состояние игры
             player_ids = list(room.players.keys())
-            await ws.send(json.dumps({
+            
+            # Отправляем ID карт взятых из колоды на восьмёрку (только текущему игроку)
+            eight_drawn_card_ids = []
+            if player_id == player_ids[room.current_player_index] and hasattr(room, 'eight_drawn_cards'):
+                eight_drawn_card_ids = list(room.eight_drawn_cards)
+            
+            message = {
                 'type': 'game_started',
                 'hand': [card.to_dict() for card in player.hand],
                 'top_card': room.discard_pile[-1].to_dict() if room.discard_pile else None,
@@ -1388,8 +1394,11 @@ class GameServer:
                 'chosen_suit': room.chosen_suit,
                 'waiting_for_eight': room.waiting_for_eight,
                 'eight_draw_used': room.eight_draw_used,
+                'eight_drawn_cards': eight_drawn_card_ids,
                 'card_drawn_this_turn': room.card_drawn_this_turn
-            }))
+            }
+            
+            await ws.send(json.dumps(message))
         else:
             # Отправляем состояние комнаты
             await ws.send(json.dumps({
