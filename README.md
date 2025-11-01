@@ -1,4 +1,4 @@
-![Marked.js](https://img.shields.io/badge/markdown-Markdown%20rendered%20by%20Marked.js-blue?logo=markdown)
+![Uses Marked.js](https://img.shields.io/badge/Uses-Marked.js-success)
 
 # 🎴 Чешский дурак
 
