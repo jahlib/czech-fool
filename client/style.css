@@ -824,14 +824,24 @@ input[type="text"]:focus {
 }
 
 .opponent-info.current-turn {
-    background: rgba(102, 126, 234, 0.9);
-    color: white;
-    animation: pulse 1.5s infinite;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #333;
+    font-weight: 700;
+    animation: pulse 1s infinite;
+    border: 2px solid #ffa500;
 }
 
 @keyframes pulse {
-    0%, 100% { box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5); }
-    50% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.8); }
+    0%, 100% { 
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6),
+                    0 0 20px rgba(255, 215, 0, 0.4);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 4px 25px rgba(255, 215, 0, 0.9),
+                    0 0 35px rgba(255, 215, 0, 0.6);
+        transform: scale(1.05);
+    }
 }
 
 .opponent-name {
@@ -845,7 +855,8 @@ input[type="text"]:focus {
 }
 
 .opponent-info.current-turn .opponent-score {
-    color: rgba(255, 255, 255, 0.9);
+    color: #555;
+    font-weight: 600;
 }
 
 /* Карты противников - все горизонтально */
@@ -914,33 +925,36 @@ input[type="text"]:focus {
 /* Свечение блока руки игрока */
 .player-hand.current-turn {
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3),
-                0 0 15px rgba(255, 215, 0, 0.3),
-                0 0 25px rgba(255, 215, 0, 0.2),
-                0 0 35px rgba(255, 215, 0, 0.1);
-    animation: hand-glow-pulse 1.5s ease-in-out infinite;
+                0 0 25px rgba(255, 215, 0, 0.6),
+                0 0 40px rgba(255, 215, 0, 0.4),
+                0 0 60px rgba(255, 215, 0, 0.2);
+    animation: hand-glow-pulse 1s ease-in-out infinite;
+    border-top: 3px solid #ffd700;
 }
 
 @keyframes hand-glow-pulse {
     0%, 100% { 
         box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3),
-                    0 0 15px rgba(255, 215, 0, 0.3),
-                    0 0 25px rgba(255, 215, 0, 0.2),
-                    0 0 35px rgba(255, 215, 0, 0.1);
+                    0 0 25px rgba(255, 215, 0, 0.6),
+                    0 0 40px rgba(255, 215, 0, 0.4),
+                    0 0 60px rgba(255, 215, 0, 0.2);
     }
     50% { 
-        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3),
-                    0 0 20px rgba(255, 215, 0, 0.4),
-                    0 0 30px rgba(255, 215, 0, 0.3),
-                    0 0 40px rgba(255, 215, 0, 0.15);
+        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.4),
+                    0 0 35px rgba(255, 215, 0, 0.8),
+                    0 0 55px rgba(255, 215, 0, 0.6),
+                    0 0 80px rgba(255, 215, 0, 0.3);
     }
 }
 
 @keyframes card-glow-pulse {
     0%, 100% { 
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.2);
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 
+                    0 0 30px rgba(255, 215, 0, 0.3);
     }
     50% { 
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), 0 0 25px rgba(255, 215, 0, 0.3);
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.7), 
+                    0 0 45px rgba(255, 215, 0, 0.5);
     }
 }
 
