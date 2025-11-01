@@ -1110,7 +1110,8 @@ border: 2px solid #ffd700;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
-    overscroll-behavior: contain;
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
 }
 
 #hand-cards {
@@ -1120,6 +1121,8 @@ border: 2px solid #ffd700;
     flex-wrap: wrap;
     flex-direction: row;
     position: relative;
+    touch-action: none;
+    overscroll-behavior: none;
 }
 
 /* Стили скроллбара для руки игрока на десктопе */
@@ -1444,11 +1447,14 @@ border: 2px solid #ffd700;
         max-height: calc((70px + 4px) * 4 + 30px);
         padding: 20px 10px 10px 10px;
         touch-action: pan-y;
-        overscroll-behavior: contain;
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
     }
     
     #hand-cards {
         gap: 4px;
+        touch-action: none;
+        overscroll-behavior: none;
     }
 }
 
@@ -1524,12 +1530,15 @@ border: 2px solid #ffd700;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
-        overscroll-behavior: contain;
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
     }
     
     #hand-cards {
         gap: 2px;
         max-width: 100%;
+        touch-action: none;
+        overscroll-behavior: none;
     }
     
     /* Стили скроллбара для руки игрока */
