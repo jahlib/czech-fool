@@ -829,11 +829,11 @@ class CardGame {
     copyInviteLink() {
         const link = this.inviteLink.textContent;
         navigator.clipboard.writeText(link).then(() => {
-            // Временно меняем текст кнопки
-            const originalText = this.copyLinkBtn.textContent;
+            // Временно меняем иконку на галочку
+            const originalHTML = this.copyLinkBtn.innerHTML;
             this.copyLinkBtn.textContent = '✓';
             setTimeout(() => {
-                this.copyLinkBtn.textContent = originalText;
+                this.copyLinkBtn.innerHTML = originalHTML;
             }, 1500);
         }).catch(err => {
             console.error('Failed to copy:', err);

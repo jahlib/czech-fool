@@ -22,7 +22,7 @@
     <!-- iOS Icons -->
     <link rel="apple-touch-icon" href="/icon-192.png">
     
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style.css?v=2">
 </head>
 <body>
     <div id="app">
@@ -74,6 +74,27 @@
                     <div id="room-settings" style="display: none;">
                         <h3>Настройки игры</h3>
                         
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">36 карт</span>
+                                <input type="checkbox" id="deck-size-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">52 карты</span>
+                            </label>
+                            <p class="hint-small">В режиме 36 карт восьмёрка не действует</p>
+                        </div>
+                    </div>
+                    
+                    <div id="countdown-display" style="display: none;">
+                        <div class="countdown-timer">
+                            <span id="countdown-number">6</span>
+                        </div>
+                        <p class="countdown-text">Игра начинается...</p>
+                    </div>
+                    <button id="ready-toggle-btn" class="btn btn-primary">Готов</button>
+                    <p class="hint">Игра начнётся когда все игроки будут готовы (минимум 2 игрока)</p>
+
+                    <div class="room-settings">
                         <!-- Чекбокс приватной комнаты -->
                         <div class="private-room-toggle">
                             <label>
@@ -96,26 +117,7 @@
 </svg></button>
                             </div>
                         </div>
-                        
-                        <div class="deck-size-toggle">
-                            <label>
-                                <span class="deck-label">36 карт</span>
-                                <input type="checkbox" id="deck-size-toggle" checked>
-                                <span class="toggle-slider"></span>
-                                <span class="deck-label">52 карты</span>
-                            </label>
-                            <p class="hint-small">В режиме 36 карт восьмёрка не действует</p>
-                        </div>
                     </div>
-                    
-                    <div id="countdown-display" style="display: none;">
-                        <div class="countdown-timer">
-                            <span id="countdown-number">6</span>
-                        </div>
-                        <p class="countdown-text">Игра начинается...</p>
-                    </div>
-                    <button id="ready-toggle-btn" class="btn btn-primary">Готов</button>
-                    <p class="hint">Игра начнётся когда все игроки будут готовы (минимум 2 игрока)</p>
                 </div>
             </div>
         </div>
@@ -365,8 +367,8 @@
         </div>
     </div>
     
-    <script src="/marked.min.js"></script>
-    <script src="/game.js"></script>
+    <script src="/marked.min.js?v=2"></script>
+    <script src="/game.js?v=2"></script>
     
     <!-- Service Worker Registration -->
     <script>
