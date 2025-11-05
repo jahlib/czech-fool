@@ -116,26 +116,14 @@
                     <span class="leave-icon">🚪</span>
                 </button>
                 
-                <!-- Кнопка полноэкранного режима -->
-                <button id="fullscreen-btn" class="fullscreen-btn" title="Полноэкранный режим">
-                    <span class="fullscreen-icon">⛶</span>
-                </button>
+                <!-- Кнопка настроек -->
+                <button id="settings-btn" class="settings-btn" title="Настройки">⚙️</button>
                 
                 <!-- Кнопка правил -->
                 <button id="rules-btn" class="rules-btn" title="Правила игры">📖</button>
                 
                 <!-- Кнопка чата -->
                 <button id="chat-btn" class="chat-btn" title="Отправить сообщение">💬</button>
-                
-                <!-- Кнопка toggle логов (только на мобильных) -->
-                <button id="toggle-log-btn" class="toggle-log-btn" title="Показать/скрыть логи">
-                    <span class="toggle-log-icon">📋</span>
-                </button>
-                
-                <!-- Кнопка выключения звука -->
-                <button id="toggle-sound-btn" class="toggle-sound-btn" title="Включить/выключить звук">
-                    <span class="sound-icon">🔊</span>
-                </button>
                 
                 <!-- Круговое игровое поле -->
                 <div class="game-table">
@@ -288,6 +276,67 @@
                 <button id="close-rules-btn" class="close-modal-btn">✕</button>
                 <h2>📖 Правила игры</h2>
                 <div id="rules-content" class="rules-content"></div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно настроек -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content settings-modal-content">
+                <button id="close-settings-btn" class="close-modal-btn">✕</button>
+                <h2>⚙️ Настройки</h2>
+                <div class="settings-content">
+                    <!-- Полноэкранный режим -->
+                    <div class="setting-item">
+                        <span class="setting-label">Полноэкранный режим</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="fullscreen-toggle">
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Звук -->
+                    <div class="setting-item">
+                        <span class="setting-label">Звук</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="sound-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Анимации -->
+                    <div class="setting-item">
+                        <span class="setting-label">Анимации карт</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="animations-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Лог (только на мобильных) -->
+                    <div class="setting-item mobile-only">
+                        <span class="setting-label">Показывать лог</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="log-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

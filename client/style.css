@@ -601,79 +601,6 @@ input[type="text"]:focus {
     transform: translateY(100%);
 }
 
-/* Toggle Log Button (скрыта на десктопе) */
-.toggle-log-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
-    background: #0c3d0ace;
-    border: 2px solid #767676;
-    border-radius: 10px;
-    cursor: pointer;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: #1b6d3e;
-    transition: all 0.3s;
-    z-index: 1001;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.toggle-log-btn:hover {
-    background: #ebebebd7;
-    color: white;
-    transform: scale(1.1);
-}
-
-.toggle-log-btn:active {
-    transform: scale(0.95);
-}
-
-/* Toggle Sound Button */
-.toggle-sound-btn {
-    position: fixed;
-    top: 260px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    background: #0c3d0ace;
-    border: 2px solid #767676;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: #187114;
-    transition: all 0.3s;
-    z-index: 1001;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.toggle-sound-btn:hover {
-    background: #ebebebd7;
-    color: white;
-    transform: scale(1.1);
-}
-
-.toggle-sound-btn:active {
-    transform: scale(0.95);
-}
-
-.toggle-sound-btn.muted {
-    background: rgba(136, 28, 28, 0.9);
-    border-color: #8b8b8b;
-    color: #e53935;
-}
-
-.toggle-sound-btn.muted:hover {
-    background: #e53935;
-    color: white;
-}
-
 /* Leave Game Button */
 .leave-game-btn {
     position: fixed;
@@ -705,8 +632,8 @@ input[type="text"]:focus {
     transform: scale(0.95);
 }
 
-/* Fullscreen Button */
-.fullscreen-btn {
+/* Settings Button */
+.settings-btn {
     position: fixed;
     top: 80px;
     right: 20px;
@@ -717,7 +644,7 @@ input[type="text"]:focus {
     border-radius: 10px;
     cursor: pointer;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
     font-size: 24px;
     color: #ffffff;
@@ -726,13 +653,13 @@ input[type="text"]:focus {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.fullscreen-btn:hover {
+.settings-btn:hover {
     background: #ebebebd7;
     color: white;
     transform: scale(1.1);
 }
 
-.fullscreen-btn:active {
+.settings-btn:active {
     transform: scale(0.95);
 }
 
@@ -1414,6 +1341,43 @@ border: 2px solid #ffd700;
     margin: 20px 0;
 }
 
+/* Модалка настроек */
+.settings-modal-content {
+    max-width: 500px;
+    position: relative;
+}
+
+.settings-content {
+    padding: 20px 0;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(118, 118, 118, 0.2);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #4c4c4c;
+}
+
+.setting-item .deck-size-toggle {
+    margin: 0;
+}
+
+/* Переключатель лога - только на мобильных */
+.setting-item.mobile-only {
+    display: none;
+}
+
 .rules-content h1,
 .rules-content h2,
 .rules-content h3 {
@@ -1792,16 +1756,6 @@ border: 2px solid #ffd700;
         font-size: 12px;
     }
     
-    /* Toggle log button на мобильных */
-    .toggle-log-btn {
-        display: flex;
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-        top: 10px;
-        left: 10px;
-    }
-    
     /* Leave game button на мобильных */
     .leave-game-btn {
         width: 40px;
@@ -1811,13 +1765,13 @@ border: 2px solid #ffd700;
         right: 10px;
     }
     
-    /* Fullscreen button на мобильных */
-    .fullscreen-btn {
+    /* Settings button на мобильных - переносим влево */
+    .settings-btn {
         width: 40px;
         height: 40px;
         font-size: 20px;
-        top: 60px;
-        right: 10px;
+        top: 10px;
+        left: 10px;
     }
     
     /* Rules button на мобильных */
@@ -1838,13 +1792,9 @@ border: 2px solid #ffd700;
         right: 10px;
     }
     
-    /* Toggle sound button на мобильных */
-    .toggle-sound-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-        top: 60px;
-        left: 10px;
+    /* Показываем переключатель лога в настройках на мобильных */
+    .setting-item.mobile-only {
+        display: flex;
     }
     
     /* Game log на мобильных */

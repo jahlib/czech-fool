@@ -89,23 +89,13 @@ class CardGame {
     }
     
     toggleSound() {
-        this.soundEnabled = !this.soundEnabled;
+        this.soundEnabled = this.soundToggle.checked;
         localStorage.setItem('soundEnabled', this.soundEnabled);
-        this.updateSoundButton();
     }
     
-    updateSoundButton() {
-        const btn = document.getElementById('toggle-sound-btn');
-        const icon = btn.querySelector('.sound-icon');
-        if (this.soundEnabled) {
-            btn.classList.remove('muted');
-            icon.textContent = '🔊';
-            btn.title = 'Выключить звук';
-        } else {
-            btn.classList.add('muted');
-            icon.textContent = '🔇';
-            btn.title = 'Включить звук';
-        }
+    toggleAnimations() {
+        this.animationsEnabled = this.animationsToggle.checked;
+        localStorage.setItem('animationsEnabled', this.animationsEnabled);
     }
 
     showAlert(message) {
@@ -223,8 +213,14 @@ class CardGame {
         this.lobbyRulesContent = document.getElementById('lobby-rules-content'); // Главная страница
         this.closeRulesBtn = document.getElementById('close-rules-btn');
         
-        // Sound button
-        this.toggleSoundBtn = document.getElementById('toggle-sound-btn');
+        // Settings elements
+        this.settingsBtn = document.getElementById('settings-btn');
+        this.settingsModal = document.getElementById('settings-modal');
+        this.closeSettingsBtn = document.getElementById('close-settings-btn');
+        this.fullscreenToggle = document.getElementById('fullscreen-toggle');
+        this.soundToggle = document.getElementById('sound-toggle');
+        this.animationsToggle = document.getElementById('animations-toggle');
+        this.logToggle = document.getElementById('log-toggle');
         
         // Leave game button and modal
         this.leaveGameBtn = document.getElementById('leave-game-btn');
@@ -237,8 +233,9 @@ class CardGame {
         this.playWith2BotsBtn = document.getElementById('play-with-2-bots-btn');
         this.playWith3BotsBtn = document.getElementById('play-with-3-bots-btn');
         
-        // Инициализируем состояние кнопки звука
-        this.updateSoundButton();
+        // Инициализируем состояние анимаций
+        const savedAnimations = localStorage.getItem('animationsEnabled');
+        this.animationsEnabled = savedAnimations !== null ? savedAnimations === 'true' : true;
     }
     
     initEventListeners() {
@@ -261,25 +258,18 @@ class CardGame {
         this.drawCardBtn.addEventListener('click', () => this.drawCard());
         this.skipTurnBtn.addEventListener('click', () => this.skipTurn());
         
-        // Sound toggle
-        this.toggleSoundBtn.addEventListener('click', () => this.toggleSound());
+        // Settings modal
+        this.settingsBtn.addEventListener('click', () => this.openSettings());
+        this.closeSettingsBtn.addEventListener('click', () => this.closeSettings());
+        this.fullscreenToggle.addEventListener('change', () => this.toggleFullscreen());
+        this.soundToggle.addEventListener('change', () => this.toggleSound());
+        this.animationsToggle.addEventListener('change', () => this.toggleAnimations());
+        this.logToggle.addEventListener('change', () => this.toggleLog());
         
         // Leave game button
         this.leaveGameBtn.addEventListener('click', () => this.showLeaveConfirm());
         this.leaveConfirmBtn.addEventListener('click', () => this.confirmLeaveGame());
         this.leaveCancelBtn.addEventListener('click', () => this.cancelLeaveGame());
-        
-        // Fullscreen button
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        if (fullscreenBtn) {
-            fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
-        }
-        
-        // Toggle log button
-        const toggleLogBtn = document.getElementById('toggle-log-btn');
-        if (toggleLogBtn) {
-            toggleLogBtn.addEventListener('click', () => this.toggleLog());
-        }
         
         // Suit selection
         document.querySelectorAll('.suit-btn').forEach(btn => {
@@ -1207,15 +1197,36 @@ class CardGame {
     }
     
     toggleFullscreen() {
-        if (!document.fullscreenElement) {
+        if (this.fullscreenToggle.checked) {
             // Входим в полноэкранный режим
             document.documentElement.requestFullscreen().catch(err => {
                 console.log('Error attempting to enable fullscreen:', err);
+                this.fullscreenToggle.checked = false;
             });
         } else {
             // Выходим из полноэкранного режима
-            document.exitFullscreen();
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
         }
+    }
+    
+    openSettings() {
+        // Синхронизируем состояние переключателей с текущими настройками
+        this.soundToggle.checked = this.soundEnabled;
+        this.animationsToggle.checked = this.animationsEnabled;
+        this.fullscreenToggle.checked = !!document.fullscreenElement;
+        
+        // Синхронизируем состояние лога (проверяем есть ли класс hidden)
+        if (this.gameLog) {
+            this.logToggle.checked = !this.gameLog.classList.contains('hidden');
+        }
+        
+        this.settingsModal.classList.add('active');
+    }
+    
+    closeSettings() {
+        this.settingsModal.classList.remove('active');
     }
     
     toggleLog() {
@@ -1491,6 +1502,9 @@ class CardGame {
     
     // Анимация полета карты от точки A до точки B
     animateFlyingCard(fromElement, toElement, count = 1, delay = 0) {
+        // Проверяем включены ли анимации
+        if (!this.animationsEnabled) return;
+        
         setTimeout(() => {
             for (let i = 0; i < count; i++) {
                 setTimeout(() => {
@@ -1585,6 +1599,9 @@ class CardGame {
     
     // Анимация перемешивания колоды (карты летят из сброса в колоду)
     animateDeckShuffle() {
+        // Проверяем включены ли анимации
+        if (!this.animationsEnabled) return;
+        
         const discardPile = this.discardPile;
         const deck = document.getElementById('deck');
         
