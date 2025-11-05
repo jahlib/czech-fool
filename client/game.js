@@ -1142,10 +1142,21 @@ class CardGame {
             return;
         }
         
-        // If it's a Queen, show suit selector
+        // If it's a Queen, check if it's the last card
         if (card.rank === 'Q') {
-            this.pendingCardToPlay = card;
-            this.suitModal.classList.add('active');
+            // Если это последняя карта - автоматически выбираем пики
+            if (this.hand.length === 1) {
+                // Отправляем карту с автоматическим выбором пик (игрок выигрывает)
+                this.send({
+                    type: 'play_card',
+                    card_id: card.id,
+                    chosen_suit: 'spades'
+                });
+            } else {
+                // Не последняя карта - показываем модалку выбора масти
+                this.pendingCardToPlay = card;
+                this.suitModal.classList.add('active');
+            }
         } else {
             // Отправляем карту без воспроизведения звука
             // Звук будет воспроизведен когда придет событие card_played
