@@ -1253,6 +1253,7 @@ class CardGame {
             // Если победа на даму (есть бонус) - особый звук
             if (hasQueenBonus) {
                 this.playSound('winqueen');
+                setTimeout(() => this.playSound('win'), 60);
             } else {
                 this.playSound('win');
             }
