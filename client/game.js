@@ -854,7 +854,11 @@ class CardGame {
         // Показываем настройки только создателю комнаты и только до начала игры
         const isCreator = room.creator_id === this.playerId;
         const gameNotStarted = !room.game_started;
-        this.roomSettings.style.display = (isCreator && gameNotStarted) ? 'block' : 'none';
+        
+        // Проверяем что ни у кого нет очков (игра ещё не начиналась)
+        const noScores = room.players.every(p => p.score === 0);
+        
+        this.roomSettings.style.display = (isCreator && gameNotStarted && noScores) ? 'block' : 'none';
         
         // Устанавливаем текущий размер колоды
         if (room.deck_size) {
