@@ -382,7 +382,23 @@ class GameServer:
         players = {player_id: player}
         
         # Создаём ботов
-        available_bot_names = ['Челик', 'Здравый', 'Бывалый', 'Арсений', 'Кент', 'Братан', 'Мужик', 'Напарник', 'Чувакбрат']
+        available_bot_names = [
+            'Дружище',
+            'Братан',
+            'Чувак',
+            'Кент',
+            'Напарник',
+            'Товарищ',
+            'Приятель',
+            'Бывалый',
+            'Земеля',
+            'Коллега',
+            'Зевака',
+            'Компаньон',
+            'Соратник',
+            'Местный',
+            'Мужик'
+        ]
         selected_bot_names = random.sample(available_bot_names, min(bot_count, len(available_bot_names)))
         
         for i in range(bot_count):
