@@ -115,6 +115,19 @@ input[type="text"]:focus {
     cursor: not-allowed;
 }
 
+.btn:disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-primary:disabled:hover {
+    background: #27b790 !important;
+}
+
+.btn-secondary:disabled:hover {
+    background: #e0e0e0 !important;
+}
+
 /* Create Room Section */
 #create-room-section {
     margin-bottom: 40px;
