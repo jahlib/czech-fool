@@ -21,6 +21,7 @@ class CardGame {
             alert: new Audio('/sounds/alert.aac'),
             chat: new Audio('/sounds/chat.aac'),
             win: new Audio('/sounds/win.aac'),
+            winqueen: new Audio('/sounds/winqueen.aac'),
             lose: new Audio('/sounds/lose.aac'),
             two: new Audio('/sounds/two.aac'),
             six: new Audio('/sounds/six.aac'),
@@ -172,6 +173,8 @@ class CardGame {
         this.playersList = document.getElementById('players-list');
         this.readyToggleBtn = document.getElementById('ready-toggle-btn');
         this.leaveRoomBtn = document.getElementById('leave-room-btn');
+        this.roomSettings = document.getElementById('room-settings');
+        this.deckSizeToggle = document.getElementById('deck-size-toggle');
         
         // Game elements
         this.deckCount = document.getElementById('deck-count');
@@ -246,6 +249,9 @@ class CardGame {
         
         this.readyToggleBtn.addEventListener('click', () => this.toggleReady());
         this.leaveRoomBtn.addEventListener('click', () => this.leaveRoom());
+        
+        // Deck size toggle
+        this.deckSizeToggle.addEventListener('change', () => this.changeDeckSize());
         
         // Bot game buttons
         this.playWith1BotBtn.addEventListener('click', () => this.createBotGame(1));
@@ -417,6 +423,7 @@ class CardGame {
                 this.updateURL(this.roomId);
                 this.showScreen('room');
                 this.updatePlayersInRoom(data.room.players);
+                this.updateRoomSettings(data.room);
                 break;
             case 'room_joined':
                 this.playerId = data.player_id;
@@ -426,6 +433,7 @@ class CardGame {
                 this.updateURL(this.roomId);
                 this.showScreen('room');
                 this.updatePlayersInRoom(data.room.players);
+                this.updateRoomSettings(data.room);
                 break;
             case 'player_joined':
                 if (this.currentRoom) {
@@ -478,9 +486,11 @@ class CardGame {
                     // Воспроизводим звук если игра началась со специальной карты
                     if (data.top_card) {
                         const rank = data.top_card.rank;
+                        const deckSize = data.deck_size || 52;
                         if (rank === 'A') {
                             this.playSound('ace');
-                        } else if (rank === '8') {
+                        } else if (rank === '8' && deckSize === 52) {
+                            // Восьмёрка только в режиме 52 карт
                             this.playSound('eightplace');
                         } else if (rank === '6') {
                             this.playSound('six');
@@ -505,6 +515,11 @@ class CardGame {
                 this.hideCountdown();
                 this.showScreen('game');
                 this.updateGameState(data);
+                
+                // Скрываем настройки комнаты когда игра началась
+                if (this.roomSettings) {
+                    this.roomSettings.style.display = 'none';
+                }
                 break;
             case 'card_played':
                 // Сохраняем старое значение waiting_for_eight перед обновлением
@@ -520,10 +535,12 @@ class CardGame {
                 
                 // Звук игры карты
                 // Специальные карты - звук для всех игроков
+                const deckSize = data.deck_size || 52;
                 if (data.card.rank === 'A') {
                     this.playSound('playcard');
                     setTimeout(() => this.playSound('ace'), 60);
-                } else if (data.card.rank === '8') {
+                } else if (data.card.rank === '8' && deckSize === 52) {
+                    // Восьмёрка только в режиме 52 карт
                     this.playSound('eightplace');
                 } else if (data.card.rank === '6') {
                     this.playSound('playcard');
@@ -672,6 +689,14 @@ class CardGame {
                 // Игрок переподключился
                 this.addLogEntry(`${data.nickname} переподключился`);
                 break;
+            case 'deck_size_changed':
+                // Размер колоды изменён
+                if (this.currentRoom) {
+                    this.currentRoom.deck_size = data.deck_size;
+                }
+                this.deckSizeToggle.checked = data.deck_size === 52;
+                this.addLogEntry(`Размер колоды карт: ${data.deck_size}`);
+                break;
             case 'error':
                 // Если ошибка связана с комнатой/игроком - показываем экран ошибки
                 if (data.message.includes('not found') || data.message.includes('не найден')) {
@@ -815,6 +840,26 @@ class CardGame {
     
     leaveRoom() {
         this.goToLobby();
+    }
+    
+    changeDeckSize() {
+        const deckSize = this.deckSizeToggle.checked ? 52 : 36;
+        this.send({
+            type: 'change_deck_size',
+            deck_size: deckSize
+        });
+    }
+    
+    updateRoomSettings(room) {
+        // Показываем настройки только создателю комнаты и только до начала игры
+        const isCreator = room.creator_id === this.playerId;
+        const gameNotStarted = !room.game_started;
+        this.roomSettings.style.display = (isCreator && gameNotStarted) ? 'block' : 'none';
+        
+        // Устанавливаем текущий размер колоды
+        if (room.deck_size) {
+            this.deckSizeToggle.checked = room.deck_size === 52;
+        }
     }
     
     showLeaveConfirm() {
@@ -1197,7 +1242,16 @@ class CardGame {
         
         // Воспроизводим звук win или lose
         if (data.winner_id === this.playerId) {
-            this.playSound('win');
+            // Проверяем есть ли бонус за даму у победителя
+            const winnerResult = data.results.find(r => r.player_id === data.winner_id);
+            const hasQueenBonus = winnerResult && winnerResult.queen_bonus && winnerResult.queen_bonus < 0;
+            
+            // Если победа на даму (есть бонус) - особый звук
+            if (hasQueenBonus) {
+                this.playSound('winqueen');
+            } else {
+                this.playSound('win');
+            }
         } else {
             this.playSound('lose');
         }

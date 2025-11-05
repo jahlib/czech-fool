@@ -69,6 +69,21 @@
                 <div id="players-waiting">
                     <h3>Игроки в комнате:</h3>
                     <div id="players-list"></div>
+                    
+                    <!-- Настройки комнаты (только для создателя) -->
+                    <div id="room-settings" style="display: none;">
+                        <h3>Настройки игры</h3>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">36 карт</span>
+                                <input type="checkbox" id="deck-size-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">52 карты</span>
+                            </label>
+                            <p class="hint-small">В режиме 36 карт восьмёрка не действует</p>
+                        </div>
+                    </div>
+                    
                     <div id="countdown-display" style="display: none;">
                         <div class="countdown-timer">
                             <span id="countdown-number">6</span>
