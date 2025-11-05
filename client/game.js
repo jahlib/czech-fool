@@ -296,9 +296,7 @@ class CardGame {
         });
         
         this.closeResultsBtn.addEventListener('click', () => {
-            this.resultsModal.classList.remove('active');
-            // Переходим в комнату для новой игры
-            this.showScreen('room');
+            this.closeResultsModal();
         });
         
         // Chat handlers
@@ -1314,6 +1312,31 @@ class CardGame {
         });
         
         this.resultsModal.classList.add('active');
+        
+        // Добавляем обработчик Enter для закрытия модалки
+        this.resultsEnterHandler = (e) => {
+            // Проверяем что:
+            // 1. Нажат Enter
+            // 2. Модалка результатов активна
+            // 3. Фокус не на input/textarea (чтобы не мешать другим формам)
+            const activeElement = document.activeElement;
+            const isInputFocused = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+            
+            if (e.key === 'Enter' && this.resultsModal.classList.contains('active') && !isInputFocused) {
+                this.closeResultsModal();
+            }
+        };
+        document.addEventListener('keydown', this.resultsEnterHandler);
+    }
+    
+    closeResultsModal() {
+        this.resultsModal.classList.remove('active');
+        this.showScreen('room');
+        // Удаляем обработчик Enter
+        if (this.resultsEnterHandler) {
+            document.removeEventListener('keydown', this.resultsEnterHandler);
+            this.resultsEnterHandler = null;
+        }
     }
     
     openChat() {

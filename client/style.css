@@ -957,7 +957,10 @@ input[type="text"]:focus {
 .opponent-card {
     width: 60px;
     height: 85px;
-    background: linear-gradient(314deg, #646464, #9c9c9c);
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.4) 6px, rgba(0, 0, 0, 0.4) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.4) 6px, rgba(0, 0, 0, 0.4) 7px),
+        linear-gradient(314deg, #646464, #9c9c9c);
     border: 2px solid #333;
     border-radius: 6px;
     display: flex;
@@ -1132,7 +1135,10 @@ border: 2px solid #ffd700;
 }
 
 .card-back {
-    background: linear-gradient(314deg, #646464, #9c9c9c);
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.4) 6px, rgba(0, 0, 0, 0.4) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.4) 6px, rgba(0, 0, 0, 0.4) 7px),
+        linear-gradient(314deg, #646464, #9c9c9c);
     color: white;
     font-size: 48px;
     cursor: default;
@@ -1286,11 +1292,35 @@ border: 2px solid #ffd700;
 
 .modal-content {
     background: white;
-    padding: 40px;
+    padding: 20px 20px 20px 26px;  /* Меньше padding справа для скроллбара */
     border-radius: 20px;
     max-width: 500px;
     width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Красивый скроллбар для модалки */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    margin: 20px 0;  /* Отступы сверху и снизу */
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #32a082 0%, #1b6d3e 100%);
+    border-radius: 10px;
+    border: 2px solid white;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #1b6d3e 0%, #31915b 100%);
 }
 
 .modal-content h2, .modal-content h3 {
