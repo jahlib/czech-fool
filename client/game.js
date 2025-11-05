@@ -108,8 +108,19 @@ class CardGame {
     checkReconnect() {
         // Получаем room_id из URL
         const path = window.location.pathname;
-        const match = path.match(/\/room\/([a-f0-9-]+)/);
         
+        // Проверяем формат /room/join/{room_id} (приглашение в приватную комнату)
+        let match = path.match(/\/room\/join\/([a-f0-9-]+)/);
+        if (match) {
+            this.roomId = match[1];
+            this.isJoiningViaLink = true;
+            // Не проверяем player_id, показываем модалку для ввода никнейма
+            this.connect(false);
+            return;
+        }
+        
+        // Проверяем формат /room/{room_id} (обычное переподключение)
+        match = path.match(/\/room\/([a-f0-9-]+)/);
         if (match) {
             this.roomId = match[1];
             // Получаем player_id из localStorage
@@ -158,6 +169,11 @@ class CardGame {
         this.nicknameInput = document.getElementById('nickname-input');
         this.createRoomBtn = document.getElementById('create-room-btn');
         this.roomsList = document.getElementById('rooms-list');
+        this.privateRoomCheckbox = document.getElementById('private-room-checkbox');
+        this.inviteLinkBlock = document.getElementById('invite-link-block');
+        this.inviteLink = document.getElementById('invite-link');
+        this.copyLinkBtn = document.getElementById('copy-link-btn');
+        this.shareLinkBtn = document.getElementById('share-link-btn');
         
         // Room elements
         this.playersList = document.getElementById('players-list');
@@ -243,6 +259,18 @@ class CardGame {
         this.nicknameInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.createRoom();
         });
+        
+        // Private room checkbox
+        this.privateRoomCheckbox.addEventListener('change', () => this.togglePrivateRoom());
+        
+        // Copy and share link buttons
+        this.copyLinkBtn.addEventListener('click', () => this.copyInviteLink());
+        this.shareLinkBtn.addEventListener('click', () => this.shareInviteLink());
+        
+        // Show share button if Web Share API is available
+        if (navigator.share) {
+            this.shareLinkBtn.style.display = 'block';
+        }
         
         this.readyToggleBtn.addEventListener('click', () => this.toggleReady());
         this.leaveRoomBtn.addEventListener('click', () => this.leaveRoom());
@@ -356,6 +384,10 @@ class CardGame {
                     player_id: this.playerId || 'temp_' + Date.now(),
                     room_id: this.roomId
                 });
+            } else if (this.isJoiningViaLink && this.roomId) {
+                // Переход по ссылке приглашения - показываем модалку для ввода никнейма
+                this.joinModal.classList.add('active');
+                this.joinNicknameInput.focus();
             } else {
                 // Обычное подключение
                 this.send({ type: 'get_rooms' });
@@ -409,6 +441,7 @@ class CardGame {
                 this.currentRoom = data.room;
                 this.saveToLocalStorage();
                 this.updateURL(this.roomId);
+                
                 this.showScreen('room');
                 this.updatePlayersInRoom(data.room.players);
                 this.updateRoomSettings(data.room);
@@ -707,9 +740,23 @@ class CardGame {
                 this.deckSizeToggle.checked = data.deck_size === 52;
                 this.addLogEntry(`Размер колоды карт: ${data.deck_size}`);
                 break;
+            case 'room_closed':
+                // Комната закрыта создателем
+                this.showAlert(data.message);
+                setTimeout(() => this.goToLobby(), 3000);
+                break;
             case 'error':
-                // Если ошибка связана с комнатой/игроком - показываем экран ошибки
-                if (data.message.includes('not found') || data.message.includes('не найден')) {
+                // Обрабатываем ошибки по кодам
+                if (data.error_code === 'room_not_found' || 
+                    data.error_code === 'game_started' || 
+                    data.error_code === 'player_not_found') {
+                    // Ссылка недействительна или комната не существует - показываем экран ошибки
+                    this.showError(data.message);
+                    // Очищаем данные
+                    this.isJoiningViaLink = false;
+                    this.roomId = null;
+                    this.clearLocalStorage();
+                } else if (data.message.includes('not found') || data.message.includes('не найден')) {
                     this.showError(data.message);
                 } else {
                     this.showAlert(data.message);
@@ -752,8 +799,61 @@ class CardGame {
         
         this.send({
             type: 'create_room',
-            nickname: nickname
+            nickname: nickname,
+            is_private: false  // По умолчанию не приватная
         });
+    }
+    
+    togglePrivateRoom() {
+        const isChecked = this.privateRoomCheckbox.checked;
+        
+        // Отправляем на сервер изменение приватности
+        this.send({
+            type: 'toggle_private',
+            is_private: isChecked
+        });
+        
+        // Показываем/скрываем блок со ссылкой
+        if (isChecked) {
+            this.inviteLinkBlock.style.display = 'block';
+            // Генерируем ссылку если её ещё нет
+            if (!this.inviteLink.textContent && this.roomId) {
+                const inviteUrl = `${window.location.origin}/room/join/${this.roomId}`;
+                this.inviteLink.textContent = inviteUrl;
+            }
+        } else {
+            this.inviteLinkBlock.style.display = 'none';
+        }
+    }
+    
+    copyInviteLink() {
+        const link = this.inviteLink.textContent;
+        navigator.clipboard.writeText(link).then(() => {
+            // Временно меняем текст кнопки
+            const originalText = this.copyLinkBtn.textContent;
+            this.copyLinkBtn.textContent = '✓';
+            setTimeout(() => {
+                this.copyLinkBtn.textContent = originalText;
+            }, 1500);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            this.showAlert('Не удалось скопировать ссылку');
+        });
+    }
+    
+    async shareInviteLink() {
+        const link = this.inviteLink.textContent;
+        try {
+            await navigator.share({
+                title: 'Погнали в чешского!',
+                text: 'Присоединяйся к комнате:',
+                url: link
+            });
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('Failed to share:', err);
+            }
+        }
     }
     
     createBotGame(botCount) {
@@ -811,13 +911,19 @@ class CardGame {
             return;
         }
         
+        // Используем roomId если присоединяемся по ссылке, иначе pendingRoomId
+        const roomId = this.isJoiningViaLink ? this.roomId : this.pendingRoomId;
+        
         this.send({
             type: 'join_room',
-            room_id: this.pendingRoomId,
+            room_id: roomId,
             nickname: nickname
         });
         
         this.joinModal.classList.remove('active');
+        
+        // Сбрасываем флаг после присоединения
+        this.isJoiningViaLink = false;
     }
     
     cancelJoin() {
@@ -849,6 +955,14 @@ class CardGame {
     }
     
     leaveRoom() {
+        // Скрываем блок с ссылкой если он был показан
+        if (this.inviteLinkBlock) {
+            this.inviteLinkBlock.style.display = 'none';
+        }
+        // Сбрасываем чекбокс приватной комнаты
+        if (this.privateRoomCheckbox) {
+            this.privateRoomCheckbox.checked = false;
+        }
         this.goToLobby();
     }
     

@@ -133,6 +133,83 @@ input[type="text"]:focus {
     margin-bottom: 40px;
 }
 
+/* Private Room Toggle */
+.private-room-toggle {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.private-room-toggle label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #6f6f6f;
+}
+
+.private-room-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Invite Link Block */
+#invite-link-block {
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(50, 160, 130, 0.1);
+    border: 1px solid rgba(50, 160, 130, 0.3);
+    border-radius: 8px;
+}
+
+.invite-hint {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #6f6f6f;
+    text-align: center;
+}
+
+.invite-link-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.invite-link {
+    flex: 1;
+    padding: 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #32a082;
+    word-break: break-all;
+    user-select: all;
+}
+
+.btn-copy, .btn-share {
+    min-width: 44px;
+    height: 44px;
+    padding: 8px;
+    font-size: 20px;
+    background: #32a082;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-copy:hover, .btn-share:hover {
+    background: #28866d;
+    transform: scale(1.05);
+}
+
+.btn-copy:active, .btn-share:active {
+    transform: scale(0.95);
+}
+
 /* Bot Game Section */
 #bot-game-section {
     margin-top: 25px;
