@@ -2074,3 +2074,28 @@ border: 2px solid #ffd700;
     color: rgba(255, 255, 255, 0.8);
     font-style: italic;
 }
+
+/* Flying card animation */
+.flying-card {
+    position: fixed;
+    width: 60px;
+    height: 85px;
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
+        linear-gradient(135deg, #2a5f4f, #1b4037);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 10000;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.flying-card.arrived {
+    opacity: 0;
+    transform: scale(0.5);
+}

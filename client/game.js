@@ -501,6 +501,12 @@ class CardGame {
                     
                     // Если кто-то принудительно взял карты при старте (6 или 7)
                     if (data.forced_draw_player_id && data.forced_draw_count > 0) {
+                        // Анимация принудительного взятия карт при старте игры
+                        // Задержка чтобы элементы успели отрендериться
+                        setTimeout(() => {
+                            this.animateDrawCards(data.forced_draw_player_id, data.forced_draw_count);
+                        }, 300);
+                        
                         const cardName = `${data.top_card.rank}${this.getSuitSymbol(data.top_card.suit)}`;
                         const cardsText = data.forced_draw_count === 1 ? '1 карту' : `${data.forced_draw_count} карты`;
                         this.addLogEntry(`${data.forced_draw_player_nickname} взял ${cardsText} от ${cardName}`);
@@ -522,6 +528,11 @@ class CardGame {
             case 'card_played':
                 // Сохраняем старое значение waiting_for_eight перед обновлением
                 const wasWaitingForEight = this.waitingForEight;
+                
+                // Анимация полета карты от игрока к столу
+                if (data.player_id) {
+                    this.animatePlayCard(data.player_id);
+                }
                 
                 this.hand = data.hand;
                 this.currentPlayerId = data.current_player;
@@ -565,6 +576,9 @@ class CardGame {
                 
                 // Если кто-то принудительно взял карты (6 или 7)
                 if (data.forced_draw_player_id && data.forced_draw_count > 0) {
+                    // Анимация принудительного взятия карт
+                    this.animateDrawCards(data.forced_draw_player_id, data.forced_draw_count);
+                    
                     const cardsText = data.forced_draw_count === 1 ? '1 карту' : `${data.forced_draw_count} карты`;
                     this.addLogEntry(`${data.forced_draw_player_nickname} взял ${cardsText} от ${cardName}`);
                 }
@@ -572,6 +586,11 @@ class CardGame {
                 this.updateGameState(data);
                 break;
             case 'card_drawn':
+                // Анимация взятия карт из колоды
+                if (data.player_id && data.cards_count) {
+                    this.animateDrawCards(data.player_id, data.cards_count);
+                }
+                
                 this.hand = data.hand;
                 this.currentPlayerId = data.current_player;
                 this.deckCount.textContent = data.deck_count;
@@ -989,6 +1008,7 @@ class CardGame {
             
             const position = positions[index];
             position.style.display = 'flex';
+            position.dataset.playerId = opponent.id; // Сохраняем ID игрока для анимаций
             
             const info = position.querySelector('.opponent-info');
             const cardsContainer = position.querySelector('.opponent-cards');
@@ -1464,6 +1484,100 @@ class CardGame {
         window.addEventListener('appinstalled', () => {
             console.log('PWA installed successfully');
         });
+    }
+    
+    // Анимация полета карты от точки A до точки B
+    animateFlyingCard(fromElement, toElement, count = 1, delay = 0) {
+        setTimeout(() => {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const flyingCard = document.createElement('div');
+                    flyingCard.className = 'flying-card';
+                    flyingCard.textContent = '🎴';
+                    
+                    // Получаем координаты начальной и конечной точек
+                    const fromRect = fromElement.getBoundingClientRect();
+                    const toRect = toElement.getBoundingClientRect();
+                    
+                    // Устанавливаем начальную позицию
+                    flyingCard.style.left = `${fromRect.left + fromRect.width / 2 - 30}px`;
+                    flyingCard.style.top = `${fromRect.top + fromRect.height / 2 - 42.5}px`;
+                    
+                    document.body.appendChild(flyingCard);
+                    
+                    // Запускаем анимацию после небольшой задержки для корректного рендера
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            // Перемещаем к конечной точке
+                            flyingCard.style.left = `${toRect.left + toRect.width / 2 - 30}px`;
+                            flyingCard.style.top = `${toRect.top + toRect.height / 2 - 42.5}px`;
+                            flyingCard.classList.add('arrived');
+                            
+                            // Удаляем элемент после завершения анимации
+                            setTimeout(() => {
+                                flyingCard.remove();
+                            }, 400);
+                        });
+                    });
+                }, i * 100); // Задержка между картами
+            }
+        }, delay);
+    }
+    
+    // Анимация игры карты от игрока к столу
+    animatePlayCard(playerId) {
+        const discardPile = this.discardPile;
+        
+        if (playerId === this.playerId) {
+            // От нашей руки к столу
+            const handCards = this.handCards;
+            if (handCards && handCards.children.length > 0) {
+                this.animateFlyingCard(handCards, discardPile);
+            }
+        } else {
+            // От противника к столу
+            const opponentArea = this.getOpponentAreaById(playerId);
+            if (opponentArea) {
+                const opponentCards = opponentArea.querySelector('.opponent-cards');
+                if (opponentCards) {
+                    this.animateFlyingCard(opponentCards, discardPile);
+                }
+            }
+        }
+    }
+    
+    // Анимация взятия карт из колоды
+    animateDrawCards(playerId, count) {
+        const deck = document.getElementById('deck');
+        
+        if (playerId === this.playerId) {
+            // К нашей руке
+            const handCards = this.handCards;
+            if (handCards && deck) {
+                this.animateFlyingCard(deck, handCards, count);
+            }
+        } else {
+            // К противнику
+            const opponentArea = this.getOpponentAreaById(playerId);
+            if (opponentArea && deck) {
+                const opponentCards = opponentArea.querySelector('.opponent-cards');
+                if (opponentCards) {
+                    this.animateFlyingCard(deck, opponentCards, count);
+                }
+            }
+        }
+    }
+    
+    // Получить область противника по ID
+    getOpponentAreaById(playerId) {
+        const opponents = ['opponent-left', 'opponent-top', 'opponent-right'];
+        for (const opponentId of opponents) {
+            const area = document.getElementById(opponentId);
+            if (area && area.dataset.playerId === playerId) {
+                return area;
+            }
+        }
+        return null;
     }
     
     getPlayerColorIndex(playerId) {
