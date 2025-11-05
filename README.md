@@ -163,8 +163,9 @@ python server.py
 ## Структура проекта
 
 ```
-chekh/
+czech-fool/
 ├── server.py              # Серверная часть на Python
+├── database_postgres.py   # Серверная часть базы данных
 ├── requirements.txt       # Зависимости Python
 ├── client/
 │   ├── index.html        # HTML интерфейс
@@ -173,9 +174,10 @@ chekh/
 │   ├── sw.js             # Service Worker для PWA
 │   ├── manifest.json     # PWA манифест
 │   ├── rules.md          # Правила игры (Markdown)
-│   ├── sounds/           # Звуковые эффекты (.aac/.ogg)
+│   ├── sounds/           # Звуковые эффекты (.aac)
 │   └── icons/            # Иконки для PWA
 ├── rules.md              # Правила игры
+├── czech-fool.service    # Шаблон systemd service
 └── README.md             # Документация
 ```
 
