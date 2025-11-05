@@ -720,7 +720,7 @@ input[type="text"]:focus {
     align-items: flex-end;
     justify-content: center;
     font-size: 24px;
-    color: #1b6d3e;
+    color: #ffffff;
     transition: all 0.3s;
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -751,7 +751,7 @@ input[type="text"]:focus {
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    color: #1b6d3e;
+    color: #ffffff;
     transition: all 0.3s;
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -782,7 +782,7 @@ input[type="text"]:focus {
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    color: #0c3d0a;
+    color: #ffffff;
     transition: all 0.3s;
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
