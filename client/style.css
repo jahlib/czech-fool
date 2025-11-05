@@ -11,7 +11,7 @@ html {
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #969696 0%, #000000 100%);
+    background: #626262;
     min-height: 100vh;
     color: #333;
     -webkit-overflow-scrolling: touch;
