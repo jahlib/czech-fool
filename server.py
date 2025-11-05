@@ -62,13 +62,17 @@ class Room:
     countdown_active: bool = False  # Активен ли обратный отсчёт
     countdown_task: Optional[object] = None  # Задача таймера
     last_loser_id: Optional[str] = None  # ID проигравшего в прошлой игре (станет дилером)
+    deck_size: int = 52  # Размер колоды: 52 или 36 карт
+    creator_id: Optional[str] = None  # ID создателя комнаты
     
     def to_dict(self):
         return {
             'id': self.id,
             'players': [p.to_dict() for p in self.players.values()],
             'player_count': len(self.players),
-            'game_started': self.game_started
+            'game_started': self.game_started,
+            'deck_size': self.deck_size,
+            'creator_id': self.creator_id
         }
 
 class GameServer:
@@ -162,7 +166,9 @@ class GameServer:
             game_started=room_data['game_started'],
             chosen_suit=room_data['chosen_suit'],
             waiting_for_eight=room_data['waiting_for_eight'],
-            card_drawn_this_turn=room_data['card_drawn_this_turn']
+            card_drawn_this_turn=room_data['card_drawn_this_turn'],
+            deck_size=room_data.get('deck_size', 52),
+            creator_id=room_data.get('creator_id')
         )
         
         # Инициализируем дополнительные атрибуты
@@ -195,7 +201,9 @@ class GameServer:
                 'chosen_suit': room.chosen_suit,
                 'waiting_for_eight': room.waiting_for_eight,
                 'eight_draw_used': room.eight_draw_used,
-                'card_drawn_this_turn': room.card_drawn_this_turn
+                'card_drawn_this_turn': room.card_drawn_this_turn,
+                'deck_size': room.deck_size,
+                'creator_id': room.creator_id
             })
             
             # Сохраняем игроков
@@ -217,11 +225,16 @@ class GameServer:
         except Exception as e:
             pass  # print(f"Error saving room to DB: {e}")
         
-    def create_deck(self) -> List[Card]:
+    def create_deck(self, deck_size: int = 52) -> List[Card]:
         suits = ['hearts', 'diamonds', 'clubs', 'spades']
-        ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-        deck = []
         
+        # Для 36 карт исключаем 2, 3, 4, 5
+        if deck_size == 36:
+            ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+        else:  # 52 карты
+            ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+        
+        deck = []
         for suit in suits:
             for rank in ranks:
                 deck.append(Card(suit=suit, rank=rank, id=str(uuid.uuid4())))
@@ -317,7 +330,8 @@ class GameServer:
             discard_pile=[],
             current_player_index=0,
             dealer_index=0,
-            game_started=False
+            game_started=False,
+            creator_id=player_id
         )
         
         self.rooms[room_id] = room
@@ -339,6 +353,7 @@ class GameServer:
     async def handle_create_bot_game(self, ws: WebSocketServerProtocol, data: dict):
         nickname = data.get('nickname')
         bot_count = data.get('bot_count', 1)
+        deck_size = data.get('deck_size', 52)
         
         if not nickname:
             await ws.send(json.dumps({'type': 'error', 'message': 'Nickname required'}))
@@ -346,6 +361,10 @@ class GameServer:
         
         if bot_count < 1 or bot_count > 3:
             await ws.send(json.dumps({'type': 'error', 'message': 'Bot count must be 1-3'}))
+            return
+        
+        if deck_size not in [36, 52]:
+            await ws.send(json.dumps({'type': 'error', 'message': 'Deck size must be 36 or 52'}))
             return
         
         room_id = str(uuid.uuid4())
@@ -384,7 +403,8 @@ class GameServer:
             discard_pile=[],
             current_player_index=0,
             dealer_index=0,
-            game_started=False
+            game_started=False,
+            creator_id=player_id
         )
         
         self.rooms[room_id] = room
@@ -582,8 +602,10 @@ class GameServer:
         
         # Если есть подходящая карта - играем с приоритетом
         if playable_cards:
-            # Приоритет: 7, 6, 8, A (специальные карты)
-            priority_ranks = ['7', '6', '8', 'A']
+            # Приоритет: 7, 6, 8 (только для 52 карт), A (специальные карты)
+            priority_ranks = ['7', '6', 'A']
+            if room.deck_size == 52:
+                priority_ranks.append('8')
             priority_cards = [c for c in playable_cards if c.rank in priority_ranks]
             
             if priority_cards:
@@ -604,8 +626,10 @@ class GameServer:
             # Если дама - выбираем масть умно
             chosen_suit = None
             if card_to_play.rank == 'Q':
-                # Приоритет: масти с сильными картами (7, 6, 8, A)
-                priority_ranks = ['7', '6', '8', 'A']
+                # Приоритет: масти с сильными картами (7, 6, 8 только для 52 карт, A)
+                priority_ranks = ['7', '6', 'A']
+                if room.deck_size == 52:
+                    priority_ranks.append('8')
                 priority_cards = [c for c in bot.hand if c.id != card_to_play.id and c.rank in priority_ranks]
                 
                 if priority_cards:
@@ -662,7 +686,7 @@ class GameServer:
             return
         
         room.game_started = True
-        room.deck = self.create_deck()
+        room.deck = self.create_deck(room.deck_size)
         
         # Раздаём по 5 карт каждому игроку
         for player in room.players.values():
@@ -708,7 +732,8 @@ class GameServer:
             # Пропускаем его ход
             room.current_player_index = (room.current_player_index + 1) % len(player_ids)
             
-        elif first_card.rank == '8':
+        elif first_card.rank == '8' and room.deck_size == 52:
+            # Восьмёрка работает только в режиме 52 карт
             # Следующий игрок должен будет брать карты
             room.waiting_for_eight = True
             room.eight_draw_used = False
@@ -743,7 +768,8 @@ class GameServer:
                 'chosen_suit': room.chosen_suit,
                 'waiting_for_eight': room.waiting_for_eight,
                 'eight_draw_used': room.eight_draw_used,
-                'eight_drawn_cards': eight_drawn_card_ids
+                'eight_drawn_cards': eight_drawn_card_ids,
+                'deck_size': room.deck_size
             }
             
             # Добавляем информацию о принудительном взятии карт (6 или 7)
@@ -871,7 +897,8 @@ class GameServer:
             # Следующий игрок пропускает ход
             next_player_index = (next_player_index + 1) % len(player_ids)
             
-        elif card.rank == '8':
+        elif card.rank == '8' and room.deck_size == 52:
+            # Восьмёрка работает только в режиме 52 карт
             # Следующий игрок должен брать карты или положить двойку
             room.waiting_for_eight = True
             room.eight_draw_used = False
@@ -909,7 +936,8 @@ class GameServer:
                 'waiting_for_eight': room.waiting_for_eight,
                 'eight_draw_used': room.eight_draw_used,
                 'card_drawn_this_turn': False,
-                'eight_drawn_cards': eight_drawn_card_ids
+                'eight_drawn_cards': eight_drawn_card_ids,
+                'deck_size': room.deck_size
             }
             
             # Добавляем информацию о принудительном взятии карт (6 или 7)
@@ -1402,7 +1430,8 @@ class GameServer:
                 'waiting_for_eight': room.waiting_for_eight,
                 'eight_draw_used': room.eight_draw_used,
                 'eight_drawn_cards': eight_drawn_card_ids,
-                'card_drawn_this_turn': room.card_drawn_this_turn
+                'card_drawn_this_turn': room.card_drawn_this_turn,
+                'deck_size': room.deck_size
             }
             
             await ws.send(json.dumps(message))
@@ -1488,6 +1517,55 @@ class GameServer:
                 'player_nickname': player.nickname
             })
     
+    async def handle_change_deck_size(self, ws: WebSocketServerProtocol, data: dict):
+        """Изменение размера колоды (только создатель комнаты, до начала игры)"""
+        player_id = self.clients.get(ws)
+        if not player_id:
+            return
+        
+        room_id = self.player_rooms.get(player_id)
+        if not room_id:
+            return
+        
+        room = self.rooms.get(room_id)
+        if not room:
+            return
+        
+        # Проверяем что игрок - создатель комнаты
+        if room.creator_id != player_id:
+            await ws.send(json.dumps({
+                'type': 'error',
+                'message': 'Only room creator can change deck size'
+            }))
+            return
+        
+        # Проверяем что игра не началась
+        if room.game_started:
+            await ws.send(json.dumps({
+                'type': 'error',
+                'message': 'Cannot change deck size after game started'
+            }))
+            return
+        
+        deck_size = data.get('deck_size')
+        if deck_size not in [36, 52]:
+            await ws.send(json.dumps({
+                'type': 'error',
+                'message': 'Deck size must be 36 or 52'
+            }))
+            return
+        
+        room.deck_size = deck_size
+        
+        # Сохраняем в БД
+        await self.save_room_to_db(room_id)
+        
+        # Уведомляем всех в комнате
+        await self.broadcast_to_room(room_id, {
+            'type': 'deck_size_changed',
+            'deck_size': deck_size
+        })
+    
     async def handle_message(self, ws: WebSocketServerProtocol, message: str):
         try:
             data = json.loads(message)
@@ -1513,6 +1591,8 @@ class GameServer:
                 await self.broadcast_rooms()
             elif msg_type == 'chat_message':
                 await self.handle_chat_message(ws, data)
+            elif msg_type == 'change_deck_size':
+                await self.handle_change_deck_size(ws, data)
                 
         except json.JSONDecodeError:
             await ws.send(json.dumps({'type': 'error', 'message': 'Invalid JSON'}))
@@ -1688,7 +1768,7 @@ async def main(clear_rooms=False):
         await site.start()
         
         print("HTTP server started on http://0.0.0.0:8080")
-        print("Open https://game.ruwk.ru in your browser")
+        print("Open https://domain.com in your browser")
         print("Automatic cleanup task started (runs every 6 hours)")
         
         await asyncio.Future()  # run forever

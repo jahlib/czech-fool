@@ -45,6 +45,8 @@ class GameDatabase:
                     chosen_suit TEXT,
                     waiting_for_eight BOOLEAN DEFAULT FALSE,
                     card_drawn_this_turn BOOLEAN DEFAULT FALSE,
+                    deck_size INTEGER DEFAULT 52,
+                    creator_id TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
@@ -107,8 +109,8 @@ class GameDatabase:
             await conn.execute('''
                 INSERT INTO rooms 
                 (id, game_started, current_player_index, dealer_index, chosen_suit, 
-                 waiting_for_eight, card_drawn_this_turn, updated_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP)
+                 waiting_for_eight, card_drawn_this_turn, deck_size, creator_id, updated_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP)
                 ON CONFLICT (id) DO UPDATE SET
                     game_started = $2,
                     current_player_index = $3,
@@ -116,6 +118,8 @@ class GameDatabase:
                     chosen_suit = $5,
                     waiting_for_eight = $6,
                     card_drawn_this_turn = $7,
+                    deck_size = $8,
+                    creator_id = $9,
                     updated_at = CURRENT_TIMESTAMP
             ''',
                 room_data['id'],
@@ -124,7 +128,9 @@ class GameDatabase:
                 room_data['dealer_index'],
                 room_data.get('chosen_suit'),
                 room_data.get('waiting_for_eight', False),
-                room_data.get('card_drawn_this_turn', False)
+                room_data.get('card_drawn_this_turn', False),
+                room_data.get('deck_size', 52),
+                room_data.get('creator_id')
             )
     
     async def save_player(self, player_data: Dict, room_id: str, order: int):
@@ -199,7 +205,9 @@ class GameDatabase:
                 'dealer_index': row['dealer_index'],
                 'chosen_suit': row['chosen_suit'],
                 'waiting_for_eight': row['waiting_for_eight'],
-                'card_drawn_this_turn': row['card_drawn_this_turn']
+                'card_drawn_this_turn': row['card_drawn_this_turn'],
+                'deck_size': row.get('deck_size', 52),
+                'creator_id': row.get('creator_id')
             }
     
     async def load_players(self, room_id: str) -> List[Dict]:
