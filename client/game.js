@@ -637,6 +637,9 @@ class CardGame {
                 this.updateGameState(data);
                 break;
             case 'deck_shuffled':
+                // Анимация перемешивания колоды
+                this.animateDeckShuffle();
+                
                 // Звук перемешивания колоды (для всех игроков)
                 this.playSound('shuffle');
                 
@@ -1578,6 +1581,58 @@ class CardGame {
             }
         }
         return null;
+    }
+    
+    // Анимация перемешивания колоды (карты летят из сброса в колоду)
+    animateDeckShuffle() {
+        const discardPile = this.discardPile;
+        const deck = document.getElementById('deck');
+        
+        if (!discardPile || !deck) return;
+        
+        // Создаём несколько летящих карт для эффекта перемешивания
+        const cardCount = 8; // Количество визуальных карт для эффекта
+        
+        for (let i = 0; i < cardCount; i++) {
+            setTimeout(() => {
+                const flyingCard = document.createElement('div');
+                flyingCard.className = 'flying-card';
+                flyingCard.textContent = '🎴';
+                
+                // Получаем координаты сброса и колоды
+                const fromRect = discardPile.getBoundingClientRect();
+                const toRect = deck.getBoundingClientRect();
+                
+                // Устанавливаем начальную позицию (от сброса)
+                flyingCard.style.left = `${fromRect.left + fromRect.width / 2 - 30}px`;
+                flyingCard.style.top = `${fromRect.top + fromRect.height / 2 - 42.5}px`;
+                
+                document.body.appendChild(flyingCard);
+                
+                // Запускаем анимацию
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        // Перемещаем к колоде
+                        flyingCard.style.left = `${toRect.left + toRect.width / 2 - 30}px`;
+                        flyingCard.style.top = `${toRect.top + toRect.height / 2 - 42.5}px`;
+                        flyingCard.classList.add('arrived');
+                        
+                        // Удаляем элемент после завершения анимации
+                        setTimeout(() => {
+                            flyingCard.remove();
+                        }, 400);
+                    });
+                });
+            }, i * 80); // Задержка между картами
+        }
+        
+        // Добавляем эффект тряски колоды
+        setTimeout(() => {
+            deck.classList.add('deck-shuffling');
+            setTimeout(() => {
+                deck.classList.remove('deck-shuffling');
+            }, 600);
+        }, cardCount * 80);
     }
     
     getPlayerColorIndex(playerId) {
