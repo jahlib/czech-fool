@@ -726,12 +726,14 @@ class GameServer:
         next_player = room.players[player_ids[room.current_player_index]]
         forced_draw_player_id = None
         forced_draw_count = 0
+        deck_was_shuffled = False
         
         if first_card.rank == '6':
             # Следующий игрок берёт 1 карту
             forced_draw_player_id = player_ids[room.current_player_index]
             forced_draw_count = 1
-            self.replenish_deck(room)
+            if self.replenish_deck(room):
+                deck_was_shuffled = True
             if room.deck:
                 next_player.hand.append(room.deck.pop())
             # Пропускаем его ход
@@ -742,7 +744,8 @@ class GameServer:
             forced_draw_player_id = player_ids[room.current_player_index]
             forced_draw_count = 2
             for _ in range(2):
-                self.replenish_deck(room)
+                if self.replenish_deck(room):
+                    deck_was_shuffled = True
                 if room.deck:
                     next_player.hand.append(room.deck.pop())
             # Пропускаем его ход
@@ -795,6 +798,14 @@ class GameServer:
                 message['forced_draw_count'] = forced_draw_count
             
             await self.send_to_player(player_id, message)
+        
+        # Если колода была перемешана при старте, отправляем уведомление всем
+        if deck_was_shuffled:
+            for pid in room.players.keys():
+                await self.send_to_player(pid, {
+                    'type': 'deck_shuffled',
+                    'log_message': 'Колода перемешана'
+                })
         
         await self.broadcast_rooms()
         
@@ -879,12 +890,14 @@ class GameServer:
         next_player_index = (room.current_player_index + 1) % len(player_ids)
         forced_draw_player_id = None
         forced_draw_count = 0
+        deck_was_shuffled = False
         
         if card.rank == '6':
             # Следующий игрок берёт 1 карту и пропускает ход
             next_player = room.players[player_ids[next_player_index]]
             forced_draw_player_id = player_ids[next_player_index]
-            self.replenish_deck(room)
+            if self.replenish_deck(room):
+                deck_was_shuffled = True
             if room.deck:
                 next_player.hand.append(room.deck.pop())
                 forced_draw_count = 1
@@ -896,7 +909,8 @@ class GameServer:
             forced_draw_player_id = player_ids[next_player_index]
             cards_drawn = 0
             for _ in range(2):
-                self.replenish_deck(room)
+                if self.replenish_deck(room):
+                    deck_was_shuffled = True
                 if room.deck:
                     next_player.hand.append(room.deck.pop())
                     cards_drawn += 1
@@ -966,6 +980,14 @@ class GameServer:
         
         # Отправляем все сообщения одновременно
         await asyncio.gather(*tasks)
+        
+        # Если колода была перемешана при игре карты, отправляем уведомление всем
+        if deck_was_shuffled:
+            for pid in room.players.keys():
+                await self.send_to_player(pid, {
+                    'type': 'deck_shuffled',
+                    'log_message': 'Колода перемешана'
+                })
         
         # Если следующий игрок - бот, делаем его ход
         next_player_id = player_ids[room.current_player_index]
