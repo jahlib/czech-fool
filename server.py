@@ -64,6 +64,7 @@ class Room:
     last_loser_id: Optional[str] = None  # ID проигравшего в прошлой игре (станет дилером)
     deck_size: int = 52  # Размер колоды: 52 или 36 карт
     creator_id: Optional[str] = None  # ID создателя комнаты
+    is_private: bool = False  # Приватная комната (не отображается в списке)
     
     def to_dict(self):
         return {
@@ -72,7 +73,8 @@ class Room:
             'player_count': len(self.players),
             'game_started': self.game_started,
             'deck_size': self.deck_size,
-            'creator_id': self.creator_id
+            'creator_id': self.creator_id,
+            'is_private': self.is_private
         }
 
 class GameServer:
@@ -168,7 +170,8 @@ class GameServer:
             waiting_for_eight=room_data['waiting_for_eight'],
             card_drawn_this_turn=room_data['card_drawn_this_turn'],
             deck_size=room_data.get('deck_size', 52),
-            creator_id=room_data.get('creator_id')
+            creator_id=room_data.get('creator_id'),
+            is_private=room_data.get('is_private', False)
         )
         
         # Инициализируем дополнительные атрибуты
@@ -203,7 +206,8 @@ class GameServer:
                 'eight_draw_used': room.eight_draw_used,
                 'card_drawn_this_turn': room.card_drawn_this_turn,
                 'deck_size': room.deck_size,
-                'creator_id': room.creator_id
+                'creator_id': room.creator_id,
+                'is_private': room.is_private
             })
             
             # Сохраняем игроков
@@ -309,6 +313,8 @@ class GameServer:
     
     async def handle_create_room(self, ws: WebSocketServerProtocol, data: dict):
         nickname = data.get('nickname')
+        is_private = data.get('is_private', False)
+        
         if not nickname:
             await ws.send(json.dumps({'type': 'error', 'message': 'Nickname required'}))
             return
@@ -331,7 +337,8 @@ class GameServer:
             current_player_index=0,
             dealer_index=0,
             game_started=False,
-            creator_id=player_id
+            creator_id=player_id,
+            is_private=is_private
         )
         
         self.rooms[room_id] = room
@@ -449,11 +456,19 @@ class GameServer:
         
         room = self.rooms.get(room_id)
         if not room:
-            await ws.send(json.dumps({'type': 'error', 'message': 'Room not found'}))
+            await ws.send(json.dumps({
+                'type': 'error', 
+                'message': 'Комната не найдена или больше не существует',
+                'error_code': 'room_not_found'
+            }))
             return
         
         if room.game_started:
-            await ws.send(json.dumps({'type': 'error', 'message': 'Game already started'}))
+            await ws.send(json.dumps({
+                'type': 'error', 
+                'message': 'Игра уже началась. Присоединиться невозможно.',
+                'error_code': 'game_started'
+            }))
             return
         
         # Проверяем максимальное количество игроков
@@ -1423,7 +1438,11 @@ class GameServer:
         room = self.rooms.get(room_id)
         if not room:
             # print(f"Room {room_id} not found in DB")
-            await ws.send(json.dumps({'type': 'error', 'message': 'Room not found'}))
+            await ws.send(json.dumps({
+                'type': 'error', 
+                'message': 'Комната не найдена или больше не существует',
+                'error_code': 'room_not_found'
+            }))
             return
         
         # print(f"Room {room_id} loaded, players: {list(room.players.keys())}")
@@ -1431,7 +1450,11 @@ class GameServer:
         # Проверяем существование игрока
         if player_id not in room.players:
             # print(f"Player {player_id} not found in room {room_id}")
-            await ws.send(json.dumps({'type': 'error', 'message': 'Player not found in room'}))
+            await ws.send(json.dumps({
+                'type': 'error', 
+                'message': 'Игрок не найден в этой комнате',
+                'error_code': 'player_not_found'
+            }))
             return
         
         # Переподключаем игрока
@@ -1497,7 +1520,8 @@ class GameServer:
             if not room.game_started and all(p.score == 0 for p in room.players.values()):
                 # Проверяем что есть хотя бы один живой игрок (не бот)
                 has_human = any(not p.is_bot for p in room.players.values())
-                if has_human:
+                # Не показываем приватные комнаты в общем списке
+                if has_human and not room.is_private:
                     available_rooms.append(room.to_dict())
         
         message = json.dumps({
@@ -1604,6 +1628,45 @@ class GameServer:
             'deck_size': deck_size
         })
     
+    async def handle_toggle_private(self, ws: WebSocketServerProtocol, data: dict):
+        """Переключение приватности комнаты (только создатель, до начала игры)"""
+        player_id = self.clients.get(ws)
+        if not player_id:
+            return
+        
+        room_id = self.player_rooms.get(player_id)
+        if not room_id:
+            return
+        
+        room = self.rooms.get(room_id)
+        if not room:
+            return
+        
+        # Только создатель может менять приватность
+        if room.creator_id != player_id:
+            await ws.send(json.dumps({'type': 'error', 'message': 'Только создатель может изменить приватность комнаты'}))
+            return
+        
+        # Только до начала игры
+        if room.game_started or any(p.score > 0 for p in room.players.values()):
+            await ws.send(json.dumps({'type': 'error', 'message': 'Нельзя изменить приватность после начала игры'}))
+            return
+        
+        is_private = data.get('is_private', False)
+        room.is_private = is_private
+        
+        # Сохраняем в БД
+        await self.save_room_to_db(room_id)
+        
+        # Уведомляем всех в комнате
+        await self.broadcast_to_room(room_id, {
+            'type': 'room_privacy_changed',
+            'is_private': is_private
+        })
+        
+        # Обновляем список комнат (приватные не показываются)
+        await self.broadcast_rooms()
+    
     async def handle_message(self, ws: WebSocketServerProtocol, message: str):
         try:
             data = json.loads(message)
@@ -1631,6 +1694,8 @@ class GameServer:
                 await self.handle_chat_message(ws, data)
             elif msg_type == 'change_deck_size':
                 await self.handle_change_deck_size(ws, data)
+            elif msg_type == 'toggle_private':
+                await self.handle_toggle_private(ws, data)
                 
         except json.JSONDecodeError:
             await ws.send(json.dumps({'type': 'error', 'message': 'Invalid JSON'}))
@@ -1686,17 +1751,38 @@ class GameServer:
                                 # Игра не началась и ни у кого нет очков - удаляем игрока полностью
                                 del room.players[player_id]
                                 
-                                # Проверяем остались ли живые игроки (не боты)
-                                human_players = [p for p in room.players.values() if not p.is_bot]
-                                
-                                if len(human_players) == 0:
-                                    # Если остались только боты или никого - удаляем комнату
-                                    del self.rooms[room_id]
-                                else:
+                                # Если это создатель приватной комнаты - удаляем комнату полностью
+                                if room.is_private and room.creator_id == player_id:
+                                    # Уведомляем всех игроков что комната закрывается
                                     await self.broadcast_to_room(room_id, {
-                                        'type': 'player_left',
-                                        'player_id': player_id
+                                        'type': 'room_closed',
+                                        'message': 'Создатель комнаты покинул игру. Комната закрыта.'
                                     })
+                                    
+                                    # Удаляем всех игроков из player_rooms
+                                    for pid in list(room.players.keys()):
+                                        if pid in self.player_rooms:
+                                            del self.player_rooms[pid]
+                                    
+                                    # Удаляем комнату из памяти
+                                    del self.rooms[room_id]
+                                    
+                                    # Удаляем комнату из БД
+                                    await self.db.delete_room(room_id)
+                                else:
+                                    # Проверяем остались ли живые игроки (не боты)
+                                    human_players = [p for p in room.players.values() if not p.is_bot]
+                                    
+                                    if len(human_players) == 0:
+                                        # Если остались только боты или никого - удаляем комнату
+                                        del self.rooms[room_id]
+                                        # Удаляем из БД
+                                        await self.db.delete_room(room_id)
+                                    else:
+                                        await self.broadcast_to_room(room_id, {
+                                            'type': 'player_left',
+                                            'player_id': player_id
+                                        })
                                 
                                 await self.broadcast_rooms()
                                 
