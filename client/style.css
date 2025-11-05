@@ -91,12 +91,12 @@ input[type="text"]:focus {
 }
 
 .btn-primary {
-    background: #31915b;
+    background: #27b790;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #1b6d3e;
+    background: #5eda93;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(126, 126, 126, 0.521);
 }
@@ -668,7 +668,7 @@ input[type="text"]:focus {
     right: 20px;
     width: 50px;
     height: 50px;
-    background: rgba(255, 255, 255, 0.9);
+    background: #fbcecee6;
     border: 2px solid #e74c3c;
     border-radius: 10px;
     cursor: pointer;
@@ -704,7 +704,7 @@ input[type="text"]:focus {
     border-radius: 10px;
     cursor: pointer;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     font-size: 24px;
     color: #1b6d3e;
@@ -1339,9 +1339,9 @@ border: 2px solid #ffd700;
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: #0c3d0ace;
+    background: #d7d7d7ce;
     border: 2px solid #767676;
-    color: #1b6d3e;
+    color: #3c3c3c;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
@@ -1357,7 +1357,7 @@ border: 2px solid #ffd700;
 
 .close-modal-btn:hover {
     background: #ebebebd7;
-    color: white;
+    color: #7d2c2c;
     transform: scale(1.1);
 }
 
