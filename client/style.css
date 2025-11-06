@@ -133,27 +133,6 @@ input[type="text"]:focus {
     margin-bottom: 40px;
 }
 
-/* Private Room Toggle */
-.private-room-toggle {
-    margin: 15px 0;
-    text-align: center;
-}
-
-.private-room-toggle label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #6f6f6f;
-}
-
-.private-room-toggle input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-}
-
 /* Invite Link Block */
 #invite-link-block {
     margin: 15px 0;

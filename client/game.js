@@ -169,7 +169,8 @@ class CardGame {
         this.nicknameInput = document.getElementById('nickname-input');
         this.createRoomBtn = document.getElementById('create-room-btn');
         this.roomsList = document.getElementById('rooms-list');
-        this.privateRoomCheckbox = document.getElementById('private-room-checkbox');
+        this.privateRoomToggle = document.getElementById('private-room-toggle');
+        this.privateRoomSettings = document.getElementById('private-room-settings');
         this.inviteLinkBlock = document.getElementById('invite-link-block');
         this.inviteLink = document.getElementById('invite-link');
         this.copyLinkBtn = document.getElementById('copy-link-btn');
@@ -260,8 +261,8 @@ class CardGame {
             if (e.key === 'Enter') this.createRoom();
         });
         
-        // Private room checkbox
-        this.privateRoomCheckbox.addEventListener('change', () => this.togglePrivateRoom());
+        // Private room toggle
+        this.privateRoomToggle.addEventListener('change', () => this.togglePrivateRoom());
         
         // Copy and share link buttons
         this.copyLinkBtn.addEventListener('click', () => this.copyInviteLink());
@@ -805,7 +806,7 @@ class CardGame {
     }
     
     togglePrivateRoom() {
-        const isChecked = this.privateRoomCheckbox.checked;
+        const isChecked = this.privateRoomToggle.checked;
         
         // Отправляем на сервер изменение приватности
         this.send({
@@ -982,7 +983,14 @@ class CardGame {
         // Проверяем что ни у кого нет очков (игра ещё не начиналась)
         const noScores = room.players.every(p => p.score === 0);
         
-        this.roomSettings.style.display = (isCreator && gameNotStarted && noScores) ? 'block' : 'none';
+        const shouldShow = isCreator && gameNotStarted && noScores;
+        
+        this.roomSettings.style.display = shouldShow ? 'block' : 'none';
+        
+        // Блок приватной комнаты показываем по той же логике
+        if (this.privateRoomSettings) {
+            this.privateRoomSettings.style.display = shouldShow ? 'block' : 'none';
+        }
         
         // Устанавливаем текущий размер колоды
         if (room.deck_size) {
