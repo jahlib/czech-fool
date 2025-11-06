@@ -622,12 +622,18 @@ class GameServer:
         # Находим подходящие карты
         playable_cards = []
         for card in bot.hand:
-            # Для восьмёрки: можно играть двойку из руки ИЛИ любую карту из eight_drawn_cards
+            # Для восьмёрки: можно играть двойку из руки ИЛИ подходящую карту из eight_drawn_cards
             if room.waiting_for_eight:
                 if card.rank == '2':
                     playable_cards.append(card)
                 elif hasattr(room, 'eight_drawn_cards') and card.id in room.eight_drawn_cards:
-                    playable_cards.append(card)
+                    # Проверяем что карта действительно подходит:
+                    # двойка, дама, восьмёрка или та же масть что и восьмёрка на столе
+                    if (card.rank == '2' or 
+                        card.rank == 'Q' or 
+                        card.rank == '8' or
+                        card.suit == top_card.suit):
+                        playable_cards.append(card)
             elif self.can_play_card(card, top_card, room.chosen_suit, room.waiting_for_eight):
                 playable_cards.append(card)
         
