@@ -960,9 +960,9 @@ class CardGame {
         if (this.inviteLinkBlock) {
             this.inviteLinkBlock.style.display = 'none';
         }
-        // Сбрасываем чекбокс приватной комнаты
-        if (this.privateRoomCheckbox) {
-            this.privateRoomCheckbox.checked = false;
+        // Сбрасываем переключатель приватной комнаты
+        if (this.privateRoomToggle) {
+            this.privateRoomToggle.checked = false;
         }
         this.goToLobby();
     }
@@ -976,20 +976,26 @@ class CardGame {
     }
     
     updateRoomSettings(room) {
-        // Показываем настройки только создателю комнаты и только до начала игры
+        // Показываем настройки только создателю комнаты и только до начала первого раунда
         const isCreator = room.creator_id === this.playerId;
         const gameNotStarted = !room.game_started;
         
-        // Проверяем что ни у кого нет очков (игра ещё не начиналась)
+        // Проверяем что ни у кого нет очков (игра ещё не начиналась ни разу)
+        // Это ключевая проверка - между раундами game_started=false, но очки уже есть
         const noScores = room.players.every(p => p.score === 0);
         
+        // Проверяем есть ли боты в комнате
+        const hasBot = room.players.some(p => p.is_bot);
+        
+        // Настройки комнаты (переключатель 36/52) показываем только до первого раунда
         const shouldShow = isCreator && gameNotStarted && noScores;
         
         this.roomSettings.style.display = shouldShow ? 'block' : 'none';
         
-        // Блок приватной комнаты показываем по той же логике
+        // Блок приватной комнаты показываем ТОЛЬКО при создании комнаты (noScores) и без ботов
+        // Между раундами он не должен показываться, даже если game_started=false
         if (this.privateRoomSettings) {
-            this.privateRoomSettings.style.display = shouldShow ? 'block' : 'none';
+            this.privateRoomSettings.style.display = (shouldShow && !hasBot) ? 'block' : 'none';
         }
         
         // Устанавливаем текущий размер колоды
@@ -1499,6 +1505,12 @@ class CardGame {
     closeResultsModal() {
         this.resultsModal.classList.remove('active');
         this.showScreen('room');
+        
+        // Обновляем настройки комнаты чтобы скрыть блок приватной комнаты после первого раунда
+        if (this.currentRoom) {
+            this.updateRoomSettings(this.currentRoom);
+        }
+        
         // Удаляем обработчик Enter
         if (this.resultsEnterHandler) {
             document.removeEventListener('keydown', this.resultsEnterHandler);
