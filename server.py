@@ -536,6 +536,9 @@ class GameServer:
         ready_count = sum(1 for p in room.players.values() if p.ready)
         total_count = len(room.players)
         
+        # Проверяем это первая игра (у всех 0 очков) или между раундами
+        is_first_game = all(p.score == 0 for p in room.players.values())
+        
         # Если все готовы - начинаем сразу
         if total_count >= 2 and ready_count == total_count:
             # Отменяем таймер если был
@@ -544,8 +547,8 @@ class GameServer:
                 room.countdown_task = None
             room.countdown_active = False
             await self.start_game(room_id)
-        # Если >= 2 готовы но не все - запускаем таймер
-        elif ready_count >= 2 and not room.countdown_active:
+        # Если >= 2 готовы но не все - запускаем таймер ТОЛЬКО при первой игре
+        elif ready_count >= 2 and not room.countdown_active and is_first_game:
             room.countdown_active = True
             room.countdown_task = asyncio.create_task(self.start_countdown(room_id))
         # Если готовых стало меньше 2 - отменяем таймер
@@ -1251,13 +1254,20 @@ class GameServer:
         
         # Обрабатываем специальные случаи с очками
         players_to_kick = []  # Игроки с >101 очком
+        players_reset = []  # Игроки с ровно 101 (обнуляются)
         for player_id, player in room.players.items():
             if player.score == 101:
                 # Ровно 101 - обнуляем очки
+                players_reset.append(player_id)
                 player.score = 0
             elif player.score > 101:
                 # Больше 101 - игрок вылетает
                 players_to_kick.append(player_id)
+        
+        # Добавляем флаг reset_to_zero в результаты для обнулившихся игроков
+        for result in results:
+            if result['player_id'] in players_reset:
+                result['reset_to_zero'] = True
         
         # Сохраняем ID проигравшего в раздаче для следующей игры (если он не вылетает)
         if round_loser_id and round_loser_id not in players_to_kick:
