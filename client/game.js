@@ -1473,9 +1473,15 @@ class CardGame {
                        </div>`
                     : '';
                 
+                // Текст для обнуления при 101
+                const resetText = result.reset_to_zero
+                    ? `<p style="color: #ff9800; font-weight: bold; font-size: 1.1em;">🎯 Ровно 101! Очки обнулены!</p>`
+                    : '';
+                
                 resultItem.innerHTML = `
                     <h4>${result.nickname}</h4>
                     <p>Очки за раунд: +${result.points}</p>
+                    ${resetText}
                     <p>Всего очков: ${result.total_score}</p>
                     ${cardsHtml}
                 `;
