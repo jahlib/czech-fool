@@ -97,6 +97,16 @@ class CardGame {
         this.animationsEnabled = this.animationsToggle.checked;
         localStorage.setItem('animationsEnabled', this.animationsEnabled);
     }
+    
+    toggleProMode() {
+        this.proModeEnabled = this.proModeToggle.checked;
+        localStorage.setItem('proModeEnabled', this.proModeEnabled);
+        
+        // Обновляем отображение карт в руке если игра идёт
+        if (this.hand && this.hand.length > 0 && this.topCard) {
+            this.updateHand(this.topCard, this.chosenSuit);
+        }
+    }
 
     showAlert(message) {
         if (!this.alertModal || !this.alertText) return;
@@ -237,6 +247,7 @@ class CardGame {
         this.fullscreenToggle = document.getElementById('fullscreen-toggle');
         this.soundToggle = document.getElementById('sound-toggle');
         this.animationsToggle = document.getElementById('animations-toggle');
+        this.proModeToggle = document.getElementById('pro-mode-toggle');
         this.logToggle = document.getElementById('log-toggle');
         
         // Leave game button and modal
@@ -253,6 +264,10 @@ class CardGame {
         // Инициализируем состояние анимаций
         const savedAnimations = localStorage.getItem('animationsEnabled');
         this.animationsEnabled = savedAnimations !== null ? savedAnimations === 'true' : true;
+        
+        // Инициализируем режим Про
+        const savedProMode = localStorage.getItem('proModeEnabled');
+        this.proModeEnabled = savedProMode === 'true';
     }
     
     initEventListeners() {
@@ -293,6 +308,7 @@ class CardGame {
         this.fullscreenToggle.addEventListener('change', () => this.toggleFullscreen());
         this.soundToggle.addEventListener('change', () => this.toggleSound());
         this.animationsToggle.addEventListener('change', () => this.toggleAnimations());
+        this.proModeToggle.addEventListener('change', () => this.toggleProMode());
         this.logToggle.addEventListener('change', () => this.toggleLog());
         
         // Leave game button
@@ -1191,7 +1207,10 @@ class CardGame {
                            this.canPlayCard(card, topCard, chosenSuit, this.waitingForEight, this.eightDrawnCards);
             
             if (!canPlay) {
-                cardElement.classList.add('disabled');
+                // В режиме Про не добавляем класс disabled (карты остаются яркими)
+                if (!this.proModeEnabled) {
+                    cardElement.classList.add('disabled');
+                }
             } else {
                 cardElement.addEventListener('click', () => this.playCard(card));
             }
@@ -1354,6 +1373,7 @@ class CardGame {
         // Синхронизируем состояние переключателей с текущими настройками
         this.soundToggle.checked = this.soundEnabled;
         this.animationsToggle.checked = this.animationsEnabled;
+        this.proModeToggle.checked = this.proModeEnabled;
         this.fullscreenToggle.checked = !!document.fullscreenElement;
         
         // Синхронизируем состояние лога (проверяем есть ли класс hidden)
