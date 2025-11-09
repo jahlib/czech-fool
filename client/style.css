@@ -47,11 +47,50 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
+/* Lobby header */
+.lobby-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 40px;
+}
+
 h1 {
     text-align: center;
     color: #4c4c4c;
-    margin-bottom: 40px;
+    margin-bottom: 0;
     font-size: 3em;
+}
+
+/* Night mode toggle button */
+.night-mode-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #f0f0f0;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.night-mode-btn:hover {
+    background: #e0e0e0;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.night-mode-btn:active {
+    transform: translateY(-50%) scale(0.95);
 }
 
 h2 {
@@ -976,7 +1015,7 @@ input[type="text"]:focus {
 }
 
 .opponent-card.single-card .card-back-icon {
-    font-size: 40px;
+    font-size: 18px;
 }
 
 .opponent-card.single-card .card-count {
@@ -1131,7 +1170,7 @@ border: 2px solid #ffd700;
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
         linear-gradient(314deg, #646464, #9c9c9c);
     color: white;
-    font-size: 48px;
+    font-size: 40px;
     cursor: default;
 }
 
@@ -1222,7 +1261,6 @@ border: 2px solid #ffd700;
     background: linear-gradient(135deg, #f5d742 0%, #e8c84d 100%);
     border: 0px;
     border-bottom: none;
-    box-shadow: 0 -2px 12px rgba(245, 215, 66, 0.4);
 }
 
 .player-info.current-turn .player-name {
@@ -1738,6 +1776,10 @@ border: 2px solid #ffd700;
     .player-hand::-webkit-scrollbar-track {
         background: rgba(0, 0, 0, 0.1);
         border-radius: 0px 2px 0px 0px;
+    }
+
+    .card-back {
+        font-size: 18px!important;
     }
     
     .player-hand::-webkit-scrollbar-thumb {

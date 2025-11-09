@@ -23,13 +23,20 @@
     <link rel="apple-touch-icon" href="/icon-192.png">
     
     <link rel="stylesheet" href="/style.css?v=3">
+    <link rel="stylesheet" href="/night-mode.css?v=1">
 </head>
 <body>
     <div id="app">
         <!-- Экран лобби -->
         <div id="lobby-screen" class="screen active">
             <div class="container">
-                <h1>🎴 Чешский</h1>
+                <div class="lobby-header">
+                    <h1>🎴 Чешский</h1>
+                    <button id="night-mode-toggle-btn" class="night-mode-btn" title="Переключить ночной режим">
+                        <span class="sun-icon" style="display: none;">☀️</span>
+                        <span class="moon-icon">🌙</span>
+                    </button>
+                </div>
                 
                 <div id="create-room-section">
                     <h2>Создать комнату</h2>
@@ -243,10 +250,10 @@
             <div class="modal-content">
                 <h3>Выберите масть</h3>
                 <div class="suit-selector">
-                    <button class="suit-btn" data-suit="hearts">♥️ Черви</button>
-                    <button class="suit-btn" data-suit="diamonds">♦️ Бубны</button>
-                    <button class="suit-btn" data-suit="clubs">♣️ Трефы</button>
-                    <button class="suit-btn" data-suit="spades">♠️ Пики</button>
+                    <button class="suit-btn" data-suit="hearts"><span class="suit-emoji">♥️</span> Черви</button>
+                    <button class="suit-btn" data-suit="diamonds"><span class="suit-emoji">♦️</span> Бубны</button>
+                    <button class="suit-btn" data-suit="clubs"><span class="suit-emoji">♣️</span> Трефы</button>
+                    <button class="suit-btn" data-suit="spades"><span class="suit-emoji">♠️</span> Пики</button>
                 </div>
                 <div class="modal-buttons" style="margin-top: 15px;">
                     <button id="cancel-suit-btn" class="btn btn-secondary">Отмена</button>
@@ -359,6 +366,19 @@
                             <label>
                                 <span class="deck-label">Выкл</span>
                                 <input type="checkbox" id="pro-mode-toggle">
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Ночной режим -->
+                    <div class="setting-item">
+                        <span class="setting-label">Ночной режим</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="night-mode-toggle">
                                 <span class="toggle-slider"></span>
                                 <span class="deck-label">Вкл</span>
                             </label>

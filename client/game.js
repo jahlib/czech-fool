@@ -107,6 +107,54 @@ class CardGame {
             this.updateHand(this.topCard, this.chosenSuit);
         }
     }
+    
+    toggleNightMode() {
+        this.nightModeEnabled = this.nightModeToggle.checked;
+        localStorage.setItem('nightModeEnabled', this.nightModeEnabled);
+        
+        if (this.nightModeEnabled) {
+            document.body.classList.add('night-mode');
+        } else {
+            document.body.classList.remove('night-mode');
+        }
+        
+        this.updateNightModeButton();
+    }
+    
+    toggleNightModeFromButton() {
+        this.nightModeEnabled = !this.nightModeEnabled;
+        localStorage.setItem('nightModeEnabled', this.nightModeEnabled);
+        
+        if (this.nightModeEnabled) {
+            document.body.classList.add('night-mode');
+        } else {
+            document.body.classList.remove('night-mode');
+        }
+        
+        // Синхронизируем с переключателем в настройках
+        if (this.nightModeToggle) {
+            this.nightModeToggle.checked = this.nightModeEnabled;
+        }
+        
+        this.updateNightModeButton();
+    }
+    
+    updateNightModeButton() {
+        if (!this.nightModeToggleBtn) return;
+        
+        const sunIcon = this.nightModeToggleBtn.querySelector('.sun-icon');
+        const moonIcon = this.nightModeToggleBtn.querySelector('.moon-icon');
+        
+        if (this.nightModeEnabled) {
+            // Ночной режим включен - показываем солнце (переключит на дневной)
+            if (sunIcon) sunIcon.style.display = 'inline';
+            if (moonIcon) moonIcon.style.display = 'none';
+        } else {
+            // Дневной режим - показываем луну (переключит на ночной)
+            if (sunIcon) sunIcon.style.display = 'none';
+            if (moonIcon) moonIcon.style.display = 'inline';
+        }
+    }
 
     showAlert(message) {
         if (!this.alertModal || !this.alertText) return;
@@ -185,6 +233,7 @@ class CardGame {
         this.inviteLink = document.getElementById('invite-link');
         this.copyLinkBtn = document.getElementById('copy-link-btn');
         this.shareLinkBtn = document.getElementById('share-link-btn');
+        this.nightModeToggleBtn = document.getElementById('night-mode-toggle-btn');
         
         // Room elements
         this.playersList = document.getElementById('players-list');
@@ -248,6 +297,7 @@ class CardGame {
         this.soundToggle = document.getElementById('sound-toggle');
         this.animationsToggle = document.getElementById('animations-toggle');
         this.proModeToggle = document.getElementById('pro-mode-toggle');
+        this.nightModeToggle = document.getElementById('night-mode-toggle');
         this.logToggle = document.getElementById('log-toggle');
         
         // Leave game button and modal
@@ -268,6 +318,16 @@ class CardGame {
         // Инициализируем режим Про
         const savedProMode = localStorage.getItem('proModeEnabled');
         this.proModeEnabled = savedProMode === 'true';
+        
+        // Инициализируем ночной режим
+        const savedNightMode = localStorage.getItem('nightModeEnabled');
+        this.nightModeEnabled = savedNightMode === 'true';
+        if (this.nightModeEnabled) {
+            document.body.classList.add('night-mode');
+        }
+        
+        // Обновляем иконку кнопки ночного режима
+        this.updateNightModeButton();
     }
     
     initEventListeners() {
@@ -286,6 +346,11 @@ class CardGame {
         // Show share button if Web Share API is available
         if (navigator.share) {
             this.shareLinkBtn.style.display = 'block';
+        }
+        
+        // Night mode toggle button on lobby
+        if (this.nightModeToggleBtn) {
+            this.nightModeToggleBtn.addEventListener('click', () => this.toggleNightModeFromButton());
         }
         
         this.readyToggleBtn.addEventListener('click', () => this.toggleReady());
@@ -309,6 +374,7 @@ class CardGame {
         this.soundToggle.addEventListener('change', () => this.toggleSound());
         this.animationsToggle.addEventListener('change', () => this.toggleAnimations());
         this.proModeToggle.addEventListener('change', () => this.toggleProMode());
+        this.nightModeToggle.addEventListener('change', () => this.toggleNightMode());
         this.logToggle.addEventListener('change', () => this.toggleLog());
         
         // Leave game button
@@ -1197,6 +1263,10 @@ class CardGame {
     }
     
     updateHand(topCard, chosenSuit) {
+        // Сохраняем для использования при переключении режима Про
+        this.topCard = topCard;
+        this.chosenSuit = chosenSuit;
+        
         this.handCards.innerHTML = '';
         
         this.hand.forEach(card => {
@@ -1207,11 +1277,15 @@ class CardGame {
                            this.canPlayCard(card, topCard, chosenSuit, this.waitingForEight, this.eightDrawnCards);
             
             if (!canPlay) {
-                // В режиме Про не добавляем класс disabled (карты остаются яркими)
-                if (!this.proModeEnabled) {
+                // В режиме Про карты остаются яркими (не добавляем disabled)
+                // В обычном режиме затемняем неподходящие карты
+                if (this.proModeEnabled) {
+                    cardElement.classList.remove('disabled');
+                } else {
                     cardElement.classList.add('disabled');
                 }
             } else {
+                cardElement.classList.remove('disabled');
                 cardElement.addEventListener('click', () => this.playCard(card));
             }
             
@@ -1374,6 +1448,7 @@ class CardGame {
         this.soundToggle.checked = this.soundEnabled;
         this.animationsToggle.checked = this.animationsEnabled;
         this.proModeToggle.checked = this.proModeEnabled;
+        this.nightModeToggle.checked = this.nightModeEnabled;
         this.fullscreenToggle.checked = !!document.fullscreenElement;
         
         // Синхронизируем состояние лога (проверяем есть ли класс hidden)

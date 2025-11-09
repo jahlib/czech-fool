@@ -1,0 +1,757 @@
+/* ===== ПОЛНЫЙ НОЧНОЙ РЕЖИМ ===== */
+
+/* Базовые стили */
+body.night-mode {
+    background: #1a2332;
+    color: #ffffff;
+}
+
+/* Night mode toggle button */
+body.night-mode .night-mode-btn {
+    background: #2a3d52;
+    border-color: #3b5998;
+}
+
+body.night-mode .night-mode-btn:hover {
+    background: #3b5998;
+    box-shadow: 0 4px 12px rgba(94, 204, 123, 0.3);
+}
+
+/* Контейнеры */
+body.night-mode .container {
+    background: #243447;
+    color: #ffffff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Заголовки */
+body.night-mode h1 {
+    color: #ffffff!important;
+}
+
+body.night-mode h2 {
+    color: #e0e0e0!important;
+}
+
+body.night-mode h3 {
+    color: #d0d0d0!important;
+}
+
+body.night-mode h4,
+body.night-mode h5,
+body.night-mode h6 {
+    color: #ffffff!important;
+}
+
+/* Инпуты */
+body.night-mode input[type="text"],
+body.night-mode input[type="number"],
+body.night-mode textarea {
+    background: #2a3d52;
+    color: #ffffff;
+    border-color: #3b5998;
+}
+
+body.night-mode input[type="text"]:focus,
+body.night-mode input[type="number"]:focus,
+body.night-mode textarea:focus {
+    border-color: #5ecc7b;
+}
+
+body.night-mode input[type="text"]::placeholder,
+body.night-mode input[type="number"]::placeholder,
+body.night-mode textarea::placeholder {
+    color: #9ca3af;
+}
+
+/* Кнопки */
+body.night-mode .btn {
+    color: #ffffff!important;
+}
+
+body.night-mode .btn-primary {
+    background: #3b5998;
+    color: #ffffff!important;
+}
+
+body.night-mode .btn-primary:hover {
+    background: #4c6baf;
+    box-shadow: 0 5px 15px rgba(59, 89, 152, 0.4);
+}
+
+body.night-mode .btn-secondary {
+    background: #2a3d52;
+    color: #ffffff;
+}
+
+body.night-mode .btn-secondary:hover {
+    background: #3b5998;
+}
+
+body.night-mode .btn:disabled {
+    opacity: 0.5;
+}
+
+body.night-mode .btn-primary:disabled:hover {
+    background: #3b5998 !important;
+}
+
+body.night-mode .btn-secondary:disabled:hover {
+    background: #2a3d52 !important;
+}
+
+/* Invite Link Block */
+body.night-mode #invite-link-block {
+    background: rgba(59, 89, 152, 0.2);
+    border-color: #3b5998;
+}
+
+body.night-mode .invite-hint {
+    color: #9ca3af;
+}
+
+body.night-mode .invite-link {
+    background: #2a3d52;
+    color: #5ecc7b;
+    border-color: #3b5998;
+}
+
+body.night-mode .btn-copy,
+body.night-mode .btn-share {
+    background: #3b5998;
+    color: #ffffff;
+}
+
+body.night-mode .btn-copy:hover,
+body.night-mode .btn-share:hover {
+    background: #4c6baf;
+}
+
+/* Bot Game Section */
+body.night-mode #bot-game-section {
+    border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+body.night-mode #bot-game-section h3 {
+    color: #ffffff;
+}
+
+body.night-mode .btn-bot {
+    background: linear-gradient(135deg, #3b5998 0%, #2a3d52 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+body.night-mode .btn-bot:hover {
+    box-shadow: 0 6px 20px rgba(59, 89, 152, 0.5);
+}
+
+/* Rooms List */
+body.night-mode .room-card {
+    background: #2a3d52;
+    border-color: #3b5998;
+    color: #ffffff;
+}
+
+body.night-mode .room-card:hover {
+    border-color: #5ecc7b;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+body.night-mode .room-card h4 {
+    color: #5ecc7b;
+}
+
+body.night-mode .room-card p {
+    color: #d0d0d0;
+}
+
+body.night-mode .room-card.room-full {
+    background: #1e2d3f;
+    border-color: #374151;
+    opacity: 0.6;
+}
+
+body.night-mode .room-card.room-full h4 {
+    color: #9ca3af;
+}
+
+/* Players List */
+body.night-mode #players-list {
+    color: #ffffff;
+}
+
+body.night-mode .player-card {
+    background: #2a3d52;
+    border-color: #3b5998;
+    color: #ffffff;
+}
+
+body.night-mode .player-card.ready {
+    border-color: #2d5a3f;
+    background: #1e3d2b;
+}
+
+body.night-mode .player-card.current {
+    border-color: #5ecc7b;
+    background: #1e3d2b;
+    box-shadow: 0 0 20px rgba(94, 204, 123, 0.3);
+}
+
+body.night-mode .player-card h4 {
+    color: #ffffff;
+}
+
+body.night-mode .player-card .status {
+    color: #9ca3af;
+}
+
+body.night-mode .player-card.ready .status {
+    color: #5ecc7b;
+}
+
+body.night-mode .player-card .score {
+    color: #ffffff;
+}
+
+/* Hints */
+body.night-mode .hint {
+    color: #9ca3af;
+}
+
+body.night-mode .hint-small {
+    color: #6b7280;
+}
+
+/* Room Settings */
+body.night-mode #room-settings,
+body.night-mode .room-settings {
+    background: rgba(59, 89, 152, 0.2);
+    color: #ffffff;
+}
+
+body.night-mode #room-settings h3 {
+    color: #ffffff;
+}
+
+body.night-mode .deck-label {
+    color: #9ca3af;
+}
+
+body.night-mode .toggle-slider {
+    background-color: #3b5998;
+}
+
+body.night-mode input:checked + .toggle-slider {
+    background-color: #2d5a3f;
+}
+
+body.night-mode .deck-size-toggle input[type="checkbox"]:checked ~ .deck-label:last-child {
+    color: #5ecc7b;
+}
+
+body.night-mode .deck-size-toggle input[type="checkbox"]:not(:checked) ~ .deck-label:first-child {
+    color: #5ecc7b;
+}
+
+/* Countdown Timer */
+body.night-mode .countdown-timer {
+    background: linear-gradient(135deg, #2d5a3f, #1e3d2b);
+    border-color: #5ecc7b;
+}
+
+body.night-mode #countdown-number {
+    color: #ffffff;
+}
+
+body.night-mode #countdown-text {
+    color: #5ecc7b;
+}
+
+/* Модальные окна */
+body.night-mode .modal {
+    background-color: rgba(26, 35, 50, 0.95);
+}
+
+body.night-mode .modal-content,
+body.night-mode .settings-modal-content,
+body.night-mode .alert-modal .modal-content,
+body.night-mode .rules-modal .modal-content {
+    background: #243447;
+    color: #ffffff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+body.night-mode #settings-modal .modal-content {
+    background: #243447;
+}
+
+body.night-mode .close-modal-btn {
+    background: #3b5998;
+    color: #ffffff;
+}
+
+body.night-mode .close-modal-btn:hover {
+    background: #4c6baf;
+}
+
+/* Settings */
+body.night-mode .settings-content {
+    color: #ffffff;
+}
+
+body.night-mode .setting-item {
+    color: #ffffff;
+}
+
+body.night-mode .setting-label {
+    color: #ffffff;
+}
+
+/* Правила */
+body.night-mode .rules-content {
+    background: #243447;
+    color: #ffffff;
+}
+
+body.night-mode .rules-content h3 {
+    color: #5ecc7b;
+}
+
+body.night-mode .rules-content p,
+body.night-mode .rules-content li {
+    color: #ffffff;
+}
+
+/* Алерты */
+body.night-mode .alert-text {
+    color: #ffffff;
+}
+
+/* Игровой стол */
+body.night-mode .game-table {
+    background: linear-gradient(155deg, #2a3d52 0%, #1a2332 100%);
+}
+
+body.night-mode .game-circle {
+    background: radial-gradient(circle, #1e2d3f 0%, #141d2b 100%);
+    border-color: #3b5998;
+}
+
+/* Карты */
+body.night-mode .card {
+    background: #9ca3af;
+    color: white;
+    border-color: #374151;
+    filter: brightness(0.8);
+}
+
+body.night-mode .card.hearts,
+body.night-mode .card.diamonds {
+    color: #ffffff;
+}
+
+body.night-mode .card.hearts .card-rank,
+body.night-mode .card.hearts .card-suit,
+body.night-mode .card.diamonds .card-rank,
+body.night-mode .card.diamonds .card-suit {
+    color: #ffffff;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    filter: grayscale(1) brightness(4);
+}
+
+body.night-mode .card.spades,
+body.night-mode .card.clubs {
+    color: #1a1a1a;
+}
+
+body.night-mode .card.spades .card-rank,
+body.night-mode .card.spades .card-suit,
+body.night-mode .card.clubs .card-rank,
+body.night-mode .card.clubs .card-suit {
+    color: #1a1a1a;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+body.night-mode .card .card-rank,
+body.night-mode .card .card-suit {
+    color: inherit;
+}
+
+body.night-mode .card:hover:not(.disabled) {
+    border-color: #5ecc7b;
+    box-shadow: 0 0 20px #5ecc7b, 0 0 40px #5ecc7b;
+}
+
+body.night-mode .card.disabled {
+    opacity: 0.4;
+    background: #6b7280;
+}
+
+/* Рубашка карт с сетчатым градиентом */
+body.night-mode .opponent-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #1e3d2b, #2d5a3f);
+    border-color: #1a3025;
+    color: #ffffff;
+}
+
+/* Колода - такая же рубашка как у противников */
+body.night-mode .deck {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #1e3d2b, #2d5a3f) !important;
+    border-color: #1a3025 !important;
+    color: #ffffff;
+}
+
+/* Рубашка карты (card-back) - колода */
+body.night-mode .card-back {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #1e3d2b, #2d5a3f) !important;
+    border-color: #1a3025 !important;
+    color: #ffffff;
+}
+
+/* Deck count */
+body.night-mode .deck-count {
+    background: #1e3d2b;
+    color: #5ecc7b;
+    border-color: #2d5a3f;
+}
+
+/* Discard pile */
+body.night-mode .discard-pile {
+    border-color: #3b5998;
+}
+
+/* Chosen suit */
+body.night-mode .chosen-suit {
+    background: #2a3d52;
+    color: #ffffff;
+    border-color: #3b5998;
+}
+
+body.night-mode .chosen-suit-label {
+    color: #9ca3af;
+}
+
+/* Индикатор выбранной масти */
+body.night-mode #chosen-suit-indicator {
+    background: rgb(206 207 207);
+    border-color: #5ecc7b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Player info - табло игрока */
+body.night-mode .player-info {
+    background: rgba(42, 61, 82, 0.95);
+    color: #ffffff;
+    border-color: #3b5998;
+}
+
+body.night-mode .player-info h3 {
+    color: #ffffff;
+}
+
+body.night-mode .player-info p {
+    color: #ffffff;
+}
+
+body.night-mode .player-name {
+    color: #ffffff;
+}
+
+body.night-mode .player-score {
+    color: #ffffff;
+}
+
+body.night-mode .player-info.current-turn {
+    background: linear-gradient(135deg, #3b5998 0%, #4c6baf 100%);
+    border-color: #5ecc7b !important;
+}
+
+body.night-mode .player-info.current-turn .player-name,
+body.night-mode .player-info.current-turn .player-score {
+    color: #ffffff;
+}
+
+/* Player hand */
+body.night-mode .player-hand {
+    background: rgba(42, 61, 82, 0.95);
+}
+
+body.night-mode .player-hand.current-turn {
+    box-shadow: 0 0 20px #5ecc7b, 0 0 40px #5ecc7b;
+}
+
+/* Opponent area - табло противников */
+body.night-mode .opponent-area {
+    color: #ffffff;
+}
+
+body.night-mode .opponent-info {
+    background: rgba(42, 61, 82, 0.95);
+    color: #ffffff;
+}
+
+body.night-mode .opponent-name {
+    color: #ffffff;
+}
+
+body.night-mode .opponent-score {
+    color: #ffffff;
+}
+
+body.night-mode .opponent-area.current-turn .opponent-info {
+    background: linear-gradient(135deg, #3b5998 0%, #4c6baf 100%);
+    border-color: #5ecc7b;
+    box-shadow: 0 4px 15px rgba(94, 204, 123, 0.6),
+                0 0 20px rgba(94, 204, 123, 0.4);
+}
+
+body.night-mode .opponent-area.current-turn .opponent-info .opponent-name,
+body.night-mode .opponent-area.current-turn .opponent-info .opponent-score {
+    color: #ffffff;
+}
+
+body.night-mode .opponent-area.current-turn .opponent-cards {
+    filter: drop-shadow(0 0 15px rgba(94, 204, 123, 0.6)) 
+            drop-shadow(0 0 30px rgba(94, 204, 123, 0.4));
+}
+
+/* Action buttons */
+body.night-mode #draw-card-btn,
+body.night-mode #skip-turn-btn {
+    background: #3b5998;
+    color: #ffffff;
+}
+
+body.night-mode #draw-card-btn:hover,
+body.night-mode #skip-turn-btn:hover {
+    background: #4c6baf;
+}
+
+body.night-mode #ready-toggle-btn {
+    background: #3b5998;
+    color: #ffffff;
+}
+
+body.night-mode #ready-toggle-btn:hover {
+    background: #4c6baf;
+}
+
+body.night-mode #ready-toggle-btn.ready {
+    background: #2d5a3f;
+}
+
+body.night-mode #ready-toggle-btn.ready:hover {
+    background: #3d6a4f;
+}
+
+/* Leave game button */
+body.night-mode #leave-game-btn {
+    background: #3b5998;
+    color: #ffffff;
+}
+
+body.night-mode #leave-game-btn:hover {
+    background: #4c6baf;
+}
+
+/* Settings button */
+body.night-mode #settings-btn {
+    background: #2a3d52;
+    color: #ffffff;
+}
+
+body.night-mode #settings-btn:hover {
+    background: #3b5998;
+}
+
+/* Suit selection modal */
+body.night-mode #suit-selection-modal .modal-content {
+    background: #243447;
+}
+
+body.night-mode .suit-selection h3 {
+    color: #ffffff;
+}
+
+body.night-mode .suit-btn {
+    background: #2a3d52;
+    color: white;
+    border-color: #3b5998;
+}
+
+body.night-mode .suit-btn:hover {
+    background: #3b5998;
+    border-color: #5ecc7b;
+}
+
+body.night-mode .suit-btn {
+    color: #ffffff;
+}
+
+body.night-mode .suit-btn[data-suit="hearts"] .suit-emoji,
+body.night-mode .suit-btn[data-suit="diamonds"] .suit-emoji {
+    filter: grayscale(1) brightness(4);
+}
+
+/* Results modal */
+body.night-mode #results-modal .modal-content {
+    background: #243447;
+}
+
+body.night-mode #results-content h2 {
+    color: #ffffff;
+}
+
+body.night-mode .result-item {
+    background: #2a3d52;
+    color: #ffffff;
+    border-color: #3b5998;
+}
+
+body.night-mode .result-item.winner {
+    background: #1e3d2b;
+    border-color: #2d5a3f;
+}
+
+body.night-mode .result-item h4 {
+    color: #ffffff;
+}
+
+body.night-mode .result-item p {
+    color: #ffffff;
+}
+
+body.night-mode .result-card {
+    background: #9ca3af;
+    color: white;
+    border-color: #374151;
+    filter: brightness(0.8);
+}
+
+body.night-mode .result-card.hearts,
+body.night-mode .result-card.diamonds {
+    color: #ffffff;
+}
+
+body.night-mode .result-card.hearts .card-rank,
+body.night-mode .result-card.hearts .card-suit,
+body.night-mode .result-card.diamonds .card-rank,
+body.night-mode .result-card.diamonds .card-suit {
+    color: #ffffff;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    filter: grayscale(1) brightness(4);
+}
+
+body.night-mode .result-card.spades,
+body.night-mode .result-card.clubs {
+    color: #1a1a1a;
+}
+
+body.night-mode .result-card.spades .card-rank,
+body.night-mode .result-card.spades .card-suit,
+body.night-mode .result-card.clubs .card-rank,
+body.night-mode .result-card.clubs .card-suit {
+    color: #1a1a1a;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Game log */
+body.night-mode #game-log {
+    background: rgba(26, 35, 50, 0.9);
+    color: #ffffff;
+    border-color: #3b5998;
+}
+
+body.night-mode .log-entry {
+    color: #ffffff;
+}
+
+body.night-mode .log-entry.highlight {
+    color: #5ecc7b;
+}
+
+/* Error screen */
+body.night-mode #error-screen {
+    background: #1a2332;
+}
+
+body.night-mode #error-screen .container {
+    background: #243447;
+}
+
+body.night-mode #error-message {
+    color: #ff6b6b;
+}
+
+/* Lobby screen */
+body.night-mode #lobby-screen {
+    background: #1a2332;
+}
+
+/* Room screen */
+body.night-mode #room-screen {
+    background: #1a2332;
+}
+
+/* Все параграфы и тексты */
+body.night-mode p,
+body.night-mode span,
+body.night-mode label,
+body.night-mode div {
+    color: inherit;
+}
+
+/* Ссылки */
+body.night-mode a {
+    color: #5ecc7b;
+}
+
+body.night-mode a:hover {
+    color: #4caf50;
+}
+
+/* Скроллбары */
+body.night-mode ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+body.night-mode ::-webkit-scrollbar-track {
+    background: #1a2332;
+}
+
+body.night-mode ::-webkit-scrollbar-thumb {
+    background: #3b5998;
+    border-radius: 6px;
+}
+
+body.night-mode ::-webkit-scrollbar-thumb:hover {
+    background: #4c6baf;
+}
+
+/* Mobile only elements */
+body.night-mode .mobile-only {
+    color: #ffffff;
+}
+
+/* Flying card animation */
+body.night-mode .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #1e3d2b, #2d5a3f);
+}
+
+/* Deck shuffling */
+body.night-mode .deck-shuffling {
+    filter: brightness(1.2);
+}
