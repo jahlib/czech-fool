@@ -1,5 +1,10 @@
 /* ===== ПОЛНЫЙ НОЧНОЙ РЕЖИМ ===== */
 
+/* Плавные переходы для всех элементов */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 /* Базовые стили */
 body.night-mode {
     background: #1a2332;
@@ -458,6 +463,12 @@ body.night-mode .card-back {
 body.night-mode .deck-count {
     background: #1e3d2b;
     color: #5ecc7b;
+    border-color: #2d5a3f;
+}
+
+body.night-mode .deck-count-badge {
+    background: #2d5a3f;
+    color: #ffffff;
     border-color: #2d5a3f;
 }
 
