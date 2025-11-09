@@ -435,6 +435,38 @@ class CardGame {
                 this.pendingCardToPlay = null;
             });
         }
+        
+        // Закрытие модалок по клику на фон
+        this.setupModalBackdropClose();
+    }
+    
+    setupModalBackdropClose() {
+        // Список всех модалок
+        const modals = [
+            { element: this.settingsModal, closeMethod: () => this.closeSettings() },
+            { element: this.resultsModal, closeMethod: () => this.closeResultsModal() },
+            { element: this.rulesModal, closeMethod: () => this.closeRules() },
+            { element: this.alertModal, closeMethod: () => this.alertModal.classList.remove('active') },
+            { element: this.suitModal, closeMethod: () => {
+                this.suitModal.classList.remove('active');
+                this.pendingCardToPlay = null;
+            }},
+            { element: this.chatModal, closeMethod: () => this.chatModal.classList.remove('active') },
+            { element: this.joinModal, closeMethod: () => this.joinModal.classList.remove('active') },
+            { element: this.leaveConfirmModal, closeMethod: () => this.leaveConfirmModal.classList.remove('active') }
+        ];
+        
+        // Добавляем обработчик для каждой модалки
+        modals.forEach(modal => {
+            if (modal.element) {
+                modal.element.addEventListener('click', (e) => {
+                    // Закрываем только если клик был по самой модалке (фону), а не по её содержимому
+                    if (e.target === modal.element) {
+                        modal.closeMethod();
+                    }
+                });
+            }
+        });
     }
     
     connect(reconnect = false) {
