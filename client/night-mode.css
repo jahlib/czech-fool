@@ -326,6 +326,10 @@ body.night-mode .rules-content h2 {
     border-bottom: 2px solid rgb(169 169 169 / 36%);
 }
 
+body.night-mode .rules-content hr {
+    border-bottom: 2px solid rgb(169 169 169 / 36%);
+}
+
 body.night-mode .rules-content h3 {
     color: #5ecc7b;
 }
