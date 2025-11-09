@@ -1514,11 +1514,6 @@ border: 2px solid #ffd700;
     margin: 5px 0;
 }
 
-.rules-content strong {
-    color: #1b6d3e;
-    font-weight: 600;
-}
-
 .rules-content code {
     background: rgba(56, 56, 56, 0.1);
     padding: 2px 6px;
@@ -1550,6 +1545,7 @@ border: 2px solid #ffd700;
 
 .suit-emoji {
     font-size: 32px;
+    filter: drop-shadow(0px 0px 10px #727272c9);
 }
 
 .suit-btn:hover {

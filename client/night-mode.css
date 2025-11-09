@@ -632,7 +632,7 @@ body.night-mode .suit-selection h3 {
 }
 
 body.night-mode .suit-btn {
-    background: #0c1117;
+    background: #1b2230;
     color: white;
     border-color: #3b5998;
 }
@@ -644,6 +644,10 @@ body.night-mode .suit-btn:hover {
 
 body.night-mode .suit-btn {
     color: #ffffff;
+}
+
+body.night-mode .suit-emoji {
+    filter: drop-shadow(0px 0px 10px #000000c9);
 }
 
 /* Results modal */
