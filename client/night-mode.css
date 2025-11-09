@@ -1,7 +1,7 @@
 /* ===== ПОЛНЫЙ НОЧНОЙ РЕЖИМ ===== */
 
-/* Плавные переходы для всех элементов */
-* {
+/* Плавные переходы для всех элементов кроме летящих карт */
+*:not(.flying-card):not(.flying-card *) {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -386,6 +386,7 @@ body.night-mode .card {
     color: white;
     border-color: #374151;
     filter: brightness(0.8);
+    transition: all 0.3s ease;
 }
 
 body.night-mode .card.hearts,
@@ -420,8 +421,8 @@ body.night-mode .card .card-suit {
 }
 
 body.night-mode .card:hover:not(.disabled) {
-    border-color: #5ecc7b;
-    box-shadow: 0 0 20px #5ecc7b, 0 0 40px #5ecc7b;
+    border-color: #374151;
+    box-shadow: 0 0 20px #060606, 0 0 10px #adadad;
 }
 
 body.night-mode .card.disabled {
