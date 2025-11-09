@@ -343,6 +343,23 @@ body.night-mode .rules-content li {
     color: #ffffff;
 }
 
+body.night-mode .rules-content table {
+    background: rgb(255 255 255 / 27%);
+}
+
+body.night-mode .rules-content th {
+    background: rgb(56 56 56 / 74%);
+}
+
+body.night-mode .rules-content td {
+    background: rgb(255 255 255 / 27%);
+}
+
+/* Алерты */
+body.night-mode .alert-text {
+    background: rgb(255 255 255 / 27%);
+}
+
 /* Алерты */
 body.night-mode .alert-text {
     color: #ffffff;
