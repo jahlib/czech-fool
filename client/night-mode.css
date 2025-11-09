@@ -2,7 +2,7 @@
 
 /* Плавные переходы для всех элементов кроме летящих карт */
 *:not(.flying-card):not(.flying-card *) {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 /* Базовые стили */
@@ -399,7 +399,6 @@ body.night-mode .card.hearts .card-suit,
 body.night-mode .card.diamonds .card-rank,
 body.night-mode .card.diamonds .card-suit {
     color: #ffffff;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 
 body.night-mode .card.spades,
@@ -412,12 +411,12 @@ body.night-mode .card.spades .card-suit,
 body.night-mode .card.clubs .card-rank,
 body.night-mode .card.clubs .card-suit {
     color: #1a1a1a;
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 body.night-mode .card .card-rank,
 body.night-mode .card .card-suit {
     color: inherit;
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
 }
 
 body.night-mode .card:hover:not(.disabled) {
@@ -695,7 +694,6 @@ body.night-mode .result-card.hearts .card-suit,
 body.night-mode .result-card.diamonds .card-rank,
 body.night-mode .result-card.diamonds .card-suit {
     color: #ffffff;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 
 body.night-mode .result-card.spades,
@@ -708,7 +706,6 @@ body.night-mode .result-card.spades .card-suit,
 body.night-mode .result-card.clubs .card-rank,
 body.night-mode .result-card.clubs .card-suit {
     color: #1a1a1a;
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 /* Game log */

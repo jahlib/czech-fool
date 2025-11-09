@@ -1159,7 +1159,7 @@ border: 2px solid #ffd700;
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
