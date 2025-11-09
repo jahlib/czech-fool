@@ -645,7 +645,7 @@ class CardGame {
                             this.animateDrawCards(data.forced_draw_player_id, data.forced_draw_count);
                         }, 300);
                         
-                        const cardName = `${data.top_card.rank}${this.getSuitSymbol(data.top_card.suit)}`;
+                        const cardName = `${data.top_card.rank}${this.getSuitSymbolForLog(data.top_card.suit)}`;
                         const cardsText = data.forced_draw_count === 1 ? '1 карту' : `${data.forced_draw_count} карты`;
                         this.addLogEntry(`${data.forced_draw_player_nickname} взял ${cardsText} от ${cardName}`);
                     }
@@ -702,7 +702,7 @@ class CardGame {
                 }
                 
                 // Логируем событие
-                const cardName = `${data.card.rank}${this.getSuitSymbol(data.card.suit)}`;
+                const cardName = `${data.card.rank} ${this.getSuitSymbolForLog(data.card.suit)}`;
                 this.addLogEntry(`${data.player_nickname} сыграл ${cardName}`);
                 
                 // Если выбрана масть дамой
@@ -748,7 +748,7 @@ class CardGame {
                 const cardsText = data.cards_count === 1 ? '1 карту' : `${data.cards_count} карты`;
                 if (data.waiting_for_eight) {
                     const topCard = data.top_card;
-                    this.addLogEntry(`${data.player_nickname} взял ${cardsText} от ${topCard.rank}${this.getSuitSymbol(topCard.suit)}`);
+                    this.addLogEntry(`${data.player_nickname} взял ${cardsText} от ${topCard.rank} ${this.getSuitSymbolForLog(topCard.suit)}`);
                 } else {
                     const cardsText = data.cards_count === 1 ? 'карту' : 'карты';
                     this.addLogEntry(`${data.player_nickname} взял ${data.cards_count} ${cardsText}`);
@@ -1143,7 +1143,9 @@ class CardGame {
         // Показываем индикатор всегда когда есть выбранная масть (после дамы)
         if (data.chosen_suit) {
             this.chosenSuitIndicator.style.display = 'block';
-            this.chosenSuitIndicator.textContent = this.getSuitSymbol(data.chosen_suit);
+            const suitEmoji = this.getSuitSymbol(data.chosen_suit);
+            const suitClass = data.chosen_suit; // hearts, diamonds, clubs, spades
+            this.chosenSuitIndicator.innerHTML = `<span class="suit-emoji-indicator ${suitClass}">${suitEmoji}</span>`;
         } else {
             this.chosenSuitIndicator.style.display = 'none';
         }
@@ -1380,6 +1382,16 @@ class CardGame {
         return symbols[suit] || '';
     }
     
+    getSuitSymbolForLog(suit) {
+        const symbols = {
+            'hearts': '<span class="suit-emoji-log hearts">♥️</span>',
+            'diamonds': '<span class="suit-emoji-log diamonds">♦️</span>',
+            'clubs': '<span class="suit-emoji-log clubs">♣️</span>',
+            'spades': '<span class="suit-emoji-log spades">♠️</span>'
+        };
+        return symbols[suit] || '';
+    }
+    
     getSuitName(suit) {
         const names = {
             'hearts': 'черви',
@@ -1510,7 +1522,7 @@ class CardGame {
         
         const entry = document.createElement('div');
         entry.className = extraClass ? `log-entry ${extraClass}` : 'log-entry';
-        entry.textContent = message;
+        entry.innerHTML = message;
         
         // Добавляем в начало (новые сверху)
         this.gameLog.insertBefore(entry, this.gameLog.firstChild);

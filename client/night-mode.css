@@ -385,7 +385,7 @@ body.night-mode .card {
     background: #9ca3af;
     color: white;
     border-color: #374151;
-    filter: brightness(0.8);
+    filter: brightness(0.9);
     transition: all 0.3s ease;
 }
 
@@ -399,6 +399,7 @@ body.night-mode .card.hearts .card-suit,
 body.night-mode .card.diamonds .card-rank,
 body.night-mode .card.diamonds .card-suit {
     color: #ffffff;
+    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
 }
 
 body.night-mode .card.spades,
@@ -411,11 +412,6 @@ body.night-mode .card.spades .card-suit,
 body.night-mode .card.clubs .card-rank,
 body.night-mode .card.clubs .card-suit {
     color: #1a1a1a;
-}
-
-body.night-mode .card .card-rank,
-body.night-mode .card .card-suit {
-    color: inherit;
     filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
 }
 
@@ -490,9 +486,21 @@ body.night-mode .chosen-suit-label {
 
 /* Индикатор выбранной масти */
 body.night-mode #chosen-suit-indicator {
-    background: rgb(206 207 207);
+    background: rgb(140 147 157);
     border-color: #5ecc7b;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Красные масти в индикаторе делаем белыми */
+body.night-mode .suit-emoji-indicator.hearts,
+body.night-mode .suit-emoji-indicator.diamonds {
+    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+}
+
+/* Чёрные масти в индикаторе */
+body.night-mode .suit-emoji-indicator.clubs,
+body.night-mode .suit-emoji-indicator.spades {
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
 }
 
 /* Player info - табло игрока */
@@ -645,8 +653,37 @@ body.night-mode .suit-btn {
     color: #ffffff;
 }
 
-body.night-mode .suit-emoji {
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 4px #333333c9);
+/* Красные масти в suit-selector делаем белыми */
+body.night-mode .suit-btn[data-suit="hearts"] .suit-emoji,
+body.night-mode .suit-btn[data-suit="diamonds"] .suit-emoji {
+    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+}
+
+/* Черные масти в suit-selector */
+body.night-mode .suit-btn[data-suit="spades"] .suit-emoji,
+body.night-mode .suit-btn[data-suit="clubs"] .suit-emoji {
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
+}
+
+/* Suit symbols (анимация выбора масти) */
+body.night-mode .suit-symbol {
+    background: #2a3d52;
+    border-color: #3b5998;
+}
+
+body.night-mode .suit-symbol.hearts,
+body.night-mode .suit-symbol.diamonds {
+    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+}
+
+body.night-mode .suit-symbol.clubs,
+body.night-mode .suit-symbol.spades {
+    color: #ffffff;
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
+}
+
+body.night-mode .suit-arrow {
+    color: #5ecc7b;
 }
 
 /* Results modal */
@@ -694,6 +731,7 @@ body.night-mode .result-card.hearts .card-suit,
 body.night-mode .result-card.diamonds .card-rank,
 body.night-mode .result-card.diamonds .card-suit {
     color: #ffffff;
+    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
 }
 
 body.night-mode .result-card.spades,
@@ -706,6 +744,7 @@ body.night-mode .result-card.spades .card-suit,
 body.night-mode .result-card.clubs .card-rank,
 body.night-mode .result-card.clubs .card-suit {
     color: #1a1a1a;
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
 }
 
 /* Game log */
@@ -721,6 +760,18 @@ body.night-mode .log-entry {
 
 body.night-mode .log-entry.highlight {
     color: #5ecc7b;
+}
+
+/* Красные масти в чате (логе) делаем белыми */
+body.night-mode .suit-emoji-log.hearts,
+body.night-mode .suit-emoji-log.diamonds {
+    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+}
+
+/* Чёрные масти в чате (логе) */
+body.night-mode .suit-emoji-log.clubs,
+body.night-mode .suit-emoji-log.spades {
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #c7c7c73c);
 }
 
 /* Error screen */
