@@ -383,8 +383,8 @@ body.night-mode .card:hover:not(.disabled) {
 }
 
 body.night-mode .card.disabled {
-    opacity: 0.4;
-    background: #6b7280;
+    opacity: 0.6;
+    background: #858585;
 }
 
 /* Рубашка карт с сетчатым градиентом */
@@ -583,7 +583,7 @@ body.night-mode .suit-selection h3 {
 }
 
 body.night-mode .suit-btn {
-    background: #2a3d52;
+    background: #0c1117;
     color: white;
     border-color: #3b5998;
 }

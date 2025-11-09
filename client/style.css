@@ -1534,13 +1534,22 @@ border: 2px solid #ffd700;
 }
 
 .suit-btn {
-    padding: 20px;
+    display: flex;
+    padding: 23px;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    justify-content: space-evenly;
     font-size: 18px;
     border: 2px solid #ddd;
     border-radius: 10px;
     background: white;
     cursor: pointer;
     transition: all 0.3s;
+}
+
+.suit-emoji {
+    font-size: 32px;
 }
 
 .suit-btn:hover {
