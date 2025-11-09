@@ -322,6 +322,10 @@ body.night-mode .rules-content th {
     color: #b9b9b9;
 }
 
+body.night-mode #rules-section {
+    border-top: 2px solid rgb(187 187 187 / 20%);
+}
+
 body.night-mode .rules-content h2 {
     border-bottom: 2px solid rgb(169 169 169 / 36%);
 }
