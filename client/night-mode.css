@@ -2,7 +2,7 @@
 
 /* Плавные переходы для всех элементов кроме летящих карт */
 *:not(.flying-card):not(.flying-card *) {
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease, transform 0.3s ease, opacity 0.3s ease, width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
 }
 
 /* Базовые стили */
@@ -395,11 +395,15 @@ body.night-mode .card.diamonds {
 }
 
 body.night-mode .card.hearts .card-rank,
+body.night-mode .card.diamonds .card-rank {
+    color: #ffffff;
+    filter: grayscale(1) contrast(0) brightness(3);
+}
+
 body.night-mode .card.hearts .card-suit,
-body.night-mode .card.diamonds .card-rank,
 body.night-mode .card.diamonds .card-suit {
     color: #ffffff;
-    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
 }
 
 body.night-mode .card.spades,
@@ -408,11 +412,15 @@ body.night-mode .card.clubs {
 }
 
 body.night-mode .card.spades .card-rank,
+body.night-mode .card.clubs .card-rank {
+    color: #1a1a1a;
+    filter: contrast(4) saturate(0.5);
+}
+
 body.night-mode .card.spades .card-suit,
-body.night-mode .card.clubs .card-rank,
 body.night-mode .card.clubs .card-suit {
     color: #1a1a1a;
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
 }
 
 body.night-mode .card:hover:not(.disabled) {
@@ -494,7 +502,7 @@ body.night-mode #chosen-suit-indicator {
 /* Красные масти в индикаторе делаем белыми */
 body.night-mode .suit-emoji-indicator.hearts,
 body.night-mode .suit-emoji-indicator.diamonds {
-    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
 }
 
 /* Чёрные масти в индикаторе */
@@ -656,13 +664,13 @@ body.night-mode .suit-btn {
 /* Красные масти в suit-selector делаем белыми */
 body.night-mode .suit-btn[data-suit="hearts"] .suit-emoji,
 body.night-mode .suit-btn[data-suit="diamonds"] .suit-emoji {
-    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
 }
 
 /* Черные масти в suit-selector */
 body.night-mode .suit-btn[data-suit="spades"] .suit-emoji,
 body.night-mode .suit-btn[data-suit="clubs"] .suit-emoji {
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
 }
 
 /* Suit symbols (анимация выбора масти) */
@@ -673,13 +681,13 @@ body.night-mode .suit-symbol {
 
 body.night-mode .suit-symbol.hearts,
 body.night-mode .suit-symbol.diamonds {
-    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
 }
 
 body.night-mode .suit-symbol.clubs,
 body.night-mode .suit-symbol.spades {
     color: #ffffff;
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
 }
 
 body.night-mode .suit-arrow {
@@ -727,11 +735,15 @@ body.night-mode .result-card.diamonds {
 }
 
 body.night-mode .result-card.hearts .card-rank,
+body.night-mode .result-card.diamonds .card-rank {
+    color: #ffffff;
+    filter: grayscale(1) contrast(0) brightness(3);
+}
+
 body.night-mode .result-card.hearts .card-suit,
-body.night-mode .result-card.diamonds .card-rank,
 body.night-mode .result-card.diamonds .card-suit {
     color: #ffffff;
-    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
 }
 
 body.night-mode .result-card.spades,
@@ -740,11 +752,15 @@ body.night-mode .result-card.clubs {
 }
 
 body.night-mode .result-card.spades .card-rank,
+body.night-mode .result-card.clubs .card-rank {
+    color: #1a1a1a;
+    filter: contrast(4) saturate(0.5);
+}
+
 body.night-mode .result-card.spades .card-suit,
-body.night-mode .result-card.clubs .card-rank,
 body.night-mode .result-card.clubs .card-suit {
     color: #1a1a1a;
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
 }
 
 /* Game log */
@@ -771,7 +787,7 @@ body.night-mode .suit-emoji-log.diamonds {
 /* Чёрные масти в чате (логе) */
 body.night-mode .suit-emoji-log.clubs,
 body.night-mode .suit-emoji-log.spades {
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #c7c7c73c);
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #c7c7c742);
 }
 
 /* Error screen */
