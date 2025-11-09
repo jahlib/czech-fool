@@ -421,8 +421,8 @@ body.night-mode .card:hover:not(.disabled) {
 }
 
 body.night-mode .card.disabled {
-    opacity: 0.6;
-    background: #858585;
+    opacity: 0.56;
+    background: #767676a6;
 }
 
 /* Рубашка карт с сетчатым градиентом */

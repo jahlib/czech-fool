@@ -385,7 +385,7 @@ class CardGame {
         // Suit selection
         document.querySelectorAll('.suit-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const suit = e.target.dataset.suit;
+                const suit = e.currentTarget.dataset.suit;
                 this.selectSuit(suit);
             });
         });
@@ -1315,6 +1315,8 @@ class CardGame {
                 // В обычном режиме затемняем неподходящие карты
                 if (this.proModeEnabled) {
                     cardElement.classList.remove('disabled');
+                    // В режиме Про добавляем обработчик клика даже для неподходящих карт
+                    cardElement.addEventListener('click', () => this.playCard(card));
                 } else {
                     cardElement.classList.add('disabled');
                 }
