@@ -373,7 +373,6 @@ body.night-mode .card.diamonds .card-rank,
 body.night-mode .card.diamonds .card-suit {
     color: #ffffff;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-    filter: grayscale(1) brightness(4);
 }
 
 body.night-mode .card.spades,
@@ -614,11 +613,6 @@ body.night-mode .suit-btn {
     color: #ffffff;
 }
 
-body.night-mode .suit-btn[data-suit="hearts"] .suit-emoji,
-body.night-mode .suit-btn[data-suit="diamonds"] .suit-emoji {
-    filter: grayscale(1) brightness(4);
-}
-
 /* Results modal */
 body.night-mode #results-modal .modal-content {
     background: #243447;
@@ -665,7 +659,6 @@ body.night-mode .result-card.diamonds .card-rank,
 body.night-mode .result-card.diamonds .card-suit {
     color: #ffffff;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-    filter: grayscale(1) brightness(4);
 }
 
 body.night-mode .result-card.spades,
