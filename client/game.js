@@ -22,6 +22,7 @@ class CardGame {
             skip: new Audio('/sounds/skip.aac'),
             alert: new Audio('/sounds/alert.aac'),
             chat: new Audio('/sounds/chat.aac'),
+            frog: new Audio('/sounds/frog.aac'),
             win: new Audio('/sounds/win.aac'),
             winqueen: new Audio('/sounds/winqueen.aac'),
             lose: new Audio('/sounds/lose.aac'),
@@ -897,7 +898,9 @@ class CardGame {
                 break;
             case 'reaction':
                 // Быстрая реакция от игрока
-                this.playSound('chat');
+                // Для лягушки играем специальный звук
+                const soundName = data.emoji === '🐸' ? 'frog' : 'chat';
+                this.playSound(soundName);
                 this.showReactionBubble(data.player_id, data.emoji);
                 break;
             case 'deck_size_changed':
@@ -1770,7 +1773,7 @@ class CardGame {
     showReactionPicker(e) {
         e.stopPropagation();
         
-        if (!this.reactionPicker || !this.handCards) return;
+        if (!this.reactionPicker) return;
         
         // Проверяем кулдаун (5 секунд)
         const now = Date.now();
@@ -1781,13 +1784,16 @@ class CardGame {
             return;
         }
         
-        // Получаем координаты руки карт
-        const rect = this.handCards.getBoundingClientRect();
+        // Получаем координаты блока руки (.player-hand)
+        const playerHand = document.querySelector('.player-hand');
+        if (!playerHand) return;
         
-        // Позиционируем пикер НАД рукой карт по центру
-        // Ширина пикера: 5 кнопок * 50px + отступы (8px * 6) = 298px
+        const rect = playerHand.getBoundingClientRect();
+        
+        // Позиционируем пикер НАД блоком руки по центру
+        // Ширина пикера: 6 кнопок * 50px + отступы (8px * 7) = 356px
         const vh = window.innerHeight / 100;
-        this.reactionPicker.style.left = `${rect.left + rect.width / 2 - 149}px`; // Центрируем
+        this.reactionPicker.style.left = `${rect.left + rect.width / 2 - 178}px`; // Центрируем
         this.reactionPicker.style.top = `${rect.top - 70 - vh}px`; // Над рукой + 1vh выше
         
         this.reactionPicker.classList.add('active');
