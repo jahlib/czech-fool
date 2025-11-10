@@ -596,7 +596,7 @@ class GameServer:
     
     async def make_bot_move(self, room_id: str, bot_id: str):
         """Бот делает ход"""
-        await asyncio.sleep(0.42)  # Задержка для реалистичности
+        await asyncio.sleep(random.uniform(0.88, 1.82))  # Задержка для реалистичности
         
         room = self.rooms.get(room_id)
         if not room or not room.game_started:
