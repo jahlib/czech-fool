@@ -327,6 +327,18 @@ input[type="text"]:focus {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    gap: 15px;
+}
+
+.room-header h2 {
+    flex: 0 0 auto;
+}
+
+.room-header #countdown-display {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #players-list {
@@ -486,6 +498,23 @@ input[type="text"]:focus {
     justify-content: center;
     box-shadow: 0 10px 30px rgba(50, 160, 130, 0.4);
     animation: pulse 1s ease-in-out infinite;
+}
+
+/* Маленький таймер в заголовке */
+.countdown-timer-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #32a082 0%, #64859a 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(50, 160, 130, 0.4);
+    animation: pulse 1s ease-in-out infinite;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 #countdown-number {

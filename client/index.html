@@ -70,12 +70,20 @@
             <div class="container">
                 <div class="room-header">
                     <h2>Комната</h2>
+                    <!-- Таймер в заголовке -->
+                    <div id="countdown-display" style="display: none;">
+                        <span class="countdown-timer-small" id="countdown-number">6</span>
+                    </div>
                     <button id="leave-room-btn" class="btn btn-secondary">Покинуть</button>
                 </div>
                 
                 <div id="players-waiting">
                     <h3>Игроки в комнате:</h3>
+                    <p class="hint">Игра начнётся когда все игроки будут готовы (минимум 2 игрока)</p>
                     <div id="players-list"></div>
+                    
+                    <!-- Кнопка готов после списка игроков -->
+                    <button id="ready-toggle-btn" class="btn btn-primary">Готов</button>
                     
                     <!-- Настройки комнаты (только для создателя) -->
                     <div id="room-settings" style="display: none;">
@@ -91,16 +99,8 @@
                             <p class="hint-small">В режиме 36 карт восьмёрка не действует</p>
                         </div>
                     </div>
-                    
-                    <div id="countdown-display" style="display: none;">
-                        <div class="countdown-timer">
-                            <span id="countdown-number">6</span>
-                        </div>
-                        <p class="countdown-text">Игра начинается...</p>
-                    </div>
-                    <button id="ready-toggle-btn" class="btn btn-primary">Готов</button>
-                    <p class="hint">Игра начнётся когда все игроки будут готовы (минимум 2 игрока)</p>
 
+                    <!-- Переключатель приватной/публичной комнаты -->
                     <div class="room-settings" id="private-room-settings">
                         <!-- Переключатель приватной комнаты -->
                         <div class="deck-size-toggle">
