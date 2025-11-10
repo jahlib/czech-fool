@@ -82,6 +82,7 @@ class GameServer:
         self.rooms: Dict[str, Room] = {}
         self.clients: Dict[WebSocketServerProtocol, str] = {}  # ws -> player_id
         self.player_rooms: Dict[str, str] = {}  # player_id -> room_id
+        self.shake_cooldowns: Dict[str, float] = {}  # player_id -> timestamp последней тряски
         self.db = GameDatabase(
             host="localhost",
             port=5432,
@@ -1683,6 +1684,67 @@ class GameServer:
         # Обновляем список комнат (приватные не показываются)
         await self.broadcast_rooms()
     
+    async def handle_shake_discard(self, ws: WebSocketServerProtocol, data: dict):
+        """Обработка тряски карты сброса - рассылаем всем игрокам в комнате"""
+        player_id = self.clients.get(ws)
+        if not player_id:
+            return
+        
+        # Проверяем кулдаун (5 секунд)
+        import time
+        now = time.time()
+        cooldown = 5.0  # 5 секунд
+        
+        last_shake = self.shake_cooldowns.get(player_id, 0)
+        if now - last_shake < cooldown:
+            # Просто игнорируем запрос если кулдаун активен
+            return
+        
+        # Обновляем время последней тряски
+        self.shake_cooldowns[player_id] = now
+        
+        # Находим комнату игрока
+        room_id = None
+        for rid, room in self.rooms.items():
+            if player_id in room.players:
+                room_id = rid
+                break
+        
+        if not room_id:
+            return
+        
+        # Отправляем событие тряски всем игрокам в комнате
+        await self.broadcast_to_room(room_id, {
+            'type': 'shake_discard'
+        })
+    
+    async def handle_reaction(self, ws: WebSocketServerProtocol, data: dict):
+        """Обработка быстрой реакции - рассылаем всем игрокам в комнате"""
+        player_id = self.clients.get(ws)
+        if not player_id:
+            return
+        
+        emoji = data.get('emoji')
+        if not emoji:
+            return
+        
+        # Находим комнату игрока
+        room_id = None
+        for rid, room in self.rooms.items():
+            if player_id in room.players:
+                room_id = rid
+                break
+        
+        if not room_id:
+            return
+        
+        # Отправляем реакцию всем игрокам в комнате
+        await self.broadcast_to_room(room_id, {
+            'type': 'reaction',
+            'player_id': player_id,
+            'emoji': emoji
+        })
+    
     async def handle_message(self, ws: WebSocketServerProtocol, message: str):
         try:
             data = json.loads(message)
@@ -1712,6 +1774,10 @@ class GameServer:
                 await self.handle_change_deck_size(ws, data)
             elif msg_type == 'toggle_private':
                 await self.handle_toggle_private(ws, data)
+            elif msg_type == 'shake_discard':
+                await self.handle_shake_discard(ws, data)
+            elif msg_type == 'reaction':
+                await self.handle_reaction(ws, data)
                 
         except json.JSONDecodeError:
             await ws.send(json.dumps({'type': 'error', 'message': 'Invalid JSON'}))
