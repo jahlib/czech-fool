@@ -7,6 +7,7 @@ class CardGame {
         this.hand = [];
         this.pendingCardToPlay = null;
         this.eightDrawnCards = [];  // ID карт взятых из колоды на восьмёрку
+        this.lastShakeTime = 0;  // Время последней тряски для кулдауна
         
         // Загружаем состояние звука из localStorage
         this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
@@ -78,14 +79,24 @@ class CardGame {
     }
     
     playSound(soundName) {
-        // Не воспроизводим звуки если страница скрыта
-        if (this.soundEnabled && this.sounds[soundName] && this.pageVisible) {
-            // Используем существующий объект вместо клонирования
-            const sound = this.sounds[soundName];
-            sound.currentTime = 0; // Сбрасываем на начало для повторного воспроизведения
-            sound.volume = 0.5;
-            sound.play().catch(err => {}); // Убираем console.log для производительности
+        if (!this.soundEnabled || !this.sounds[soundName]) {
+            return;
         }
+        
+        // Проверяем на каком экране мы находимся
+        const isOnLobby = this.lobbyScreen && this.lobbyScreen.classList.contains('active');
+        
+        // Если на главной странице и вкладка скрыта - не воспроизводим звук
+        if (isOnLobby && !this.pageVisible) {
+            return;
+        }
+        
+        // Во время игры (room или game экран) звуки работают даже в фоне
+        // Используем существующий объект вместо клонирования
+        const sound = this.sounds[soundName];
+        sound.currentTime = 0; // Сбрасываем на начало для повторного воспроизведения
+        sound.volume = 0.5;
+        sound.play().catch(err => {}); // Убираем console.log для производительности
     }
     
     toggleSound() {
@@ -282,6 +293,10 @@ class CardGame {
         this.sendChatBtn = document.getElementById('send-chat-btn');
         this.closeChatBtn = document.getElementById('close-chat-btn');
         
+        // Reaction elements
+        this.reactionPicker = document.getElementById('reaction-picker');
+        this.playerInfo = document.querySelector('.player-info');
+        
         // Rules elements
         this.rulesBtn = document.getElementById('rules-btn');
         this.rulesModal = document.getElementById('rules-modal');
@@ -408,6 +423,33 @@ class CardGame {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 this.sendChatMessage();
+            }
+        });
+        
+        // Reaction handlers - клик по блоку с никнеймом
+        if (this.playerInfo) {
+            this.playerInfo.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.showReactionPicker(e);
+            });
+        }
+        
+        document.querySelectorAll('.reaction-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const reaction = e.currentTarget.dataset.reaction;
+                this.sendReaction(reaction);
+                this.hideReactionPicker();
+            });
+        });
+        
+        // Закрываем пикер при клике вне его
+        document.addEventListener('click', (e) => {
+            if (this.reactionPicker && 
+                this.reactionPicker.classList.contains('active') &&
+                !this.reactionPicker.contains(e.target) &&
+                (!this.playerInfo || !this.playerInfo.contains(e.target))) {
+                this.hideReactionPicker();
             }
         });
         
@@ -847,6 +889,16 @@ class CardGame {
                 // Игрок переподключился
                 this.addLogEntry(`${data.nickname} переподключился`);
                 break;
+            case 'shake_discard':
+                // Тряска карты сброса
+                this.animateShakeDiscard();
+                this.playSound('alert');
+                break;
+            case 'reaction':
+                // Быстрая реакция от игрока
+                this.playSound('chat');
+                this.showReactionBubble(data.player_id, data.emoji);
+                break;
             case 'deck_size_changed':
                 // Размер колоды изменён
                 if (this.currentRoom) {
@@ -1136,6 +1188,8 @@ class CardGame {
         this.discardPile.innerHTML = '';
         if (data.top_card) {
             const cardElement = this.createCardElement(data.top_card, false);
+            cardElement.style.cursor = 'pointer';
+            cardElement.addEventListener('click', () => this.shakeDiscardPile());
             this.discardPile.appendChild(cardElement);
         }
         
@@ -1462,7 +1516,28 @@ class CardGame {
             return;
         }
         
-        this.send({ type: 'skip_turn' });
+        this.send({
+            type: 'skip_turn'
+        });
+    }
+    
+    shakeDiscardPile() {
+        // Проверяем кулдаун (5 секунд)
+        const now = Date.now();
+        const cooldown = 5000; // 5 секунд в миллисекундах
+        
+        if (now - this.lastShakeTime < cooldown) {
+            // Просто игнорируем клик если кулдаун активен
+            return;
+        }
+        
+        // Обновляем время последней тряски
+        this.lastShakeTime = now;
+        
+        // Отправляем событие тряски на сервер
+        this.send({
+            type: 'shake_discard'
+        });
     }
     
     showCountdown(seconds) {
@@ -1689,6 +1764,76 @@ class CardGame {
         });
         
         this.closeChat();
+    }
+    
+    showReactionPicker(e) {
+        e.stopPropagation();
+        
+        if (!this.reactionPicker || !this.handCards) return;
+        
+        // Получаем координаты руки карт
+        const rect = this.handCards.getBoundingClientRect();
+        
+        // Позиционируем пикер НАД рукой карт по центру
+        // Ширина пикера: 5 кнопок * 50px + отступы (8px * 6) = 298px
+        const vh = window.innerHeight / 100;
+        this.reactionPicker.style.left = `${rect.left + rect.width / 2 - 149}px`; // Центрируем
+        this.reactionPicker.style.top = `${rect.top - 70 - vh}px`; // Над рукой + 1vh выше
+        
+        this.reactionPicker.classList.add('active');
+    }
+    
+    hideReactionPicker() {
+        if (this.reactionPicker) {
+            this.reactionPicker.classList.remove('active');
+        }
+    }
+    
+    sendReaction(emoji) {
+        this.send({
+            type: 'reaction',
+            emoji: emoji
+        });
+    }
+    
+    showReactionBubble(playerId, emoji) {
+        // Находим область игрока
+        let playerArea;
+        if (playerId === this.playerId) {
+            // Реакция от нас самих - показываем над нашими картами
+            playerArea = this.handCards;
+        } else {
+            // Реакция от противника
+            playerArea = this.getOpponentAreaById(playerId);
+        }
+        
+        if (!playerArea) return;
+        
+        // Создаём пузырёк
+        const bubble = document.createElement('div');
+        bubble.className = 'reaction-bubble';
+        bubble.textContent = emoji;
+        
+        // Позиционируем пузырёк и добавляем стрелочку
+        const rect = playerArea.getBoundingClientRect();
+        bubble.style.left = `${rect.left + rect.width / 2 - 40}px`; // Центрируем
+        
+        if (playerId === this.playerId) {
+            // Наш пузырёк - НАД картами, стрелка ВНИЗ на наши карты
+            bubble.style.top = `${rect.top - 70}px`;
+            bubble.classList.add('from-me');
+        } else {
+            // Пузырёк противника - ПОД картами, стрелка ВВЕРХ на карты противника
+            bubble.style.top = `${rect.bottom + 10}px`;
+            bubble.classList.add('from-opponent');
+        }
+        
+        document.body.appendChild(bubble);
+        
+        // Удаляем пузырёк после анимации
+        setTimeout(() => {
+            bubble.remove();
+        }, 2000);
     }
     
     handleKeyPress(e) {
@@ -1942,6 +2087,19 @@ class CardGame {
                 deck.classList.remove('deck-shuffling');
             }, 600);
         }, cardCount * 80);
+    }
+    
+    // Анимация тряски карты сброса
+    animateShakeDiscard() {
+        if (!this.discardPile) return;
+        
+        // Добавляем класс для анимации тряски
+        this.discardPile.classList.add('shaking');
+        
+        // Убираем класс после завершения анимации
+        setTimeout(() => {
+            this.discardPile.classList.remove('shaking');
+        }, 500);
     }
     
     getPlayerColorIndex(playerId) {

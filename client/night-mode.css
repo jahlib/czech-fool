@@ -1,8 +1,16 @@
 /* ===== ПОЛНЫЙ НОЧНОЙ РЕЖИМ ===== */
 
-/* Плавные переходы для всех элементов кроме летящих карт */
-*:not(.flying-card):not(.flying-card *) {
+/* Плавные переходы для всех элементов кроме летящих карт и тряски */
+*:not(.flying-card):not(.flying-card *):not(.shaking):not(.shaking *) {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease, transform 0.3s ease, opacity 0.3s ease, width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+}
+
+/* Отключаем transition для летящих карт и тряски */
+.flying-card,
+.flying-card *,
+.shaking,
+.shaking * {
+    transition: none !important;
 }
 
 /* Базовые стили */
