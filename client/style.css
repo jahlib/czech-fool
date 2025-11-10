@@ -2307,17 +2307,17 @@ border: 2px solid #ffd700;
 @keyframes reactionFloat {
     0% {
         opacity: 0;
-        transform: translateY(0) scale(0.5);
+        transform: translateX(-50%) translateY(0) scale(0.5);
     }
     20% {
         opacity: 1;
-        transform: translateY(-10px) scale(1.1);
+        transform: translateX(-50%) translateY(-10px) scale(1.1);
     }
     40% {
-        transform: translateY(-5px) scale(1);
+        transform: translateX(-50%) translateY(-5px) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translateY(-30px) scale(0.8);
+        transform: translateX(-50%) translateY(-30px) scale(0.8);
     }
 }

@@ -8,6 +8,7 @@ class CardGame {
         this.pendingCardToPlay = null;
         this.eightDrawnCards = [];  // ID карт взятых из колоды на восьмёрку
         this.lastShakeTime = 0;  // Время последней тряски для кулдауна
+        this.lastReactionTime = 0;  // Время последней реакции для кулдауна
         
         // Загружаем состояние звука из localStorage
         this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
@@ -1771,6 +1772,15 @@ class CardGame {
         
         if (!this.reactionPicker || !this.handCards) return;
         
+        // Проверяем кулдаун (5 секунд)
+        const now = Date.now();
+        const cooldown = 5000; // 5 секунд в миллисекундах
+        
+        if (now - this.lastReactionTime < cooldown) {
+            // Просто игнорируем клик если кулдаун активен
+            return;
+        }
+        
         // Получаем координаты руки карт
         const rect = this.handCards.getBoundingClientRect();
         
@@ -1790,6 +1800,9 @@ class CardGame {
     }
     
     sendReaction(emoji) {
+        // Обновляем время последней реакции
+        this.lastReactionTime = Date.now();
+        
         this.send({
             type: 'reaction',
             emoji: emoji
@@ -1798,16 +1811,20 @@ class CardGame {
     
     showReactionBubble(playerId, emoji) {
         // Находим область игрока
-        let playerArea;
+        let targetElement;
         if (playerId === this.playerId) {
             // Реакция от нас самих - показываем над нашими картами
-            playerArea = this.handCards;
+            targetElement = this.handCards;
         } else {
-            // Реакция от противника
-            playerArea = this.getOpponentAreaById(playerId);
+            // Реакция от противника - находим блок с ником и очками
+            const opponentArea = this.getOpponentAreaById(playerId);
+            if (opponentArea) {
+                // Берём блок opponent-info (ник и очки) для центрирования
+                targetElement = opponentArea.querySelector('.opponent-info');
+            }
         }
         
-        if (!playerArea) return;
+        if (!targetElement) return;
         
         // Создаём пузырёк
         const bubble = document.createElement('div');
@@ -1815,15 +1832,16 @@ class CardGame {
         bubble.textContent = emoji;
         
         // Позиционируем пузырёк и добавляем стрелочку
-        const rect = playerArea.getBoundingClientRect();
-        bubble.style.left = `${rect.left + rect.width / 2 - 40}px`; // Центрируем
+        const rect = targetElement.getBoundingClientRect();
+        bubble.style.left = `${rect.left + rect.width / 2}px`; // Центр элемента
+        bubble.style.transform = 'translateX(-50%)'; // Центрируем пузырёк
         
         if (playerId === this.playerId) {
             // Наш пузырёк - НАД картами, стрелка ВНИЗ на наши карты
             bubble.style.top = `${rect.top - 70}px`;
             bubble.classList.add('from-me');
         } else {
-            // Пузырёк противника - ПОД картами, стрелка ВВЕРХ на карты противника
+            // Пузырёк противника - ПОД блоком с ником, стрелка ВВЕРХ
             bubble.style.top = `${rect.bottom + 10}px`;
             bubble.classList.add('from-opponent');
         }
