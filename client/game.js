@@ -1791,12 +1791,71 @@ class CardGame {
         const rect = playerHand.getBoundingClientRect();
         
         // Позиционируем пикер НАД блоком руки по центру
-        // Ширина пикера: 6 кнопок * 50px + отступы (8px * 7) = 356px
         const vh = window.innerHeight / 100;
-        this.reactionPicker.style.left = `${rect.left + rect.width / 2 - 178}px`; // Центрируем
+        this.reactionPicker.style.left = `${rect.left + rect.width / 2}px`;
+        this.reactionPicker.style.transform = 'translateX(-50%)';
         this.reactionPicker.style.top = `${rect.top - 70 - vh}px`; // Над рукой + 1vh выше
         
         this.reactionPicker.classList.add('active');
+        
+        // Предотвращаем конфликт свайпа с другими элементами
+        const scrollContainer = this.reactionPicker.querySelector('.reaction-picker-scroll');
+        if (scrollContainer) {
+            scrollContainer.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            }, { passive: true, once: false });
+            
+            scrollContainer.addEventListener('touchmove', (e) => {
+                e.stopPropagation();
+            }, { passive: true, once: false });
+            
+            // Drag-скролл мышкой (как на телефоне)
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            let hasMoved = false;
+            
+            scrollContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                hasMoved = false;
+                scrollContainer.style.scrollBehavior = 'auto';
+                startX = e.pageX;
+                scrollLeft = scrollContainer.scrollLeft;
+            });
+            
+            scrollContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+                scrollContainer.style.scrollBehavior = 'smooth';
+            });
+            
+            scrollContainer.addEventListener('mouseup', () => {
+                isDown = false;
+                scrollContainer.style.scrollBehavior = 'smooth';
+            });
+            
+            scrollContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX;
+                const walk = x - startX;
+                
+                // Если сдвинули больше чем на 5px, считаем это скроллом
+                if (Math.abs(walk) > 5) {
+                    hasMoved = true;
+                }
+                
+                scrollContainer.scrollLeft = scrollLeft - walk;
+            });
+            
+            // Предотвращаем клик на кнопках если был скролл
+            scrollContainer.addEventListener('click', (e) => {
+                if (hasMoved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hasMoved = false;
+                }
+            }, true);
+        }
     }
     
     hideReactionPicker() {
