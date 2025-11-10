@@ -1859,7 +1859,7 @@ class CardGame {
             // Скролл колёсиком мыши по горизонтали
             scrollContainer.addEventListener('wheel', (e) => {
                 e.preventDefault();
-                scrollContainer.scrollLeft += e.deltaY;
+                scrollContainer.scrollLeft += e.deltaY * 2.42; // Ускоряем скролл в 2 раза
             }, { passive: false });
         }
     }
