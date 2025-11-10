@@ -13,6 +13,37 @@ class CardGame {
         // Загружаем состояние звука из localStorage
         this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
         
+        // Маппинг звуков для реакций
+        this.reactionSounds = {
+            '😡': 'chat',
+            '😄': 'chat',
+            '😎': 'chat',
+            '🙃': 'chat',
+            '🙁': 'chat',
+            '🤔': 'chat',
+            '😐': 'chat',
+            '👍': 'chat',
+            '👎': 'chat',
+            '🫰': 'chat',
+            '🤯': 'chat',
+            '🤨': 'chat',
+            '😑': 'chat',
+            '😌': 'chat',
+            '😴': 'chat',
+            '🌚': 'chat',
+            '🐱': 'cat',
+            '🐸': 'frog',
+            '🌹': 'chat',
+            '🔪': 'okay',
+            '⚔️': 'sword',
+            '🎲': 'chat',
+            '🎯': 'chat',
+            '♥️': 'chat',
+            '♦️': 'chat',
+            '♣️': 'chat',
+            '♠️': 'chat'
+        };
+        
         // Инициализация звуков
         this.sounds = {
             playcard: new Audio('/sounds/playcard.aac'),
@@ -31,7 +62,10 @@ class CardGame {
             seven: new Audio('/sounds/seven.aac'),
             shuffle: new Audio('/sounds/shuffle.aac'),
             ace: new Audio('/sounds/ace.aac'),
-            eightplace: new Audio('/sounds/eightplace.aac')
+            eightplace: new Audio('/sounds/eightplace.aac'),
+            cat: new Audio('/sounds/cat.aac'),
+            okay: new Audio('/sounds/okay.aac'),
+            sword: new Audio('/sounds/sword.aac')
         };
         
         this.initElements();
@@ -898,8 +932,8 @@ class CardGame {
                 break;
             case 'reaction':
                 // Быстрая реакция от игрока
-                // Для лягушки играем специальный звук
-                const soundName = data.emoji === '🐸' ? 'frog' : 'chat';
+                // Используем маппинг звуков для реакций
+                const soundName = this.reactionSounds[data.emoji] || 'chat';
                 this.playSound(soundName);
                 this.showReactionBubble(data.player_id, data.emoji);
                 break;
