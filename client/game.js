@@ -1855,6 +1855,12 @@ class CardGame {
                     hasMoved = false;
                 }
             }, true);
+            
+            // Скролл колёсиком мыши по горизонтали
+            scrollContainer.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                scrollContainer.scrollLeft += e.deltaY;
+            }, { passive: false });
         }
     }
     
