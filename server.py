@@ -1755,25 +1755,30 @@ class GameServer:
         bots = [pid for pid in room.players if pid.startswith('bot_')]
         
         if bots:
-            # Выбираем одного случайного бота для ответа
-            responding_bot = random.choice(bots)
-            
-            # Список всех эмодзи для реакций
-            reaction_emojis = ['😡', '😄', '😎', '🙃', '🙁', '🤔', '😐', '👍', '👎', 
-                             '🫰', '🤯', '🤨', '😑', '😌', '😴', '🌚', '🐱', '🐸', 
-                             '🌹', '🔪', '⚔️', '🎲', '🎯', '♥️', '♦️', '♣️', '♠️']
-            
-            # Выбираем случайный эмодзи
-            bot_emoji = random.choice(reaction_emojis)
-            
-            # Отправляем реакцию от бота с небольшой задержкой
-            await asyncio.sleep(random.uniform(1.7, 3.9))
-            
-            await self.broadcast_to_room(room_id, {
-                'type': 'reaction',
-                'player_id': responding_bot,
-                'emoji': bot_emoji
-            })
+            # Запускаем ответ бота в отдельной задаче чтобы не блокировать игру
+            asyncio.create_task(self.bot_reaction_response(room_id, bots))
+    
+    async def bot_reaction_response(self, room_id: str, bots: list):
+        """Бот отвечает на реакцию с задержкой"""
+        # Выбираем одного случайного бота для ответа
+        responding_bot = random.choice(bots)
+        
+        # Список всех эмодзи для реакций
+        reaction_emojis = ['😡', '😄', '😎', '🙃', '🙁', '🤔', '😐', '👍', '👎', 
+                         '🫰', '🤯', '🤨', '😑', '😌', '😴', '🌚', '🐱', '🐸', 
+                         '🌹', '🔪', '⚔️', '🎲', '🎯', '♥️', '♦️', '♣️', '♠️']
+        
+        # Выбираем случайный эмодзи
+        bot_emoji = random.choice(reaction_emojis)
+        
+        # Отправляем реакцию от бота с небольшой задержкой
+        await asyncio.sleep(random.uniform(1.7, 3.9))
+        
+        await self.broadcast_to_room(room_id, {
+            'type': 'reaction',
+            'player_id': responding_bot,
+            'emoji': bot_emoji
+        })
     
     async def handle_message(self, ws: WebSocketServerProtocol, message: str):
         try:
