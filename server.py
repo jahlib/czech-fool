@@ -1738,12 +1738,42 @@ class GameServer:
         if not room_id:
             return
         
+        room = self.rooms[room_id]
+        
         # Отправляем реакцию всем игрокам в комнате
         await self.broadcast_to_room(room_id, {
             'type': 'reaction',
             'player_id': player_id,
             'emoji': emoji
         })
+        
+        # Если реакция отправлена боту, один случайный бот отвечает
+        if player_id.startswith('bot_'):
+            return  # Боты не отвечают на реакции других ботов
+        
+        # Находим всех ботов в комнате
+        bots = [pid for pid in room.players if pid.startswith('bot_')]
+        
+        if bots:
+            # Выбираем одного случайного бота для ответа
+            responding_bot = random.choice(bots)
+            
+            # Список всех эмодзи для реакций
+            reaction_emojis = ['😡', '😄', '😎', '🙃', '🙁', '🤔', '😐', '👍', '👎', 
+                             '🫰', '🤯', '🤨', '😑', '😌', '😴', '🌚', '🐱', '🐸', 
+                             '🌹', '🔪', '⚔️', '🎲', '🎯', '♥️', '♦️', '♣️', '♠️']
+            
+            # Выбираем случайный эмодзи
+            bot_emoji = random.choice(reaction_emojis)
+            
+            # Отправляем реакцию от бота с небольшой задержкой
+            await asyncio.sleep(random.uniform(0.5, 1.5))
+            
+            await self.broadcast_to_room(room_id, {
+                'type': 'reaction',
+                'player_id': responding_bot,
+                'emoji': bot_emoji
+            })
     
     async def handle_message(self, ws: WebSocketServerProtocol, message: str):
         try:
