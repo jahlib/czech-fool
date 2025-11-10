@@ -15,17 +15,24 @@ class CardGame {
         
         // Маппинг звуков для реакций
         this.reactionSounds = {
-            '😡': 'chat',
-            '😄': 'chat',
-            '😎': 'chat',
             '🙃': 'chat',
             '🙁': 'chat',
+            '😡': 'chat',
+            '😈': 'chat',
+            '😇': 'chat',
+            '😠': 'chat',
+            '😄': 'chat',
+            '😎': 'chat',
             '🤔': 'chat',
+            '😤': 'chat',
             '😐': 'chat',
             '👍': 'chat',
             '👎': 'chat',
+            '🤝': 'chat',
             '🫰': 'chat',
+            '🪬': 'chat',
             '🤯': 'chat',
+            '🤡': 'chat',
             '🤨': 'chat',
             '😑': 'chat',
             '😌': 'chat',
@@ -33,9 +40,18 @@ class CardGame {
             '🌚': 'chat',
             '🐱': 'cat',
             '🐸': 'frog',
+            '🐺': 'chat',
+            '🐊': 'chat',
+            '🐠': 'chat',
             '🌹': 'chat',
+            '🗿': 'huh',
+            '👁️': 'chat',
+            '💩': 'chat',
+            '🔩': 'pipe',
             '🔪': 'okay',
             '⚔️': 'sword',
+            '🎺': 'chat',
+            '🔮': 'chat',
             '🎲': 'chat',
             '🎯': 'chat',
             '♥️': 'chat',
@@ -65,7 +81,9 @@ class CardGame {
             eightplace: new Audio('/sounds/eightplace.aac'),
             cat: new Audio('/sounds/cat.aac'),
             okay: new Audio('/sounds/okay.aac'),
-            sword: new Audio('/sounds/sword.aac')
+            sword: new Audio('/sounds/sword.aac'),
+            pipe: new Audio('/sounds/pipe.aac'),
+            huh: new Audio('/sounds/huh.aac')
         };
         
         this.initElements();
