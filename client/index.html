@@ -248,17 +248,24 @@
         <!-- Модальное окно быстрых реакций -->
         <div id="reaction-picker" class="reaction-picker">
             <div class="reaction-picker-scroll">
-                <button class="reaction-btn" data-reaction="😡">😡</button>
-                <button class="reaction-btn" data-reaction="😄">😄</button>
-                <button class="reaction-btn" data-reaction="😎">😎</button>
                 <button class="reaction-btn" data-reaction="🙃">🙃</button>
                 <button class="reaction-btn" data-reaction="🙁">🙁</button>
+                <button class="reaction-btn" data-reaction="😡">😡</button>
+                <button class="reaction-btn" data-reaction="😈">😈</button>
+                <button class="reaction-btn" data-reaction="😇">😇</button>
+                <button class="reaction-btn" data-reaction="😠">😠</button>
+                <button class="reaction-btn" data-reaction="😄">😄</button>
+                <button class="reaction-btn" data-reaction="😎">😎</button>
                 <button class="reaction-btn" data-reaction="🤔">🤔</button>
+                <button class="reaction-btn" data-reaction="😤">😤</button>
                 <button class="reaction-btn" data-reaction="😐">😐</button>
                 <button class="reaction-btn" data-reaction="👍">👍</button>
                 <button class="reaction-btn" data-reaction="👎">👎</button>
+                <button class="reaction-btn" data-reaction="🤝">🤝</button>
                 <button class="reaction-btn" data-reaction="🫰">🫰</button>
+                <button class="reaction-btn" data-reaction="🪬">🪬</button>
                 <button class="reaction-btn" data-reaction="🤯">🤯</button>
+                <button class="reaction-btn" data-reaction="🤡">🤡</button>
                 <button class="reaction-btn" data-reaction="🤨">🤨</button>
                 <button class="reaction-btn" data-reaction="😑">😑</button>
                 <button class="reaction-btn" data-reaction="😌">😌</button>
@@ -266,9 +273,18 @@
                 <button class="reaction-btn" data-reaction="🌚">🌚</button>
                 <button class="reaction-btn" data-reaction="🐱">🐱</button>
                 <button class="reaction-btn" data-reaction="🐸">🐸</button>
+                <button class="reaction-btn" data-reaction="🐺">🐺</button>
+                <button class="reaction-btn" data-reaction="🐊">🐊</button>
+                <button class="reaction-btn" data-reaction="🐠">🐠</button>
                 <button class="reaction-btn" data-reaction="🌹">🌹</button>
+                <button class="reaction-btn" data-reaction="🗿">🗿</button>
+                <button class="reaction-btn" data-reaction="👁️">👁️</button>
+                <button class="reaction-btn" data-reaction="💩">💩</button>
+                <button class="reaction-btn" data-reaction="🔩">🔩</button>
                 <button class="reaction-btn" data-reaction="🔪">🔪</button>
                 <button class="reaction-btn" data-reaction="⚔️">⚔️</button>
+                <button class="reaction-btn" data-reaction="🎺">🎺</button>
+                <button class="reaction-btn" data-reaction="🔮">🔮</button>
                 <button class="reaction-btn" data-reaction="🎲">🎲</button>
                 <button class="reaction-btn" data-reaction="🎯">🎯</button>
                 <button class="reaction-btn" data-reaction="♥️">♥️</button>
@@ -418,6 +434,19 @@
                         </div>
                     </div>
                     
+                    <!-- Белые масти (только в ночном режиме) -->
+                    <div class="setting-item" id="white-suits-setting" style="display: none;">
+                        <span class="setting-label">🤍 Белые масти</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="white-suits-toggle">
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
                     <!-- Лог (только на мобильных) -->
                     <div class="setting-item mobile-only">
                         <span class="setting-label">📃 Показывать лог</span>
@@ -428,6 +457,28 @@
                                 <span class="toggle-slider"></span>
                                 <span class="deck-label">Вкл</span>
                             </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Выбор цвета рубашки карт -->
+                    <div class="setting-item">
+                        <span class="setting-label">🎴 Цвет рубашки карт</span>
+                        <div class="card-back-selector">
+                            <div class="card-back-option" data-back="gray">
+                                <div class="card-back-preview card-back-gray"></div>
+                            </div>
+                            <div class="card-back-option" data-back="green">
+                                <div class="card-back-preview card-back-green"></div>
+                            </div>
+                            <div class="card-back-option" data-back="blue">
+                                <div class="card-back-preview card-back-blue"></div>
+                            </div>
+                            <div class="card-back-option" data-back="red">
+                                <div class="card-back-preview card-back-red"></div>
+                            </div>
+                            <div class="card-back-option" data-back="purple">
+                                <div class="card-back-preview card-back-purple"></div>
+                            </div>
                         </div>
                     </div>
                 </div>

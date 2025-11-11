@@ -1498,7 +1498,13 @@ border: 2px solid #ffd700;
 }
 
 .setting-item:last-child {
+    display: flex;
+    width: 100%;
     border-bottom: none;
+    align-content: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .setting-label {
@@ -1580,8 +1586,21 @@ border: 2px solid #ffd700;
 }
 
 .suit-emoji {
+    z-index: 1012;
     font-size: 32px;
-    filter: drop-shadow(0px 0px 10px #727272c9);
+    filter: drop-shadow(0px 0px 0.8px #727272c9);
+}
+
+/* Красные масти в чате (логе) */
+body .suit-emoji-log.hearts,
+body .suit-emoji-log.diamonds {
+    filter: saturate(0.8) brightness(1.1) drop-shadow(rgba(194, 90, 90, 0.79) 0px 0px 0.8px);
+}
+
+/* Чёрные масти в чате (логе) */
+body .suit-emoji-log.clubs,
+body .suit-emoji-log.spades {
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #c7c7c75d);
 }
 
 .suit-btn:hover {
@@ -2389,4 +2408,133 @@ border: 2px solid #ffd700;
         opacity: 0;
         transform: translateX(-50%) translateY(-30px) scale(0.8);
     }
+}
+
+/* Card back selector */
+.card-back-selector {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 10px;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.card-back-option {
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    padding: 3px;
+    transition: all 0.2s ease;
+}
+
+.card-back-option:hover {
+    border-color: #f5d742;
+    transform: scale(1.05);
+}
+
+.card-back-option.selected {
+    border-color: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.card-back-preview {
+    width: 45px;
+    height: 65px;
+    border: 2px solid #333;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: white;
+    box-shadow: 0 3px 8px rgba(71, 71, 71, 0.3);
+}
+
+/* 5 вариантов цветов рубашки */
+.card-back-gray {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
+        linear-gradient(314deg, #646464, #9c9c9c);
+}
+
+.card-back-green {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #13301f, #2d5a3f);
+}
+
+.card-back-blue {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #1e2d3f, #174880);
+}
+
+.card-back-red {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3d1e1e, #6b1111);
+}
+
+.card-back-purple {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3d1c61, #47345a);
+}
+
+/* Применение выбранного цвета рубашки */
+body[data-card-back="gray"] .opponent-card,
+body[data-card-back="gray"] .deck,
+body[data-card-back="gray"] .card-back,
+body[data-card-back="gray"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
+        linear-gradient(314deg, #646464, #9c9c9c) !important;
+}
+
+body[data-card-back="green"] .opponent-card,
+body[data-card-back="green"] .deck,
+body[data-card-back="green"] .card-back,
+body[data-card-back="green"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #13301f, #2d5a3f) !important;
+}
+
+body[data-card-back="blue"] .opponent-card,
+body[data-card-back="blue"] .deck,
+body[data-card-back="blue"] .card-back,
+body[data-card-back="blue"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #1e2d3f, #174880) !important;
+}
+
+body[data-card-back="red"] .opponent-card,
+body[data-card-back="red"] .deck,
+body[data-card-back="red"] .card-back,
+body[data-card-back="red"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3d1e1e, #6b1111) !important;
+}
+
+body[data-card-back="purple"] .opponent-card,
+body[data-card-back="purple"] .deck,
+body[data-card-back="purple"] .card-back,
+body[data-card-back="purple"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3d1c61, #47345a) !important;
 }

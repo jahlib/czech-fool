@@ -181,8 +181,28 @@ class CardGame {
         
         if (this.nightModeEnabled) {
             document.body.classList.add('night-mode');
+            // Показываем настройку белых мастей
+            if (this.whiteSuitsSetting) {
+                this.whiteSuitsSetting.style.display = 'flex';
+            }
+            // Восстанавливаем состояние белых мастей если оно было сохранено
+            const savedWhiteSuits = localStorage.getItem('whiteSuitsEnabled');
+            if (savedWhiteSuits === 'true') {
+                this.whiteSuitsEnabled = true;
+                if (this.whiteSuitsToggle) {
+                    this.whiteSuitsToggle.checked = true;
+                }
+                document.body.classList.add('white-suits');
+            }
         } else {
             document.body.classList.remove('night-mode');
+            // Скрываем настройку белых мастей
+            if (this.whiteSuitsSetting) {
+                this.whiteSuitsSetting.style.display = 'none';
+            }
+            // Выключаем белые масти
+            this.whiteSuitsEnabled = false;
+            document.body.classList.remove('white-suits');
         }
         
         this.updateNightModeButton();
@@ -194,8 +214,28 @@ class CardGame {
         
         if (this.nightModeEnabled) {
             document.body.classList.add('night-mode');
+            // Показываем настройку белых мастей
+            if (this.whiteSuitsSetting) {
+                this.whiteSuitsSetting.style.display = 'flex';
+            }
+            // Восстанавливаем состояние белых мастей если оно было сохранено
+            const savedWhiteSuits = localStorage.getItem('whiteSuitsEnabled');
+            if (savedWhiteSuits === 'true') {
+                this.whiteSuitsEnabled = true;
+                if (this.whiteSuitsToggle) {
+                    this.whiteSuitsToggle.checked = true;
+                }
+                document.body.classList.add('white-suits');
+            }
         } else {
             document.body.classList.remove('night-mode');
+            // Скрываем настройку белых мастей
+            if (this.whiteSuitsSetting) {
+                this.whiteSuitsSetting.style.display = 'none';
+            }
+            // Выключаем белые масти
+            this.whiteSuitsEnabled = false;
+            document.body.classList.remove('white-suits');
         }
         
         // Синхронизируем с переключателем в настройках
@@ -220,6 +260,32 @@ class CardGame {
             // Дневной режим - показываем луну (переключит на ночной)
             if (sunIcon) sunIcon.style.display = 'none';
             if (moonIcon) moonIcon.style.display = 'inline';
+        }
+    }
+    
+    toggleWhiteSuits() {
+        this.whiteSuitsEnabled = this.whiteSuitsToggle.checked;
+        localStorage.setItem('whiteSuitsEnabled', this.whiteSuitsEnabled);
+        
+        if (this.whiteSuitsEnabled) {
+            document.body.classList.add('white-suits');
+        } else {
+            document.body.classList.remove('white-suits');
+        }
+    }
+    
+    setCardBackColor(color) {
+        this.cardBackColor = color;
+        localStorage.setItem('cardBackColor', color);
+        document.body.setAttribute('data-card-back', color);
+        
+        // Обновляем выделение в селекторе
+        document.querySelectorAll('.card-back-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        const selectedOption = document.querySelector(`.card-back-option[data-back="${color}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
         }
     }
 
@@ -279,8 +345,18 @@ class CardGame {
     
     goToLobby() {
         this.clearLocalStorage();
+        
+        // Закрываем WebSocket соединение перед перезагрузкой
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.close();
+        }
+        
         window.history.pushState({}, '', '/');
-        location.reload();
+        
+        // Небольшая задержка чтобы сообщение успело отправиться
+        setTimeout(() => {
+            location.reload();
+        }, 40);
     }
     
     initElements() {
@@ -369,6 +445,8 @@ class CardGame {
         this.animationsToggle = document.getElementById('animations-toggle');
         this.proModeToggle = document.getElementById('pro-mode-toggle');
         this.nightModeToggle = document.getElementById('night-mode-toggle');
+        this.whiteSuitsToggle = document.getElementById('white-suits-toggle');
+        this.whiteSuitsSetting = document.getElementById('white-suits-setting');
         this.logToggle = document.getElementById('log-toggle');
         
         // Leave game button and modal
@@ -396,6 +474,24 @@ class CardGame {
         if (this.nightModeEnabled) {
             document.body.classList.add('night-mode');
         }
+        
+        // Инициализируем белые масти
+        const savedWhiteSuits = localStorage.getItem('whiteSuitsEnabled');
+        this.whiteSuitsEnabled = savedWhiteSuits === 'true';
+        
+        // Показываем настройку белых мастей только если ночной режим включен
+        if (this.nightModeEnabled && this.whiteSuitsSetting) {
+            this.whiteSuitsSetting.style.display = 'flex';
+            // Применяем белые масти если они были включены
+            if (this.whiteSuitsEnabled) {
+                document.body.classList.add('white-suits');
+            }
+        }
+        
+        // Инициализируем цвет рубашки карт
+        const savedCardBack = localStorage.getItem('cardBackColor') || 'gray';
+        this.cardBackColor = savedCardBack;
+        document.body.setAttribute('data-card-back', savedCardBack);
         
         // Обновляем иконку кнопки ночного режима
         this.updateNightModeButton();
@@ -446,6 +542,7 @@ class CardGame {
         this.animationsToggle.addEventListener('change', () => this.toggleAnimations());
         this.proModeToggle.addEventListener('change', () => this.toggleProMode());
         this.nightModeToggle.addEventListener('change', () => this.toggleNightMode());
+        this.whiteSuitsToggle.addEventListener('change', () => this.toggleWhiteSuits());
         this.logToggle.addEventListener('change', () => this.toggleLog());
         
         // Leave game button
@@ -507,6 +604,14 @@ class CardGame {
                 (!this.playerInfo || !this.playerInfo.contains(e.target))) {
                 this.hideReactionPicker();
             }
+        });
+        
+        // Card back color selector
+        document.querySelectorAll('.card-back-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const backColor = e.currentTarget.dataset.back;
+                this.setCardBackColor(backColor);
+            });
         });
         
         // Rules handlers
@@ -1180,6 +1285,11 @@ class CardGame {
     }
     
     leaveRoom() {
+        // Отправляем сообщение о выходе из комнаты
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.send({ type: 'leave_room' });
+        }
+        
         // Скрываем блок с ссылкой если он был показан
         if (this.inviteLinkBlock) {
             this.inviteLinkBlock.style.display = 'none';
@@ -1628,7 +1738,22 @@ class CardGame {
         this.animationsToggle.checked = this.animationsEnabled;
         this.proModeToggle.checked = this.proModeEnabled;
         this.nightModeToggle.checked = this.nightModeEnabled;
+        this.whiteSuitsToggle.checked = this.whiteSuitsEnabled;
         this.fullscreenToggle.checked = !!document.fullscreenElement;
+        
+        // Показываем/скрываем настройку белых мастей в зависимости от ночного режима
+        if (this.whiteSuitsSetting) {
+            this.whiteSuitsSetting.style.display = this.nightModeEnabled ? 'flex' : 'none';
+        }
+        
+        // Синхронизируем выбранный цвет рубашки
+        document.querySelectorAll('.card-back-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        const selectedOption = document.querySelector(`.card-back-option[data-back="${this.cardBackColor}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
         
         // Синхронизируем состояние лога (проверяем есть ли класс hidden)
         if (this.gameLog) {

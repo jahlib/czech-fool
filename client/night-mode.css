@@ -389,6 +389,43 @@ body.night-mode .card {
     transition: all 0.3s ease;
 }
 
+/* Белые масти - только когда включена настройка */
+body.night-mode.white-suits .card.hearts,
+body.night-mode.white-suits .card.diamonds {
+    color: #ffffff;
+}
+
+body.night-mode.white-suits .card.hearts .card-rank,
+body.night-mode.white-suits .card.diamonds .card-rank {
+    color: #ffffff;
+    filter: grayscale(1) contrast(0) brightness(3);
+}
+
+body.night-mode.white-suits .card.hearts .card-suit,
+body.night-mode.white-suits .card.diamonds .card-suit {
+    color: #ffffff;
+    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
+}
+
+body.night-mode.white-suits .card.spades,
+body.night-mode.white-suits .card.clubs {
+    color: #000000;
+}
+
+body.night-mode.white-suits .card.spades .card-rank,
+body.night-mode.white-suits .card.clubs .card-rank {
+    color: #000000;
+    filter: contrast(4) saturate(0.5);
+}
+
+body.night-mode.white-suits .card.spades .card-suit,
+body.night-mode.white-suits .card.clubs .card-suit {
+    color: #000000;
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
+}
+
+
+/* Красные масти */
 body.night-mode .card.hearts,
 body.night-mode .card.diamonds {
     color: #ffffff;
@@ -397,31 +434,31 @@ body.night-mode .card.diamonds {
 body.night-mode .card.hearts .card-rank,
 body.night-mode .card.diamonds .card-rank {
     color: #ffffff;
-    filter: grayscale(1) contrast(0) brightness(3);
 }
 
 body.night-mode .card.hearts .card-suit,
 body.night-mode .card.diamonds .card-suit {
     color: #ffffff;
-    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
+    filter: saturate(0.8) brightness(1.1) drop-shadow(rgba(194, 90, 90, 0.79) 0px 0px 0.8px);
 }
 
 body.night-mode .card.spades,
 body.night-mode .card.clubs {
-    color: #1a1a1a;
+    color: #000000;
 }
 
 body.night-mode .card.spades .card-rank,
 body.night-mode .card.clubs .card-rank {
-    color: #1a1a1a;
+    color: #000000;
     filter: contrast(4) saturate(0.5);
 }
 
 body.night-mode .card.spades .card-suit,
 body.night-mode .card.clubs .card-suit {
-    color: #1a1a1a;
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
+    color: #000000;
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #838383c9);
 }
+
 
 body.night-mode .card:hover:not(.disabled) {
     border-color: #374151;
@@ -433,32 +470,20 @@ body.night-mode .card.disabled {
     background: #767676a6;
 }
 
-/* Рубашка карт с сетчатым градиентом */
+/* Рубашка карт - цвет управляется через data-card-back */
 body.night-mode .opponent-card {
-    background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #1e3d2b, #2d5a3f);
-    border-color: #1a3025;
-    color: #ffffff;
-}
-
-/* Колода - такая же рубашка как у противников */
-body.night-mode .deck {
-    background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #1e3d2b, #2d5a3f) !important;
     border-color: #1a3025 !important;
     color: #ffffff;
 }
 
-/* Рубашка карты (card-back) - колода */
+/* Колода - цвет управляется через data-card-back */
+body.night-mode .deck {
+    border-color: #1a3025 !important;
+    color: #ffffff;
+}
+
+/* Рубашка карты (card-back) - цвет управляется через data-card-back */
 body.night-mode .card-back {
-    background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #1e3d2b, #2d5a3f) !important;
     border-color: #1a3025 !important;
     color: #ffffff;
 }
@@ -499,16 +524,34 @@ body.night-mode #chosen-suit-indicator {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
-/* Красные масти в индикаторе делаем белыми */
+body.night-mode .suit-emoji {
+    z-index: 1012;
+    font-size: 32px;
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1.3px #727272c9);
+}
+
+/* Красные масти в индикаторе делаем белыми - только с white-suits */
+body.night-mode.white-suits .suit-emoji-indicator.hearts,
+body.night-mode.white-suits .suit-emoji-indicator.diamonds {
+    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
+}
+
+/* Чёрные масти в индикаторе - только с white-suits */
+body.night-mode.white-suits .suit-emoji-indicator.clubs,
+body.night-mode.white-suits .suit-emoji-indicator.spades {
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
+}
+
+/* Красные масти в индикаторе */
 body.night-mode .suit-emoji-indicator.hearts,
 body.night-mode .suit-emoji-indicator.diamonds {
-    filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
+    filter: saturate(0.8) brightness(1.1) drop-shadow(rgba(194, 90, 90, 0.79) 0px 0px 0.8px);
 }
 
 /* Чёрные масти в индикаторе */
 body.night-mode .suit-emoji-indicator.clubs,
 body.night-mode .suit-emoji-indicator.spades {
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1px #333333c9);
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #838383c9);
 }
 
 /* Player info - табло игрока */
@@ -661,15 +704,15 @@ body.night-mode .suit-btn {
     color: #ffffff;
 }
 
-/* Красные масти в suit-selector делаем белыми */
-body.night-mode .suit-btn[data-suit="hearts"] .suit-emoji,
-body.night-mode .suit-btn[data-suit="diamonds"] .suit-emoji {
+/* Красные масти в suit-selector делаем белыми - только с white-suits */
+body.night-mode.white-suits .suit-btn[data-suit="hearts"] .suit-emoji,
+body.night-mode.white-suits .suit-btn[data-suit="diamonds"] .suit-emoji {
     filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
 }
 
-/* Черные масти в suit-selector */
-body.night-mode .suit-btn[data-suit="spades"] .suit-emoji,
-body.night-mode .suit-btn[data-suit="clubs"] .suit-emoji {
+/* Черные масти в suit-selector - только с white-suits */
+body.night-mode.white-suits .suit-btn[data-suit="spades"] .suit-emoji,
+body.night-mode.white-suits .suit-btn[data-suit="clubs"] .suit-emoji {
     filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
 }
 
@@ -679,13 +722,13 @@ body.night-mode .suit-symbol {
     border-color: #3b5998;
 }
 
-body.night-mode .suit-symbol.hearts,
-body.night-mode .suit-symbol.diamonds {
+body.night-mode.white-suits .suit-symbol.hearts,
+body.night-mode.white-suits .suit-symbol.diamonds {
     filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
 }
 
-body.night-mode .suit-symbol.clubs,
-body.night-mode .suit-symbol.spades {
+body.night-mode.white-suits .suit-symbol.clubs,
+body.night-mode.white-suits .suit-symbol.spades {
     color: #ffffff;
     filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
 }
@@ -729,37 +772,37 @@ body.night-mode .result-card {
     filter: brightness(0.8);
 }
 
-body.night-mode .result-card.hearts,
-body.night-mode .result-card.diamonds {
+body.night-mode.white-suits .result-card.hearts,
+body.night-mode.white-suits .result-card.diamonds {
     color: #ffffff;
 }
 
-body.night-mode .result-card.hearts .card-rank,
-body.night-mode .result-card.diamonds .card-rank {
+body.night-mode.white-suits .result-card.hearts .card-rank,
+body.night-mode.white-suits .result-card.diamonds .card-rank {
     color: #ffffff;
     filter: grayscale(1) contrast(0) brightness(3);
 }
 
-body.night-mode .result-card.hearts .card-suit,
-body.night-mode .result-card.diamonds .card-suit {
+body.night-mode.white-suits .result-card.hearts .card-suit,
+body.night-mode.white-suits .result-card.diamonds .card-suit {
     color: #ffffff;
     filter: grayscale(1) contrast(0) brightness(3) drop-shadow(0px 0px 0.8px #ffffffd0);
 }
 
-body.night-mode .result-card.spades,
-body.night-mode .result-card.clubs {
-    color: #1a1a1a;
+body.night-mode.white-suits .result-card.spades,
+body.night-mode.white-suits .result-card.clubs {
+    color: #000000;
 }
 
-body.night-mode .result-card.spades .card-rank,
-body.night-mode .result-card.clubs .card-rank {
-    color: #1a1a1a;
+body.night-mode.white-suits .result-card.spades .card-rank,
+body.night-mode.white-suits .result-card.clubs .card-rank {
+    color: #000000;
     filter: contrast(4) saturate(0.5);
 }
 
-body.night-mode .result-card.spades .card-suit,
-body.night-mode .result-card.clubs .card-suit {
-    color: #1a1a1a;
+body.night-mode.white-suits .result-card.spades .card-suit,
+body.night-mode.white-suits .result-card.clubs .card-suit {
+    color: #000000;
     filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #333333c9);
 }
 
@@ -778,16 +821,28 @@ body.night-mode .log-entry.highlight {
     color: #5ecc7b;
 }
 
-/* Красные масти в чате (логе) делаем белыми */
+/* Красные масти в чате (логе) делаем белыми - только с white-suits */
+body.night-mode.white-suits .suit-emoji-log.hearts,
+body.night-mode.white-suits .suit-emoji-log.diamonds {
+    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 0.8px);
+}
+
+/* Чёрные масти в чате (логе) - только с white-suits */
+body.night-mode.white-suits .suit-emoji-log.clubs,
+body.night-mode.white-suits .suit-emoji-log.spades {
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #c7c7c742);
+}
+
+/* Красные масти в чате (логе) */
 body.night-mode .suit-emoji-log.hearts,
 body.night-mode .suit-emoji-log.diamonds {
-    filter: grayscale(1) contrast(1) brightness(3) drop-shadow(rgba(189, 189, 189, 0.79) 0px 0px 1px);
+    filter: saturate(0.8) brightness(1.1) drop-shadow(rgba(194, 90, 90, 0.79) 0px 0px 0.8px);
 }
 
 /* Чёрные масти в чате (логе) */
 body.night-mode .suit-emoji-log.clubs,
 body.night-mode .suit-emoji-log.spades {
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #c7c7c742);
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #c7c7c75d);
 }
 
 /* Error screen */
