@@ -1,30 +1,126 @@
 /* ===== ПОЛНЫЙ НОЧНОЙ РЕЖИМ ===== */
 
-/* Плавные переходы для всех элементов кроме летящих карт и тряски */
-*:not(.flying-card):not(.flying-card *):not(.shaking):not(.shaking *) {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease, transform 0.3s ease, opacity 0.3s ease, width 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+/* CSS переменные для ночных тем - дефолтная синяя */
+body.night-mode:not([data-background]),
+body.night-mode[data-background="default"] {
+    --theme-primary: #3b5998;
+    --theme-primary-hover: #5b79b8;
+    --theme-primary-dark: #2a3d52;
+    --theme-secondary: #2d4159;
+    --theme-secondary-dark: #1e2d3f;
+    --theme-accent: #5273b8;
+    --theme-accent-dark: #3b5998;
+    --theme-bg-light: #2a3d52;
+    --theme-bg-medium: #1e2d3f;
+    --theme-bg-dark: #1a2332;
+    --theme-border: #3b5998;
+    --theme-success: #5273b8;
+    --theme-success-bg: #2d4159;
+    --theme-toggle-off: #1e2d3f;
+    --theme-toggle-on: #5273b8;
+    --theme-modal-overlay: rgba(26, 35, 50, 0.95);
+}
+
+/* Коричневая ночная тема */
+body.night-mode[data-background="green"] {
+    --theme-primary: #b8956d;
+    --theme-primary-hover: #d8b58d;
+    --theme-primary-dark: #4a3d32;
+    --theme-secondary: #5c4c3e;
+    --theme-secondary-dark: #4a3d32;
+    --theme-accent: #8a7360;
+    --theme-accent-dark: #6d5a47;
+    --theme-bg-light: #4a3d32;
+    --theme-bg-medium: #3a2d22;
+    --theme-bg-dark: #2c2626;
+    --theme-border: #6d5a47;
+    --theme-success: #8a7360;
+    --theme-success-bg: #5c4c3e;
+    --theme-toggle-off: #3a2d22;
+    --theme-toggle-on: #b8956d;
+    --theme-modal-overlay: rgba(44, 38, 38, 0.95);
+}
+
+/* Зелёная ночная тема */
+body.night-mode[data-background="blue"] {
+    --theme-primary: #3d8a5f;
+    --theme-primary-hover: #5daa7f;
+    --theme-primary-dark: #11281c;
+    --theme-secondary: #163423;
+    --theme-secondary-dark: #11281c;
+    --theme-accent: #2d6342;
+    --theme-accent-dark: #1f4a2f;
+    --theme-bg-light: #163423;
+    --theme-bg-medium: #11281c;
+    --theme-bg-dark: #0d080e;
+    --theme-border: #1f4a2f;
+    --theme-success: #2d6342;
+    --theme-success-bg: #163423;
+    --theme-toggle-off: #11281c;
+    --theme-toggle-on: #3d8a5f;
+    --theme-modal-overlay: rgba(13, 8, 14, 0.95);
+}
+
+/* Фиолетовая ночная тема */
+body.night-mode[data-background="purple"] {
+    --theme-primary: #8d5faa;
+    --theme-primary-hover: #ad7fca;
+    --theme-primary-dark: #1c1522;
+    --theme-secondary: #231b2a;
+    --theme-secondary-dark: #1c1522;
+    --theme-accent: #4d3a5a;
+    --theme-accent-dark: #352840;
+    --theme-bg-light: #231b2a;
+    --theme-bg-medium: #1c1522;
+    --theme-bg-dark: #12091e;
+    --theme-border: #352840;
+    --theme-success: #4d3a5a;
+    --theme-success-bg: #231b2a;
+    --theme-toggle-off: #1c1522;
+    --theme-toggle-on: #8d5faa;
+    --theme-modal-overlay: rgba(18, 9, 30, 0.95);
+}
+
+/* Красная ночная тема */
+body.night-mode[data-background="orange"] {
+    --theme-primary: #c74a3d;
+    --theme-primary-hover: #e76a5d;
+    --theme-primary-dark: #230907;
+    --theme-secondary: #2e0b09;
+    --theme-secondary-dark: #230907;
+    --theme-accent: #5a1812;
+    --theme-accent-dark: #3d0f0c;
+    --theme-bg-light: #2e0b09;
+    --theme-bg-medium: #230907;
+    --theme-bg-dark: #1a0404;
+    --theme-border: #3d0f0c;
+    --theme-success: #5a1812;
+    --theme-success-bg: #2e0b09;
+    --theme-toggle-off: #230907;
+    --theme-toggle-on: #c74a3d;
+    --theme-modal-overlay: rgba(26, 4, 4, 0.95);
 }
 
 /* Базовые стили */
 body.night-mode {
-    background: #1a2332;
+    background: var(--theme-bg-dark);
     color: #ffffff;
 }
 
 /* Night mode toggle button */
 body.night-mode .night-mode-btn {
-    background: #2a3d52;
-    border-color: #3b5998;
+    background: var(--theme-primary-dark);
+    border-color: var(--theme-primary);
 }
 
 body.night-mode .night-mode-btn:hover {
-    background: #3b5998;
+    background: var(--theme-primary);
     box-shadow: 0 4px 12px rgba(94, 204, 123, 0.3);
 }
 
 /* Контейнеры */
 body.night-mode .container {
-    background: #243447;
+    background: var(--theme-bg-light);
     color: #ffffff;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
@@ -52,9 +148,9 @@ body.night-mode h6 {
 body.night-mode input[type="text"],
 body.night-mode input[type="number"],
 body.night-mode textarea {
-    background: #2a3d52;
+    background: var(--theme-bg-light);
     color: #ffffff;
-    border-color: #3b5998;
+    border-color: var(--theme-border);
 }
 
 body.night-mode input[type="text"]:focus,
@@ -66,7 +162,7 @@ body.night-mode textarea:focus {
 body.night-mode input[type="text"]::placeholder,
 body.night-mode input[type="number"]::placeholder,
 body.night-mode textarea::placeholder {
-    color: #9ca3af;
+    color: var(--theme-secondary-dark);
 }
 
 /* Кнопки */
@@ -75,22 +171,22 @@ body.night-mode .btn {
 }
 
 body.night-mode .btn-primary {
-    background: #3b5998;
+    background: var(--theme-primary);
     color: #ffffff!important;
 }
 
 body.night-mode .btn-primary:hover {
-    background: #4c6baf;
+    background: var(--theme-primary-hover);
     box-shadow: 0 5px 15px rgba(59, 89, 152, 0.4);
 }
 
 body.night-mode .btn-secondary {
-    background: #2a3d52;
+    background: var(--theme-primary-dark);
     color: #ffffff;
 }
 
 body.night-mode .btn-secondary:hover {
-    background: #3b5998;
+    background: var(--theme-primary);
 }
 
 body.night-mode .btn:disabled {
@@ -98,38 +194,38 @@ body.night-mode .btn:disabled {
 }
 
 body.night-mode .btn-primary:disabled:hover {
-    background: #3b5998 !important;
+    background: var(--theme-primary) !important;
 }
 
 body.night-mode .btn-secondary:disabled:hover {
-    background: #2a3d52 !important;
+    background: var(--theme-primary-dark) !important;
 }
 
 /* Invite Link Block */
 body.night-mode #invite-link-block {
     background: rgba(59, 89, 152, 0.2);
-    border-color: #3b5998;
+    border-color: var(--theme-border);
 }
 
 body.night-mode .invite-hint {
-    color: #9ca3af;
+    color: var(--theme-secondary-dark);
 }
 
 body.night-mode .invite-link {
-    background: #2a3d52;
-    color: #5ecc7b;
-    border-color: #3b5998;
+    background: var(--theme-bg-light);
+    color: var(--theme-accent);
+    border-color: var(--theme-border);
 }
 
 body.night-mode .btn-copy,
 body.night-mode .btn-share {
-    background: #3b5998;
-    color: #ffffff;
+    background: var(--theme-primary-dark);
+    border-color: var(--theme-primary);
 }
 
 body.night-mode .btn-copy:hover,
 body.night-mode .btn-share:hover {
-    background: #4c6baf;
+    background: var(--theme-primary);
 }
 
 /* Bot Game Section */
@@ -142,7 +238,7 @@ body.night-mode #bot-game-section h3 {
 }
 
 body.night-mode .btn-bot {
-    background: linear-gradient(135deg, #3b5998 0%, #2a3d52 100%);
+    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
@@ -152,8 +248,8 @@ body.night-mode .btn-bot:hover {
 
 /* Rooms List */
 body.night-mode .room-card {
-    background: #2a3d52;
-    border-color: #3b5998;
+    background: var(--theme-bg-light);
+    border-color: var(--theme-border);
     color: #ffffff;
 }
 
@@ -171,8 +267,8 @@ body.night-mode .room-card p {
 }
 
 body.night-mode .room-card.room-full {
-    background: #1e2d3f;
-    border-color: #374151;
+    background: var(--theme-bg-medium);
+    border-color: var(--theme-border);
     opacity: 0.6;
 }
 
@@ -186,19 +282,19 @@ body.night-mode #players-list {
 }
 
 body.night-mode .player-card {
-    background: #2a3d52;
-    border-color: #3b5998;
+    background: var(--theme-bg-light);
+    border-color: var(--theme-border);
     color: #ffffff;
 }
 
 body.night-mode .player-card.ready {
-    border-color: #2d5a3f;
-    background: #1e3d2b;
+    border-color: var(--theme-success);
+    background: var(--theme-success-bg);
 }
 
 body.night-mode .player-card.current {
-    border-color: #5ecc7b;
-    background: #1e3d2b;
+    border-color: var(--theme-success);
+    background: var(--theme-success-bg);
     box-shadow: 0 0 20px rgba(94, 204, 123, 0.3);
 }
 
@@ -243,25 +339,25 @@ body.night-mode .deck-label {
 }
 
 body.night-mode .toggle-slider {
-    background-color: #3b5998;
+    background-color: var(--theme-toggle-off);
 }
 
 body.night-mode input:checked + .toggle-slider {
-    background-color: #2d5a3f;
+    background-color: var(--theme-toggle-on);
 }
 
 body.night-mode .deck-size-toggle input[type="checkbox"]:checked ~ .deck-label:last-child {
-    color: #5ecc7b;
+    color: var(--theme-toggle-on);
 }
 
 body.night-mode .deck-size-toggle input[type="checkbox"]:not(:checked) ~ .deck-label:first-child {
-    color: #5ecc7b;
+    color: var(--theme-toggle-on);
 }
 
 /* Countdown Timer */
 body.night-mode .countdown-timer {
-    background: linear-gradient(135deg, #2d5a3f, #1e3d2b);
-    border-color: #5ecc7b;
+    background: linear-gradient(135deg, var(--theme-success), var(--theme-success-bg));
+    border-color: var(--theme-success);
 }
 
 body.night-mode #countdown-number {
@@ -269,34 +365,34 @@ body.night-mode #countdown-number {
 }
 
 body.night-mode #countdown-text {
-    color: #5ecc7b;
+    color: var(--theme-success);
 }
 
 /* Модальные окна */
 body.night-mode .modal {
-    background-color: rgba(26, 35, 50, 0.95);
+    background-color: var(--theme-modal-overlay);
 }
 
 body.night-mode .modal-content,
 body.night-mode .settings-modal-content,
 body.night-mode .alert-modal .modal-content,
 body.night-mode .rules-modal .modal-content {
-    background: #243447;
+    background: var(--theme-bg-dark);
     color: #ffffff;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
 }
 
 body.night-mode #settings-modal .modal-content {
-    background: #243447;
+    background: var(--theme-bg-dark);
 }
 
 body.night-mode .close-modal-btn {
-    background: #3b5998;
+    background: var(--theme-primary);
     color: #ffffff;
 }
 
 body.night-mode .close-modal-btn:hover {
-    background: #4c6baf;
+    background: var(--theme-primary-hover);
 }
 
 /* Settings */
@@ -314,7 +410,7 @@ body.night-mode .setting-label {
 
 /* Правила */
 body.night-mode .rules-content {
-    background: #243447;
+    background: var(--theme-bg-light);
     color: #ffffff;
 }
 
@@ -370,10 +466,7 @@ body.night-mode .alert-text {
     color: #ffffff;
 }
 
-/* Игровой стол */
-body.night-mode .game-table {
-    background: linear-gradient(155deg, #2a3d52 0%, #1a2332 100%);
-}
+/* Игровой стол - фон задаётся через data-background */
 
 body.night-mode .game-circle {
     background: radial-gradient(circle, #1e2d3f 0%, #141d2b 100%);
@@ -490,27 +583,33 @@ body.night-mode .card-back {
 
 /* Deck count */
 body.night-mode .deck-count {
-    background: #1e3d2b;
+    background: var(--theme-success-bg);
     color: #5ecc7b;
-    border-color: #2d5a3f;
+    border-color: var(--theme-success);
 }
 
 body.night-mode .deck-count-badge {
-    background: #2d5a3f;
+    background: var(--theme-success);
     color: #ffffff;
-    border-color: #2d5a3f;
+    border-color: var(--theme-success);
 }
 
 /* Discard pile */
 body.night-mode .discard-pile {
-    border-color: #3b5998;
+    border-color: var(--theme-border);
 }
 
 /* Chosen suit */
-body.night-mode .chosen-suit {
-    background: #2a3d52;
+body.night-mode #chat-input {
+    background: var(--theme-bg-medium);
     color: #ffffff;
-    border-color: #3b5998;
+    border-color: var(--theme-border);
+}
+
+body.night-mode .chosen-suit {
+    background: var(--theme-bg-light);
+    color: #ffffff;
+    border-color: var(--theme-border);
 }
 
 body.night-mode .chosen-suit-label {
@@ -520,7 +619,7 @@ body.night-mode .chosen-suit-label {
 /* Индикатор выбранной масти */
 body.night-mode #chosen-suit-indicator {
     background: rgb(140 147 157);
-    border-color: #5ecc7b;
+    border-color: var(--theme-success);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
@@ -556,9 +655,9 @@ body.night-mode .suit-emoji-indicator.spades {
 
 /* Player info - табло игрока */
 body.night-mode .player-info {
-    background: rgba(42, 61, 82, 0.95);
+    background: var(--theme-bg-light);
     color: #ffffff;
-    border-color: #3b5998;
+    border-color: var(--theme-border);
 }
 
 body.night-mode .player-info h3 {
@@ -578,7 +677,7 @@ body.night-mode .player-score {
 }
 
 body.night-mode .player-info.current-turn {
-    background: linear-gradient(135deg, #3b5998 0%, #4c6baf 100%);
+    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-hover) 100%);
     border-color: #5ecc7b !important;
 }
 
@@ -589,7 +688,7 @@ body.night-mode .player-info.current-turn .player-score {
 
 /* Player hand */
 body.night-mode .player-hand {
-    background: rgba(42, 61, 82, 0.95);
+    background: var(--theme-bg-light);
 }
 
 body.night-mode .player-hand.current-turn {
@@ -602,7 +701,7 @@ body.night-mode .opponent-area {
 }
 
 body.night-mode .opponent-info {
-    background: rgba(42, 61, 82, 0.95);
+    background: var(--theme-bg-dark);
     color: #ffffff;
 }
 
@@ -615,7 +714,7 @@ body.night-mode .opponent-score {
 }
 
 body.night-mode .opponent-area.current-turn .opponent-info {
-    background: linear-gradient(135deg, #3b5998 0%, #4c6baf 100%);
+    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-hover) 100%);
     border-color: #5ecc7b;
     box-shadow: 0 4px 15px rgba(94, 204, 123, 0.6),
                 0 0 20px rgba(94, 204, 123, 0.4);
@@ -633,23 +732,23 @@ body.night-mode .opponent-area.current-turn .opponent-cards {
 
 /* Action buttons */
 body.night-mode #draw-card-btn,
-body.night-mode #skip-turn-btn {
-    background: #3b5998;
+body.night-mode .chat-btn:hover {
+    background: var(--theme-primary);
     color: #ffffff;
 }
 
 body.night-mode #draw-card-btn:hover,
-body.night-mode #skip-turn-btn:hover {
-    background: #4c6baf;
+body.night-mode #send-chat-btn:hover {
+    background: var(--theme-primary-hover);
 }
 
 body.night-mode #ready-toggle-btn {
-    background: #3b5998;
+    background: var(--theme-primary);
     color: #ffffff;
 }
 
 body.night-mode #ready-toggle-btn:hover {
-    background: #4c6baf;
+    background: var(--theme-primary-hover);
 }
 
 body.night-mode #ready-toggle-btn.ready {
@@ -661,9 +760,9 @@ body.night-mode #ready-toggle-btn.ready:hover {
 }
 
 /* Leave game button */
-body.night-mode #leave-game-btn {
-    background: #3b5998;
-    color: #ffffff;
+body.night-mode .leave-game-btn {
+    background: #3d1e1e;
+    border-color: #e74c3c;
 }
 
 body.night-mode #leave-game-btn:hover {
@@ -672,17 +771,17 @@ body.night-mode #leave-game-btn:hover {
 
 /* Settings button */
 body.night-mode #settings-btn {
-    background: #2a3d52;
+    background: var(--theme-primary-dark);
     color: #ffffff;
 }
 
-body.night-mode #settings-btn:hover {
-    background: #3b5998;
+body.night-mode .settings-btn:hover {
+    background: var(--theme-primary);
 }
 
 /* Suit selection modal */
 body.night-mode #suit-selection-modal .modal-content {
-    background: #243447;
+    background: var(--theme-bg-light);
 }
 
 body.night-mode .suit-selection h3 {
@@ -690,14 +789,14 @@ body.night-mode .suit-selection h3 {
 }
 
 body.night-mode .suit-btn {
-    background: #373f4f;
-    color: white;
-    border-color: #3b5998;
+    background: var(--theme-bg-medium);
+    color: #ffffff;
+    border-color: var(--theme-border);
 }
 
-body.night-mode .suit-btn:hover {
-    background: #3b5998;
-    border-color: #5ecc7b;
+body.night-mode .rules-btn:hover {
+    background: var(--theme-primary);
+    border-color: var(--theme-primary);
 }
 
 body.night-mode .suit-btn {
@@ -717,9 +816,9 @@ body.night-mode.white-suits .suit-btn[data-suit="clubs"] .suit-emoji {
 }
 
 /* Suit symbols (анимация выбора масти) */
-body.night-mode .suit-symbol {
-    background: #2a3d52;
-    border-color: #3b5998;
+body.night-mode .settings-btn {
+    background: var(--theme-primary-dark);
+    border-color: var(--theme-border);
 }
 
 body.night-mode.white-suits .suit-symbol.hearts,
@@ -738,8 +837,8 @@ body.night-mode .suit-arrow {
 }
 
 /* Results modal */
-body.night-mode #results-modal .modal-content {
-    background: #243447;
+body.night-mode .chat-modal-content {
+    background: var(--theme-bg-light);
 }
 
 body.night-mode #results-content h2 {
@@ -747,14 +846,14 @@ body.night-mode #results-content h2 {
 }
 
 body.night-mode .result-item {
-    background: #2a3d52;
+    background: var(--theme-bg-light);
     color: #ffffff;
-    border-color: #3b5998;
+    border-color: var(--theme-border);
 }
 
 body.night-mode .result-item.winner {
-    background: #1e3d2b;
-    border-color: #2d5a3f;
+    background: var(--theme-success-bg);
+    border-color: var(--theme-success);
 }
 
 body.night-mode .result-item h4 {
@@ -808,9 +907,9 @@ body.night-mode.white-suits .result-card.clubs .card-suit {
 
 /* Game log */
 body.night-mode #game-log {
-    background: rgba(26, 35, 50, 0.9);
+    background: var(--theme-bg-dark);
     color: #ffffff;
-    border-color: #3b5998;
+    border-color: var(--theme-border);
 }
 
 body.night-mode .log-entry {
@@ -847,11 +946,11 @@ body.night-mode .suit-emoji-log.spades {
 
 /* Error screen */
 body.night-mode #error-screen {
-    background: #1a2332;
+    background: var(--theme-bg-dark);
 }
 
 body.night-mode #error-screen .container {
-    background: #243447;
+    background: var(--theme-bg-medium);
 }
 
 body.night-mode #error-message {
@@ -860,12 +959,12 @@ body.night-mode #error-message {
 
 /* Lobby screen */
 body.night-mode #lobby-screen {
-    background: #1a2332;
+    background: var(--theme-bg-dark);
 }
 
 /* Room screen */
-body.night-mode #room-screen {
-    background: #1a2332;
+body.night-mode .chat-messages {
+    background: var(--theme-bg-medium);
 }
 
 /* Все параграфы и тексты */
@@ -892,16 +991,16 @@ body.night-mode ::-webkit-scrollbar {
 }
 
 body.night-mode ::-webkit-scrollbar-track {
-    background: #1a2332;
+    background: var(--theme-bg-dark);
 }
 
 body.night-mode ::-webkit-scrollbar-thumb {
-    background: #3b5998;
+    background: var(--theme-primary);
     border-radius: 6px;
 }
 
 body.night-mode ::-webkit-scrollbar-thumb:hover {
-    background: #4c6baf;
+    background: var(--theme-primary-hover);
 }
 
 /* Mobile only elements */
@@ -909,15 +1008,262 @@ body.night-mode .mobile-only {
     color: #ffffff;
 }
 
-/* Flying card animation */
+/* Flying card animation - цвет управляется через data-card-back */
 body.night-mode .flying-card {
-    background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #1e3d2b, #2d5a3f);
+    border-color: #303030 !important;
+    color: #ffffff;
 }
 
 /* Deck shuffling */
 body.night-mode .deck-shuffling {
     filter: brightness(1.2);
+}
+
+/* Card back selector в ночном режиме */
+body.night-mode .card-back-preview {
+    border: 2px solid #555;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+body.night-mode .card-back-option:hover {
+    border-color: #5ecc7b;
+}
+
+body.night-mode .card-back-option.selected {
+    border-color: #5ecc7b;
+    box-shadow: 0 0 10px rgba(94, 204, 123, 0.5);
+}
+
+/* 5 вариантов цветов рубашки для ночного режима */
+body.night-mode .card-back-gray {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3a3939 20%, #7a7a7a 100%) !important;
+    filter: saturate(1.1) brightness(0.93);
+    border-color: #2a2a2a !important;
+}
+
+body.night-mode .card-back-green {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #13301f, #2d5a3f);
+    filter: saturate(0.7) brightness(1.1);
+}
+
+body.night-mode .card-back-blue {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #1e2d3f, #174880);
+    filter: saturate(0.7) brightness(1.1);
+}
+
+body.night-mode .card-back-red {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3d1e1e, #6b1111);
+    filter: saturate(0.7) brightness(1.1);
+}
+
+body.night-mode .card-back-purple {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3d1c61, #47345a);
+    filter: saturate(0.7) brightness(1.1);
+}
+
+/* Применение выбранного цвета рубашки для ночного режима */
+body.night-mode[data-card-back="gray"] .opponent-card,
+body.night-mode[data-card-back="gray"] .deck,
+body.night-mode[data-card-back="gray"] .card-back,
+body.night-mode[data-card-back="gray"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3a3939 20%, #7a7a7a 100%) !important;
+    filter: saturate(1.1) brightness(0.93);
+    border-color: #2a2a2a !important;
+}
+
+body.night-mode[data-card-back="green"] .opponent-card,
+body.night-mode[data-card-back="green"] .deck,
+body.night-mode[data-card-back="green"] .card-back,
+body.night-mode[data-card-back="green"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #13301f, #2d5a3f) !important;
+    filter: saturate(0.7) brightness(1.1);
+    border-color: #13301f !important;
+}
+
+body.night-mode[data-card-back="blue"] .opponent-card,
+body.night-mode[data-card-back="blue"] .deck,
+body.night-mode[data-card-back="blue"] .card-back,
+body.night-mode[data-card-back="blue"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #1e2d3f, #174880) !important;
+    filter: saturate(0.7) brightness(1.1);
+    border-color: #1e2d3f !important;
+}
+
+body.night-mode[data-card-back="red"] .opponent-card,
+body.night-mode[data-card-back="red"] .deck,
+body.night-mode[data-card-back="red"] .card-back,
+body.night-mode[data-card-back="red"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3d1e1e, #6b1111) !important;
+    filter: saturate(0.7) brightness(1.1);
+    border-color: #200f0f !important;
+}
+
+body.night-mode[data-card-back="purple"] .opponent-card,
+body.night-mode[data-card-back="purple"] .deck,
+body.night-mode[data-card-back="purple"] .card-back,
+body.night-mode[data-card-back="purple"] .flying-card {
+    background: 
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
+        linear-gradient(314deg, #3d1c61, #47345a) !important;
+    filter: saturate(0.7) brightness(1.1);
+    border-color: #241436 !important;
+}
+
+/* Background selector в ночном режиме */
+body.night-mode .background-option {
+    border-color: transparent;
+}
+
+body.night-mode .background-option:hover {
+    border-color: #5ecc7b;
+}
+
+body.night-mode .background-option.selected {
+    border-color: #5ecc7b;
+    box-shadow: 0 0 10px rgba(94, 204, 123, 0.5);
+}
+
+body.night-mode .background-preview {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* 5 вариантов фонов для ночного режима - тёмные пастельные */
+body.night-mode .bg-default {
+    background: linear-gradient(155deg, #2a3d52 0%, #1a2332 100%);
+}
+
+body.night-mode .bg-green {
+    background: linear-gradient(167deg, #5c4c3e 10%, #2c2626 90%);
+}
+
+body.night-mode .bg-blue {
+    background: linear-gradient(199deg, #163423 10%, #0d080e 80%);
+}
+
+body.night-mode .bg-purple {
+    background: linear-gradient(67deg, #231b2a 20%, #12091e 100%);
+}
+
+body.night-mode .bg-orange {
+    background: linear-gradient(322deg, #1a0404 10%, #2e0b09 70%);
+}
+
+/* Применение выбранного фона для ночного режима */
+body.night-mode[data-background="default"] .game-table,
+body.night-mode:not([data-background]) .game-table {
+    background: linear-gradient(155deg, #2a3d52 0%, #1a2332 100%);
+}
+
+body.night-mode[data-background="default"] .game-circle,
+body.night-mode:not([data-background]) .game-circle {
+    background: radial-gradient(circle, #2d4159 0%, #1e2d3f 100%);
+    border-color: #5273b8;
+}
+
+body.night-mode[data-background="green"] .game-table {
+    background: linear-gradient(167deg, #5c4c3e 10%, #2c2626 90%);
+}
+
+body.night-mode[data-background="green"] .game-circle {
+    background: radial-gradient(circle, #6d5a47 0%, #4a3d32 100%);
+    border-color: #8a7360;
+}
+
+body.night-mode[data-background="blue"] .game-table {
+    background: linear-gradient(199deg, #163423 10%, #0d080e 80%);
+}
+
+body.night-mode[data-background="blue"] .game-circle {
+    background: radial-gradient(circle, #1f4a2f 0%, #11281c 100%);
+    border-color: #2d6342;
+}
+
+body.night-mode[data-background="purple"] .game-table {
+    background: linear-gradient(67deg, #231b2a 20%, #12091e 100%);
+}
+
+body.night-mode[data-background="purple"] .game-circle {
+    background: radial-gradient(circle, #352840 0%, #1c1522 100%);
+    border-color: #4d3a5a;
+}
+
+body.night-mode[data-background="orange"] .game-table {
+    background: linear-gradient(322deg, #1a0404 10%, #2e0b09 70%);
+}
+
+body.night-mode[data-background="orange"] .game-circle {
+    background: radial-gradient(circle, #3d0f0c 0%, #230907 100%);
+    border-color: #5a1812;
+}
+
+/* Фон руки игрока под каждый цвет фона */
+body.night-mode[data-background="default"] .player-hand,
+body.night-mode:not([data-background]) .player-hand {
+    background: rgba(42, 61, 82, 0.95);
+}
+
+body.night-mode[data-background="green"] .player-hand {
+    background: rgba(92, 76, 62, 0.95);
+}
+
+body.night-mode[data-background="blue"] .player-hand {
+    background: rgba(22, 52, 35, 0.95);
+}
+
+body.night-mode[data-background="purple"] .player-hand {
+    background: rgba(35, 27, 42, 0.95);
+}
+
+body.night-mode[data-background="orange"] .player-hand {
+    background: rgba(46, 11, 9, 0.95);
+}
+
+/* Рамка карт под каждый фон для ночного режима */
+body.night-mode[data-background="default"] .card,
+body.night-mode:not([data-background]) .card {
+    border-color: #1e2d3f;
+}
+
+body.night-mode[data-background="green"] .card {
+    border-color: #4a3d32;
+}
+
+body.night-mode[data-background="blue"] .card {
+    border-color: #11281c;
+}
+
+body.night-mode[data-background="purple"] .card {
+    border-color: #1c1522;
+}
+
+body.night-mode[data-background="orange"] .card {
+    border-color: #230907;
 }

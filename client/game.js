@@ -17,7 +17,7 @@ class CardGame {
         this.reactionSounds = {
             '🙃': 'chat',
             '🙁': 'chat',
-            '😡': 'chat',
+            '😡': 'error',
             '😈': 'chat',
             '😇': 'chat',
             '😠': 'chat',
@@ -33,24 +33,27 @@ class CardGame {
             '🪬': 'chat',
             '🤯': 'chat',
             '🤡': 'chat',
-            '🤨': 'chat',
+            '🤨': 'vine',
             '😑': 'chat',
             '😌': 'chat',
             '😴': 'chat',
-            '🌚': 'chat',
+            '🌚': 'cave',
             '🐱': 'cat',
             '🐸': 'frog',
-            '🐺': 'chat',
+            '🐺': 'driff',
             '🐊': 'dance',
             '🐠': 'chat',
-            '🌹': 'chat',
+            '🦆': 'duck',
+            '🌹': 'wow',
             '🗿': 'huh',
             '👁️': 'chat',
-            '💩': 'chat',
+            '💩': 'fart',
             '🔩': 'pipe',
             '🔪': 'okay',
             '⚔️': 'sword',
-            '🎺': 'chat',
+            '🧀': 'meme',
+            '🎺': 'trumpet',
+            '🎁': 'chat',
             '🔮': 'chat',
             '🎲': 'chat',
             '🎯': 'chat',
@@ -85,7 +88,16 @@ class CardGame {
             pipe: new Audio('/sounds/pipe.aac'),
             huh: new Audio('/sounds/huh.aac'),
             pogodika: new Audio('/sounds/pogodika.aac'),
-            dance: new Audio('/sounds/dance.aac')
+            dance: new Audio('/sounds/dance.aac'),
+            fart: new Audio('/sounds/fart.aac'),
+            wow: new Audio('/sounds/wow.aac'),
+            cave: new Audio('/sounds/cave.aac'),
+            trumpet: new Audio('/sounds/trumpet.aac'),
+            driff: new Audio('/sounds/driff.aac'),
+            meme: new Audio('/sounds/meme.aac'),
+            error: new Audio('/sounds/error.aac'),
+            vine: new Audio('/sounds/vine.aac'),
+            duck: new Audio('/sounds/duck.aac')
         };
         
         this.initElements();
@@ -284,6 +296,21 @@ class CardGame {
             opt.classList.remove('selected');
         });
         const selectedOption = document.querySelector(`.card-back-option[data-back="${color}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+    }
+    
+    setBackgroundColor(color) {
+        this.backgroundColor = color;
+        localStorage.setItem('backgroundColor', color);
+        document.body.setAttribute('data-background', color);
+        
+        // Обновляем выделение в селекторе
+        document.querySelectorAll('.background-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        const selectedOption = document.querySelector(`.background-option[data-bg="${color}"]`);
         if (selectedOption) {
             selectedOption.classList.add('selected');
         }
@@ -493,6 +520,11 @@ class CardGame {
         this.cardBackColor = savedCardBack;
         document.body.setAttribute('data-card-back', savedCardBack);
         
+        // Инициализируем цвет фона
+        const savedBackground = localStorage.getItem('backgroundColor') || 'default';
+        this.backgroundColor = savedBackground;
+        document.body.setAttribute('data-background', savedBackground);
+        
         // Обновляем иконку кнопки ночного режима
         this.updateNightModeButton();
     }
@@ -611,6 +643,14 @@ class CardGame {
             option.addEventListener('click', (e) => {
                 const backColor = e.currentTarget.dataset.back;
                 this.setCardBackColor(backColor);
+            });
+        });
+        
+        // Background color selector
+        document.querySelectorAll('.background-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const bgColor = e.currentTarget.dataset.bg;
+                this.setBackgroundColor(bgColor);
             });
         });
         
@@ -1753,6 +1793,15 @@ class CardGame {
         const selectedOption = document.querySelector(`.card-back-option[data-back="${this.cardBackColor}"]`);
         if (selectedOption) {
             selectedOption.classList.add('selected');
+        }
+        
+        // Синхронизируем выбранный цвет фона
+        document.querySelectorAll('.background-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        const selectedBgOption = document.querySelector(`.background-option[data-bg="${this.backgroundColor}"]`);
+        if (selectedBgOption) {
+            selectedBgOption.classList.add('selected');
         }
         
         // Синхронизируем состояние лога (проверяем есть ли класс hidden)

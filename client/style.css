@@ -4,14 +4,116 @@
     box-sizing: border-box;
 }
 
+/* Плавные переходы для всех элементов кроме летящих карт и тряски */
+*:not(.flying-card):not(.flying-card *):not(.shaking):not(.shaking *):not(.card):not(.card *):not(.deck-shuffling):not(.deck-shuffling *) {
+    transition: all 0.3s ease;
+}
+
 html {
     /* Поддержка safe area для iOS */
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
+/* CSS переменные для тем - дефолтная зелёная тема */
+:root,
+body:not([data-background]),
+body[data-background="default"] {
+    --theme-primary: #27b790;
+    --theme-primary-hover: #5eda93;
+    --theme-primary-dark: #1b6d3e;
+    --theme-secondary: #32a082;
+    --theme-secondary-dark: #28866d;
+    --theme-accent: #f5d742;
+    --theme-accent-dark: #d4af37;
+    --theme-bg-light: #f8f9fa;
+    --theme-bg-medium: #e0e0e0;
+    --theme-bg-dark: #626262;
+    --theme-border: #e0e0e0;
+    --theme-success: #4caf50;
+    --theme-success-bg: #e8f5e9;
+    --theme-toggle-off: #ccc;
+    --theme-toggle-on: #1b6d3e;
+}
+
+/* Бирюзовая тема */
+body[data-background="green"] {
+    --theme-primary: #69b8ca;
+    --theme-primary-hover: #3daac2;
+    --theme-primary-dark: #2d5266;
+    --theme-secondary: #3d6a7a;
+    --theme-secondary-dark: #25454f;
+    --theme-accent: #7db3c7;
+    --theme-accent-dark: #5a8fa3;
+    --theme-bg-light: #e8f0f2;
+    --theme-bg-medium: #d0dee2;
+    --theme-bg-dark: #8fa3ab;
+    --theme-border: #c0d0d5;
+    --theme-success: #5a8fa3;
+    --theme-success-bg: #d8e8ed;
+    --theme-toggle-off: #a0b5bd;
+    --theme-toggle-on: #69b8ca;
+}
+
+/* Коричневая тема */
+body[data-background="blue"] {
+    --theme-primary: #c17a5d;
+    --theme-primary-hover: #d89a7d;
+    --theme-primary-dark: #523c26;
+    --theme-secondary: #5d4539;
+    --theme-secondary-dark: #3d2b1f;
+    --theme-accent: #a8856a;
+    --theme-accent-dark: #8b6b4d;
+    --theme-bg-light: #f2ede8;
+    --theme-bg-medium: #e2d5d0;
+    --theme-bg-dark: #9d8a7d;
+    --theme-border: #d5c5bd;
+    --theme-success: #8b6b4d;
+    --theme-success-bg: #ede5dd;
+    --theme-toggle-off: #b5a599;
+    --theme-toggle-on: #c17a5d;
+}
+
+/* Фиолетовая тема */
+body[data-background="purple"] {
+    --theme-primary: #ba9bd0;
+    --theme-primary-hover: #c69bde;
+    --theme-primary-dark: #503d6c;
+    --theme-secondary: #6d5580;
+    --theme-secondary-dark: #453560;
+    --theme-accent: #b899d0;
+    --theme-accent-dark: #9d7bb3;
+    --theme-bg-light: #f0ebf5;
+    --theme-bg-medium: #e0d5e8;
+    --theme-bg-dark: #a896b8;
+    --theme-border: #d5c5e0;
+    --theme-success: #9d7bb3;
+    --theme-success-bg: #ede5f2;
+    --theme-toggle-off: #bfb0cf;
+    --theme-toggle-on: #ba9bd0;
+}
+
+/* Оливковая тема */
+body[data-background="orange"] {
+    --theme-primary: #c4ca8d;
+    --theme-primary-hover: #c8d07d;
+    --theme-primary-dark: #6a5d54;
+    --theme-secondary: #7a8254;
+    --theme-secondary-dark: #6a5d54;
+    --theme-accent: #bfcc8d;
+    --theme-accent-dark: #a3b075;
+    --theme-bg-light: #f2f0e8;
+    --theme-bg-medium: #e2ded0;
+    --theme-bg-dark: #a8a68f;
+    --theme-border: #d5d0bd;
+    --theme-success: #a3b075;
+    --theme-success-bg: #edeee5;
+    --theme-toggle-off: #c0bda8;
+    --theme-toggle-on: #c4ca8d;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #626262;
+    background: var(--theme-bg-dark);
     min-height: 100vh;
     color: #333;
     -webkit-overflow-scrolling: touch;
@@ -69,8 +171,8 @@ h1 {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    background: #f0f0f0;
-    border: 2px solid #ddd;
+    background: var(--theme-bg-light);
+    border: 2px solid var(--theme-border);
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -84,7 +186,7 @@ h1 {
 }
 
 .night-mode-btn:hover {
-    background: #e0e0e0;
+    background: var(--theme-bg-medium);
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -116,7 +218,7 @@ input[type="text"] {
 
 input[type="text"]:focus {
     outline: none;
-    border-color: #1b6d3e;
+    border-color: var(--theme-primary-dark);
 }
 
 .btn {
@@ -130,23 +232,23 @@ input[type="text"]:focus {
 }
 
 .btn-primary {
-    background: #27b790;
+    background: var(--theme-primary);
     color: white;
 }
 
 .btn-primary:hover {
-    background: #5eda93;
+    background: var(--theme-primary-hover);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(126, 126, 126, 0.521);
 }
 
 .btn-secondary {
-    background: #e0e0e0;
+    background: var(--theme-bg-medium);
     color: #333;
 }
 
 .btn-secondary:hover {
-    background: #d0d0d0;
+    background: var(--theme-bg-medium);
 }
 
 .btn:disabled {
@@ -160,11 +262,11 @@ input[type="text"]:focus {
 }
 
 .btn-primary:disabled:hover {
-    background: #27b790 !important;
+    background: var(--theme-primary) !important;
 }
 
 .btn-secondary:disabled:hover {
-    background: #e0e0e0 !important;
+    background: var(--theme-bg-medium) !important;
 }
 
 /* Create Room Section */
@@ -198,10 +300,10 @@ input[type="text"]:focus {
     flex: 1;
     padding: 10px;
     background: white;
-    border: 1px solid #ddd;
+    border: 1px solid var(--theme-border);
     border-radius: 6px;
     font-size: 13px;
-    color: #32a082;
+    color: var(--theme-secondary);
     word-break: break-all;
     user-select: all;
 }
@@ -211,16 +313,16 @@ input[type="text"]:focus {
     height: 44px;
     padding: 8px;
     font-size: 20px;
-    background: #32a082;
+    background: var(--theme-secondary);
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
 .btn-copy:hover, .btn-share:hover {
-    background: #28866d;
+    background: var(--theme-secondary-dark);
     transform: scale(1.05);
 }
 
@@ -251,7 +353,7 @@ input[type="text"]:focus {
 }
 
 .btn-bot {
-    background: linear-gradient(135deg, #32a082 0%, #64859a 100%);
+    background: linear-gradient(135deg, var(--theme-secondary) 0%, var(--theme-secondary-dark) 100%);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -280,22 +382,22 @@ input[type="text"]:focus {
 }
 
 .room-card {
-    background: #f8f9fa;
+    background: var(--theme-bg-light);
     padding: 20px;
     border-radius: 15px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--theme-border);
     cursor: pointer;
     transition: all 0.3s;
 }
 
 .room-card:hover {
-    border-color: #1b6d3e;
+    border-color: var(--theme-primary-dark);
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(126, 126, 126, 0.2);
 }
 
 .room-card h4 {
-    color: #1b6d3e;
+    color: var(--theme-primary-dark);
     margin-bottom: 10px;
 }
 
@@ -305,7 +407,7 @@ input[type="text"]:focus {
 }
 
 .room-card.room-full {
-    background: #f0f0f0;
+    background: var(--theme-bg-light);
     border-color: #ccc;
     opacity: 0.6;
     cursor: not-allowed;
@@ -349,20 +451,20 @@ input[type="text"]:focus {
 }
 
 .player-card {
-    background: #f8f9fa;
+    background: var(--theme-bg-light);
     padding: 15px;
     border-radius: 10px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--theme-border);
 }
 
 .player-card.ready {
-    border-color: #4caf50;
-    background: #e8f5e9;
+    border-color: var(--theme-success);
+    background: var(--theme-success-bg);
 }
 
 .player-card.current {
-    border-color: #1b6d3e;
-    background: #e8f5e9;
+    border-color: var(--theme-primary-dark);
+    background: var(--theme-success-bg);
     box-shadow: 0 0 20px rgba(49, 145, 91, 0.3);
 }
 
@@ -376,7 +478,7 @@ input[type="text"]:focus {
 }
 
 .player-card.ready .status {
-    color: #4caf50;
+    color: var(--theme-success);
     font-weight: 600;
 }
 
@@ -448,7 +550,7 @@ input[type="text"]:focus {
     position: relative;
     width: 60px;
     height: 30px;
-    background: #ccc;
+    background: var(--theme-toggle-off);
     border-radius: 15px;
     transition: background 0.3s;
 }
@@ -467,7 +569,7 @@ input[type="text"]:focus {
 }
 
 .deck-size-toggle input[type="checkbox"]:checked + .toggle-slider {
-    background: #31915b;
+    background: var(--theme-toggle-on);
 }
 
 .deck-size-toggle input[type="checkbox"]:checked + .toggle-slider::before {
@@ -475,11 +577,11 @@ input[type="text"]:focus {
 }
 
 .deck-size-toggle input[type="checkbox"]:checked ~ .deck-label:last-child {
-    color: #31915b;
+    color: var(--theme-primary);
 }
 
 .deck-size-toggle input[type="checkbox"]:not(:checked) ~ .deck-label:first-child {
-    color: #31915b;
+    color: var(--theme-primary);
 }
 
 /* Countdown Timer */
@@ -492,7 +594,7 @@ input[type="text"]:focus {
     height: 150px;
     margin: 0 auto;
     border-radius: 50%;
-    background: linear-gradient(135deg, #32a082 0%, #64859a 100%);
+    background: linear-gradient(135deg, var(--theme-secondary) 0%, var(--theme-secondary-dark) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -505,7 +607,7 @@ input[type="text"]:focus {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #32a082 0%, #64859a 100%);
+    background: linear-gradient(135deg, var(--theme-secondary) 0%, var(--theme-secondary-dark) 100%);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -527,7 +629,7 @@ input[type="text"]:focus {
 .countdown-text {
     font-size: 20px;
     font-weight: bold;
-    color: #31915b;
+    color: var(--theme-primary);
     margin-top: 20px;
     animation: fadeInOut 1s ease-in-out infinite;
 }
@@ -557,7 +659,7 @@ input[type="text"]:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #32a082 0%, #64859a 100%);
+    background: linear-gradient(135deg, var(--theme-secondary) 0%, var(--theme-secondary-dark) 100%);
 }
 
 .error-content {
@@ -699,7 +801,7 @@ input[type="text"]:focus {
     background: rgba(49, 145, 91, 0.3);
     padding: 5px 8px;
     border-radius: 4px;
-    border-left: 3px solid #31915b;
+    border-left: 3px solid var(--theme-primary);
     font-weight: 600;
 }
 
@@ -714,7 +816,7 @@ input[type="text"]:focus {
 /* Цвета для разных игроков */
 .log-entry.chat-color-1 {
     background: rgba(76, 175, 80, 0.2);
-    border-left-color: #4caf50;
+    border-left-color: var(--theme-success);
 }
 
 .log-entry.chat-color-2 {
@@ -771,8 +873,8 @@ input[type="text"]:focus {
     right: 20px;
     width: 50px;
     height: 50px;
-    background: #0c3d0ace;
-    border: 2px solid #767676;
+    background: var(--theme-bg-light);
+    border: 2px solid var(--theme-border);
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -786,7 +888,7 @@ input[type="text"]:focus {
 }
 
 .settings-btn:hover {
-    background: #ebebebd7;
+    background: var(--theme-bg-medium);
     color: white;
     transform: scale(1.1);
 }
@@ -802,8 +904,8 @@ input[type="text"]:focus {
     right: 20px;
     width: 50px;
     height: 50px;
-    background: #0c3d0ace;
-    border: 2px solid #767676;
+    background: var(--theme-bg-light);
+    border: 2px solid var(--theme-border);
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -817,7 +919,7 @@ input[type="text"]:focus {
 }
 
 .rules-btn:hover {
-    background: #ebebebd7;
+    background: var(--theme-bg-medium);
     color: white;
     transform: scale(1.1);
 }
@@ -833,8 +935,8 @@ input[type="text"]:focus {
     right: 20px;
     width: 50px;
     height: 50px;
-    background: #0c3d0ace;
-    border: 2px solid #767676;
+    background: var(--theme-bg-light);
+    border: 2px solid var(--theme-border);
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -848,7 +950,7 @@ input[type="text"]:focus {
 }
 
 .chat-btn:hover {
-    background: #ebebebd7;
+    background: var(--theme-bg-medium);
     color: white;
     transform: scale(1.1);
 }
@@ -867,7 +969,6 @@ input[type="text"]:focus {
     justify-content: center;
     align-items: center;
     padding: 10px;
-    background: linear-gradient(155deg, #205e36 0%, #0d3617 100%);
     overflow: hidden;
     user-select: none;
     -webkit-user-select: none;
@@ -983,7 +1084,7 @@ input[type="text"]:focus {
 }
 
 .opponent-area.current-turn .opponent-info {
-    background: linear-gradient(135deg, #f5d742 0%, #e8c84d 100%);
+    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-dark) 100%);
     color: #333;
     font-weight: 700;
     border: 2px solid #d4af37;
@@ -1294,7 +1395,7 @@ border: 2px solid #ffd700;
 
 /* Подсветка при ходе игрока */
 .player-info.current-turn {
-    background: linear-gradient(135deg, #f5d742 0%, #e8c84d 100%);
+    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-dark) 100%);
     border: 0px;
     border-bottom: none;
 }
@@ -1379,13 +1480,13 @@ border: 2px solid #ffd700;
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #32a082 0%, #1b6d3e 100%);
+    background: linear-gradient(135deg, var(--theme-secondary) 0%, var(--theme-primary-dark) 100%);
     border-radius: 10px;
     border: 2px solid white;
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #1b6d3e 0%, #31915b 100%);
+    background: linear-gradient(135deg, var(--theme-primary-dark) 0%, var(--theme-primary) 100%);
 }
 
 .modal-content h2, .modal-content h3 {
@@ -1440,15 +1541,14 @@ border: 2px solid #ffd700;
 }
 
 .close-modal-btn {
-    position: sticky;
-    top: 10px;
-    float: right;
-    margin: 10px 10px 0 0;
+    position: absolute;
+    top: 15px;
+    right: 15px;
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: #d7d7d7ce;
-    border: 2px solid #767676;
+    background: var(--theme-bg-medium);
+    border: 2px solid var(--theme-border);
     color: #3c3c3c;
     font-size: 20px;
     font-weight: bold;
@@ -1464,7 +1564,7 @@ border: 2px solid #ffd700;
 }
 
 .close-modal-btn:hover {
-    background: #ebebebd7;
+    background: var(--theme-bg-light);
     color: #7d2c2c;
     transform: scale(1.1);
 }
@@ -1495,6 +1595,16 @@ border: 2px solid #ffd700;
     align-items: center;
     padding: 15px 0;
     border-bottom: 1px solid rgba(118, 118, 118, 0.2);
+}
+
+.setting-item:nth-last-child(2) {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid rgba(118, 118, 118, 0.2);
+    align-content: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .setting-item:last-child {
@@ -1604,8 +1714,8 @@ body .suit-emoji-log.spades {
 }
 
 .suit-btn:hover {
-    border-color: #767676;
-    background: #f0f0f0;
+    border-color: var(--theme-border);
+    background: var(--theme-bg-light);
     transform: scale(1.05);
 }
 
@@ -1626,14 +1736,14 @@ body .suit-emoji-log.spades {
 .result-item {
     padding: 15px;
     margin: 10px 0;
-    background: #f8f9fa;
+    background: var(--theme-bg-light);
     border-radius: 10px;
-    border-left: 4px solid #1b6d3e;
+    border-left: 4px solid var(--theme-primary-dark);
 }
 
 .result-item.winner {
-    background: #e8f5e9;
-    border-left-color: #4caf50;
+    background: var(--theme-success-bg);
+    border-left-color: var(--theme-success);
 }
 
 .result-item h4 {
@@ -2206,15 +2316,11 @@ body .suit-emoji-log.spades {
     font-style: italic;
 }
 
-/* Flying card animation */
+/* Flying card animation - background управляется через data-card-back */
 .flying-card {
     position: fixed;
     width: 60px;
     height: 85px;
-    background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
-        linear-gradient(135deg, #2a5f4f, #1b4037);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -2452,51 +2558,58 @@ body .suit-emoji-log.spades {
     box-shadow: 0 3px 8px rgba(71, 71, 71, 0.3);
 }
 
-/* 5 вариантов цветов рубашки */
+/* 5 вариантов цветов рубашки - светлые для дневного режима */
 .card-back-gray {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
-        linear-gradient(314deg, #646464, #9c9c9c);
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #686868, #9ca3af);
+    filter: saturate(0.8) brightness(0.95);
 }
 
 .card-back-green {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #13301f, #2d5a3f);
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #2a5a3f, #4a8a65);
+    filter: saturate(0.7) brightness(1.1);
 }
 
 .card-back-blue {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #1e2d3f, #174880);
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #3a5a7f, #4a7ab0);
+    filter: saturate(0.7) brightness(1.1);
 }
 
 .card-back-red {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3d1e1e, #6b1111);
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #6a3a3a, #9a4a4a);
+    filter: saturate(0.7) brightness(1.1);
 }
 
 .card-back-purple {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3d1c61, #47345a);
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #6a4a8a, #8a6aaa);
+    filter: saturate(0.7) brightness(1.1);
 }
 
-/* Применение выбранного цвета рубашки */
+/* Применение выбранного цвета рубашки - светлые для дневного режима */
 body[data-card-back="gray"] .opponent-card,
 body[data-card-back="gray"] .deck,
 body[data-card-back="gray"] .card-back,
 body[data-card-back="gray"] .flying-card {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.028) 6px, rgba(0, 0, 0, 0.037) 7px),
-        linear-gradient(314deg, #646464, #9c9c9c) !important;
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #686868, #9ca3af) !important;
+    filter: saturate(0.8) brightness(0.95);
+    border-color: #383838 !important;
 }
 
 body[data-card-back="green"] .opponent-card,
@@ -2504,9 +2617,11 @@ body[data-card-back="green"] .deck,
 body[data-card-back="green"] .card-back,
 body[data-card-back="green"] .flying-card {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #13301f, #2d5a3f) !important;
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #2a5a3f, #4a8a65) !important;
+    filter: saturate(0.7) brightness(1.1);
+    border-color: #153a1a !important;
 }
 
 body[data-card-back="blue"] .opponent-card,
@@ -2514,9 +2629,11 @@ body[data-card-back="blue"] .deck,
 body[data-card-back="blue"] .card-back,
 body[data-card-back="blue"] .flying-card {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #1e2d3f, #174880) !important;
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #3a5a7f, #4a7ab0) !important;
+    filter: saturate(0.7) brightness(1.1);
+    border-color: #153a5a !important;
 }
 
 body[data-card-back="red"] .opponent-card,
@@ -2524,9 +2641,11 @@ body[data-card-back="red"] .deck,
 body[data-card-back="red"] .card-back,
 body[data-card-back="red"] .flying-card {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3d1e1e, #6b1111) !important;
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #6a3a3a, #9a4a4a) !important;
+    filter: saturate(0.7) brightness(1.1);
+    border-color: #412020 !important;
 }
 
 body[data-card-back="purple"] .opponent-card,
@@ -2534,7 +2653,132 @@ body[data-card-back="purple"] .deck,
 body[data-card-back="purple"] .card-back,
 body[data-card-back="purple"] .flying-card {
     background: 
-        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3d1c61, #47345a) !important;
+        repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
+        linear-gradient(314deg, #6a4a8a, #8a6aaa) !important;
+    filter: saturate(0.7) brightness(1.1);
+    border-color: #38234b !important;
+}
+
+/* Background selector */
+.background-selector {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.background-option {
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 3px;
+    transition: all 0.2s ease;
+}
+
+.background-option:hover {
+    border-color: #4CAF50;
+}
+
+.background-option.selected {
+    border-color: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.background-preview {
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* 5 вариантов фонов для дневного режима - пастельные мягкие цвета */
+.bg-default {
+    background: linear-gradient(169deg, #36724b 0%, #1d4627 90%);
+}
+
+.bg-green {
+    background: linear-gradient(155deg, #4a7c8f 0%, #2d5266 100%);
+}
+
+.bg-blue {
+    background: linear-gradient(230deg, #76564d 10%, #523c26 90%);
+}
+
+.bg-purple {
+    background: linear-gradient(219deg, #826994 10%, #503d6c 90%);
+}
+
+.bg-orange {
+    background: linear-gradient(206deg, #8f9861 10%, #847068 90%);
+}
+
+/* Применение выбранного фона для дневного режима */
+body[data-background="default"] .game-table,
+body:not([data-background]) .game-table {
+    background: linear-gradient(169deg, #36724b 0%, #1d4627 90%);
+}
+
+body[data-background="default"] .game-circle,
+body:not([data-background]) .game-circle {
+    background: radial-gradient(circle, #4a7a2a 0%, #2d5016 100%);
+    border-color: #b89020;
+}
+
+body[data-background="green"] .game-table {
+    background: linear-gradient(155deg, #4a7c8f 0%, #2d5266 100%);
+}
+
+body[data-background="green"] .game-circle {
+    background: radial-gradient(circle, #5a8fa3 0%, #3d6a7a 100%);
+    border-color: #7db3c7;
+}
+
+body[data-background="blue"] .game-table {
+    background: linear-gradient(230deg, #76564d 10%, #523c26 90%);
+}
+
+body[data-background="blue"] .game-circle {
+    background: radial-gradient(circle, #8b6b4d 0%, #5d4539 100%);
+    border-color: #a8856a;
+}
+
+body[data-background="purple"] .game-table {
+    background: linear-gradient(219deg, #826994 10%, #503d6c 90%);
+}
+
+body[data-background="purple"] .game-circle {
+    background: radial-gradient(circle, #9d7bb3 0%, #6d5580 100%);
+    border-color: #b899d0;
+}
+
+body[data-background="orange"] .game-table {
+    background: linear-gradient(206deg, #8f9861 10%, #847068 90%);
+}
+
+body[data-background="orange"] .game-circle {
+    background: radial-gradient(circle, #a3b075 0%, #7a8254 100%);
+    border-color: #bfcc8d;
+}
+
+/* Рамка карт под каждый фон для дневного режима */
+body[data-background="default"] .card,
+body:not([data-background]) .card {
+    border-color: #2d5016;
+}
+
+body[data-background="green"] .card {
+    border-color: #2d5266;
+}
+
+body[data-background="blue"] .card {
+    border-color: #523c26;
+}
+
+body[data-background="purple"] .card {
+    border-color: #503d6c;
+}
+
+body[data-background="orange"] .card {
+    border-color: #6a5d54;
 }
