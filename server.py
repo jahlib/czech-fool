@@ -1592,6 +1592,7 @@ class GameServer:
             await self.send_to_player(pid, {
                 'type': 'chat_message',
                 'message': chat_message,
+                'message_text': message_text,
                 'player_id': player_id,
                 'player_nickname': player.nickname
             })
