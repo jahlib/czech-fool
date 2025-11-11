@@ -23,7 +23,7 @@ class CardGame {
             '😠': 'chat',
             '😄': 'chat',
             '😎': 'chat',
-            '🤔': 'chat',
+            '🤔': 'pogodika',
             '😤': 'chat',
             '😐': 'chat',
             '👍': 'chat',
@@ -41,7 +41,7 @@ class CardGame {
             '🐱': 'cat',
             '🐸': 'frog',
             '🐺': 'chat',
-            '🐊': 'chat',
+            '🐊': 'dance',
             '🐠': 'chat',
             '🌹': 'chat',
             '🗿': 'huh',
@@ -83,7 +83,9 @@ class CardGame {
             okay: new Audio('/sounds/okay.aac'),
             sword: new Audio('/sounds/sword.aac'),
             pipe: new Audio('/sounds/pipe.aac'),
-            huh: new Audio('/sounds/huh.aac')
+            huh: new Audio('/sounds/huh.aac'),
+            pogodika: new Audio('/sounds/pogodika.aac'),
+            dance: new Audio('/sounds/dance.aac')
         };
         
         this.initElements();
