@@ -1764,9 +1764,11 @@ class GameServer:
         responding_bot = random.choice(bots)
         
         # Список всех эмодзи для реакций
-        reaction_emojis = ['😡', '😄', '😎', '🙃', '🙁', '🤔', '😐', '👍', '👎', 
-                         '🫰', '🤯', '🤨', '😑', '😌', '😴', '🌚', '🐱', '🐸', 
-                         '🌹', '🔪', '⚔️', '🎲', '🎯', '♥️', '♦️', '♣️', '♠️']
+        reaction_emojis = ['🙃', '🙁', '😡', '😈', '😇', '😠', '😄', '😎', '🤔', '😤',
+                         '😐', '👍', '👎', '🤝', '🫰', '🪬', '🤯', '🤡', '🤨', '😑',
+                         '😌', '😴', '🌚', '🐱', '🐸', '🐺', '🐊', '🐠', '🌹', '🗿',
+                         '👁️', '💩', '🔩', '🔪', '⚔️', '🎺', '🔮', '🎲', '🎯',
+                         '♥️', '♦️', '♣️', '♠️']
         
         # Выбираем случайный эмодзи
         bot_emoji = random.choice(reaction_emojis)
@@ -1779,6 +1781,39 @@ class GameServer:
             'player_id': responding_bot,
             'emoji': bot_emoji
         })
+    
+    async def handle_leave_room(self, ws: WebSocketServerProtocol, data: dict):
+        """Явный выход из комнаты"""
+        player_id = self.clients.get(ws)
+        if not player_id:
+            return
+        
+        room_id = self.player_rooms.get(player_id)
+        if not room_id:
+            return
+        
+        room = self.rooms.get(room_id)
+        if not room or player_id not in room.players:
+            return
+        
+        # Удаляем игрока из комнаты
+        del room.players[player_id]
+        del self.player_rooms[player_id]
+        
+        # Если это была приватная комната создателя или комната пустая - удаляем её
+        if (room.is_private and room.creator_id == player_id) or len(room.players) == 0:
+            del self.rooms[room_id]
+            # Удаляем из БД
+            await self.delete_room_from_db(room_id)
+        else:
+            # Уведомляем остальных игроков
+            await self.broadcast_to_room(room_id, {
+                'type': 'player_left',
+                'player_id': player_id
+            })
+        
+        # Обновляем список комнат
+        await self.broadcast_rooms()
     
     async def handle_message(self, ws: WebSocketServerProtocol, message: str):
         try:
@@ -1813,6 +1848,8 @@ class GameServer:
                 await self.handle_shake_discard(ws, data)
             elif msg_type == 'reaction':
                 await self.handle_reaction(ws, data)
+            elif msg_type == 'leave_room':
+                await self.handle_leave_room(ws, data)
                 
         except json.JSONDecodeError:
             await ws.send(json.dumps({'type': 'error', 'message': 'Invalid JSON'}))
