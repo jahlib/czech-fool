@@ -18,19 +18,19 @@ class CardGame {
             '🙃': 'chat',
             '🙁': 'chat',
             '😡': 'error',
-            '😈': 'chat',
+            '😈': 'rizz',
             '😇': 'chat',
-            '😠': 'chat',
-            '😄': 'chat',
-            '😎': 'chat',
+            '😠': 'error',
+            '😄': 'haha',
+            '😎': 'sigma',
             '🤔': 'pogodika',
             '😤': 'chat',
             '😐': 'chat',
-            '👍': 'chat',
-            '👎': 'chat',
+            '👍': 'thum',
+            '👎': 'thum',
             '🤝': 'chat',
             '🫰': 'chat',
-            '🪬': 'chat',
+            '🪬': 'mind',
             '🤯': 'chat',
             '🤡': 'chat',
             '🤨': 'vine',
@@ -46,7 +46,7 @@ class CardGame {
             '🦆': 'duck',
             '🌹': 'wow',
             '🗿': 'huh',
-            '👁️': 'chat',
+            '👁️': 'eye',
             '💩': 'fart',
             '🔩': 'pipe',
             '🔪': 'okay',
@@ -54,7 +54,7 @@ class CardGame {
             '🧀': 'meme',
             '🎺': 'trumpet',
             '🎁': 'chat',
-            '🔮': 'chat',
+            '🔮': 'magic',
             '🎲': 'chat',
             '🎯': 'chat',
             '♥️': 'chat',
@@ -97,7 +97,14 @@ class CardGame {
             meme: new Audio('/sounds/meme.aac'),
             error: new Audio('/sounds/error.aac'),
             vine: new Audio('/sounds/vine.aac'),
-            duck: new Audio('/sounds/duck.aac')
+            duck: new Audio('/sounds/duck.aac'),
+            thumb: new Audio('/sounds/thum.aac'),
+            eye: new Audio('/sounds/eye.aac'),
+            sigma: new Audio('/sounds/sigma.aac'),
+            magic: new Audio('/sounds/magic.aac'),
+            rizz: new Audio('/sounds/rizz.aac'),
+            mind: new Audio('/sounds/mind.aac'),
+            haha: new Audio('/sounds/haha.aac')
         };
         
         this.initElements();
@@ -1045,7 +1052,12 @@ class CardGame {
                         chatClass = `chat-other chat-color-${colorIndex}`;
                     }
                     
+                    // В лог пишем с ником
                     this.addLogEntry(data.message, chatClass);
+                    
+                    // В пузыре показываем только текст без ника
+                    const bubbleText = data.message_text || data.message;
+                    this.showChatBubble(data.player_id, bubbleText);
                 }
                 break;
             case 'game_ended':
@@ -2147,10 +2159,54 @@ class CardGame {
         
         document.body.appendChild(bubble);
         
-        // Удаляем пузырёк после анимации
+        // Удаляем пузырёк после анимации (3 секунды для реакций)
         setTimeout(() => {
             bubble.remove();
-        }, 2000);
+        }, 4200);
+    }
+    
+    showChatBubble(playerId, message) {
+        // Находим область игрока
+        let targetElement;
+        if (playerId === this.playerId) {
+            // Сообщение от нас - показываем над нашими картами
+            targetElement = this.handCards;
+        } else {
+            // Сообщение от противника - находим блок с ником и очками
+            const opponentArea = this.getOpponentAreaById(playerId);
+            if (opponentArea) {
+                targetElement = opponentArea.querySelector('.opponent-info');
+            }
+        }
+        
+        if (!targetElement) return;
+        
+        // Создаём пузырёк для сообщения
+        const bubble = document.createElement('div');
+        bubble.className = 'reaction-bubble chat-bubble';
+        bubble.textContent = message;
+        
+        // Позиционируем пузырёк
+        const rect = targetElement.getBoundingClientRect();
+        bubble.style.left = `${rect.left + rect.width / 2}px`;
+        bubble.style.transform = 'translateX(-50%)';
+        
+        if (playerId === this.playerId) {
+            // Наш пузырёк - НАД картами
+            bubble.style.top = `${rect.top - 70}px`;
+            bubble.classList.add('from-me');
+        } else {
+            // Пузырёк противника - ПОД блоком с ником
+            bubble.style.top = `${rect.bottom + 10}px`;
+            bubble.classList.add('from-opponent');
+        }
+        
+        document.body.appendChild(bubble);
+        
+        // Удаляем пузырёк после 5 секунд (дольше чем реакции)
+        setTimeout(() => {
+            bubble.remove();
+        }, 10000);
     }
     
     handleKeyPress(e) {

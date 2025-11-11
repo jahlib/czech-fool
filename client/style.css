@@ -75,40 +75,40 @@ body[data-background="blue"] {
 
 /* Фиолетовая тема */
 body[data-background="purple"] {
-    --theme-primary: #ba9bd0;
-    --theme-primary-hover: #c69bde;
-    --theme-primary-dark: #503d6c;
-    --theme-secondary: #6d5580;
-    --theme-secondary-dark: #453560;
+    --theme-primary: #be82e9;
+    --theme-primary-hover: #ba74e1;
+    --theme-primary-dark: #633f97;
+    --theme-secondary: #64477b;
+    --theme-secondary-dark: #433063;
     --theme-accent: #b899d0;
     --theme-accent-dark: #9d7bb3;
     --theme-bg-light: #f0ebf5;
     --theme-bg-medium: #e0d5e8;
     --theme-bg-dark: #a896b8;
     --theme-border: #d5c5e0;
-    --theme-success: #9d7bb3;
+    --theme-success: #945fb7;
     --theme-success-bg: #ede5f2;
-    --theme-toggle-off: #bfb0cf;
-    --theme-toggle-on: #ba9bd0;
+    --theme-toggle-off: #c09fe3;
+    --theme-toggle-on: #ad6bdd;
 }
 
 /* Оливковая тема */
 body[data-background="orange"] {
-    --theme-primary: #c4ca8d;
-    --theme-primary-hover: #c8d07d;
-    --theme-primary-dark: #6a5d54;
-    --theme-secondary: #7a8254;
-    --theme-secondary-dark: #6a5d54;
-    --theme-accent: #bfcc8d;
-    --theme-accent-dark: #a3b075;
+    --theme-primary: #ddc64a;
+    --theme-primary-hover: #e3c91c;
+    --theme-primary-dark: #9d8e16;
+    --theme-secondary: #8f8927;
+    --theme-secondary-dark: #837423;
+    --theme-accent: #cdcd2e;
+    --theme-accent-dark: #b5af2e;
     --theme-bg-light: #f2f0e8;
     --theme-bg-medium: #e2ded0;
-    --theme-bg-dark: #a8a68f;
+    --theme-bg-dark: #d1b02e;
     --theme-border: #d5d0bd;
     --theme-success: #a3b075;
     --theme-success-bg: #edeee5;
     --theme-toggle-off: #c0bda8;
-    --theme-toggle-on: #c4ca8d;
+    --theme-toggle-on: #c3b540;
 }
 
 body {
@@ -2469,7 +2469,8 @@ body .suit-emoji-log.spades {
     font-size: 32px;
     z-index: 9999;
     pointer-events: none;
-    animation: reactionFloat 2s ease-out forwards;
+    transition: all 0.3s ease;
+    animation: reactionFloat 4.2s ease forwards;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
@@ -2498,21 +2499,28 @@ body .suit-emoji-log.spades {
     border-color: transparent transparent rgba(30, 30, 30, 0.95) transparent;
 }
 
+/* Chat bubble - текстовые сообщения */
+.reaction-bubble.chat-bubble {
+    font-size: 14px;
+    max-width: 250px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: center;
+    padding: 4px 6px;
+}
+
 @keyframes reactionFloat {
     0% {
         opacity: 0;
         transform: translateX(-50%) translateY(0) scale(0.5);
     }
-    20% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(-10px) scale(1.1);
-    }
     40% {
-        transform: translateX(-50%) translateY(-5px) scale(1);
+        opacity: 1;
+        transform: translateX(-50%) translateY(-30px) scale(1.2);
     }
     100% {
         opacity: 0;
-        transform: translateX(-50%) translateY(-30px) scale(0.8);
+        transform: translateX(-50%) translateY(-40px) scale(0.8);
     }
 }
 
@@ -2563,40 +2571,45 @@ body .suit-emoji-log.spades {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
-        linear-gradient(314deg, #686868, #9ca3af);
+        linear-gradient(314deg, #686868, #9ca3af) !important;
     filter: saturate(0.8) brightness(0.95);
+    border-color: #383838 !important;
 }
 
 .card-back-green {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
-        linear-gradient(314deg, #2a5a3f, #4a8a65);
+        linear-gradient(314deg, #2a5a3f, #4a8a65) !important;
     filter: saturate(0.7) brightness(1.1);
+    border-color: #153a1a !important;
 }
 
 .card-back-blue {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
-        linear-gradient(314deg, #3a5a7f, #4a7ab0);
+        linear-gradient(314deg, #3a5a7f, #4a7ab0) !important;
     filter: saturate(0.7) brightness(1.1);
+    border-color: #153a5a !important;
 }
 
 .card-back-red {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
-        linear-gradient(314deg, #6a3a3a, #9a4a4a);
+        linear-gradient(314deg, #6a3a3a, #9a4a4a) !important;
     filter: saturate(0.7) brightness(1.1);
+    border-color: #412020 !important;
 }
 
 .card-back-purple {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
-        linear-gradient(314deg, #6a4a8a, #8a6aaa);
+        linear-gradient(314deg, #513171, #785d93) !important;
     filter: saturate(0.7) brightness(1.1);
+    border-color: #291f33 !important;
 }
 
 /* Применение выбранного цвета рубашки - светлые для дневного режима */
@@ -2655,9 +2668,9 @@ body[data-card-back="purple"] .flying-card {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
-        linear-gradient(314deg, #6a4a8a, #8a6aaa) !important;
+        linear-gradient(314deg, #513171, #785d93) !important;
     filter: saturate(0.7) brightness(1.1);
-    border-color: #38234b !important;
+    border-color: #291f33 !important;
 }
 
 /* Background selector */
@@ -2710,7 +2723,7 @@ body[data-card-back="purple"] .flying-card {
 }
 
 .bg-orange {
-    background: linear-gradient(206deg, #8f9861 10%, #847068 90%);
+    background: linear-gradient(161deg, #aba750 10%, #4d481c 90%);
 }
 
 /* Применение выбранного фона для дневного режима */
@@ -2748,17 +2761,17 @@ body[data-background="purple"] .game-table {
 }
 
 body[data-background="purple"] .game-circle {
-    background: radial-gradient(circle, #9d7bb3 0%, #6d5580 100%);
-    border-color: #b899d0;
+    background: radial-gradient(circle, #835a9d 0%, #604b71 100%);
+    border-color: #9169af;
 }
 
 body[data-background="orange"] .game-table {
-    background: linear-gradient(206deg, #8f9861 10%, #847068 90%);
+    background: linear-gradient(161deg, #aba750 10%, #4d481c 90%);
 }
 
 body[data-background="orange"] .game-circle {
-    background: radial-gradient(circle, #a3b075 0%, #7a8254 100%);
-    border-color: #bfcc8d;
+    background: radial-gradient(circle, #9d8639 0%, #79793a 100%);
+    border-color: #b5b56e;
 }
 
 /* Рамка карт под каждый фон для дневного режима */

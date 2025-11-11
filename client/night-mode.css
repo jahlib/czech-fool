@@ -7,16 +7,16 @@ body.night-mode[data-background="default"] {
     --theme-primary-hover: #5b79b8;
     --theme-primary-dark: #2a3d52;
     --theme-secondary: #2d4159;
-    --theme-secondary-dark: #1e2d3f;
+    --theme-secondary-dark: #b1b6bb;
     --theme-accent: #5273b8;
     --theme-accent-dark: #3b5998;
     --theme-bg-light: #2a3d52;
     --theme-bg-medium: #1e2d3f;
     --theme-bg-dark: #1a2332;
-    --theme-border: #3b5998;
-    --theme-success: #5273b8;
+    --theme-border: #35466b;
+    --theme-success: #435273;
     --theme-success-bg: #2d4159;
-    --theme-toggle-off: #1e2d3f;
+    --theme-toggle-off: #2e3f53;
     --theme-toggle-on: #5273b8;
     --theme-modal-overlay: rgba(26, 35, 50, 0.95);
 }
@@ -91,13 +91,13 @@ body.night-mode[data-background="orange"] {
     --theme-accent: #5a1812;
     --theme-accent-dark: #3d0f0c;
     --theme-bg-light: #2e0b09;
-    --theme-bg-medium: #230907;
+    --theme-bg-medium: #412a29;
     --theme-bg-dark: #1a0404;
     --theme-border: #3d0f0c;
     --theme-success: #5a1812;
     --theme-success-bg: #2e0b09;
-    --theme-toggle-off: #230907;
-    --theme-toggle-on: #c74a3d;
+    --theme-toggle-off: #491814;
+    --theme-toggle-on: #87362e;
     --theme-modal-overlay: rgba(26, 4, 4, 0.95);
 }
 
@@ -967,6 +967,16 @@ body.night-mode .chat-messages {
     background: var(--theme-bg-medium);
 }
 
+body.night-mode .reaction-bubble.chat-bubble {
+    font-size: 14px;
+    max-width: 250px;
+    color: #ffffff;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: center;
+    padding: 4px 6px;
+}
+
 /* Все параграфы и тексты */
 body.night-mode p,
 body.night-mode span,
@@ -1039,7 +1049,7 @@ body.night-mode .card-back-gray {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3a3939 20%, #7a7a7a 100%) !important;
+        linear-gradient(314deg, #433f3f 20%, #898787 100%) !important;
     filter: saturate(1.1) brightness(0.93);
     border-color: #2a2a2a !important;
 }
@@ -1048,32 +1058,36 @@ body.night-mode .card-back-green {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #13301f, #2d5a3f);
+        linear-gradient(251deg, #153522, #2e553d) !important;
     filter: saturate(0.7) brightness(1.1);
+    border-color: #142119 !important;
 }
 
 body.night-mode .card-back-blue {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #1e2d3f, #174880);
+        linear-gradient(288deg, #223143, #346295) !important;
     filter: saturate(0.7) brightness(1.1);
+    border-color: #172231 !important;
 }
 
 body.night-mode .card-back-red {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3d1e1e, #6b1111);
+        linear-gradient(299deg, #311414, #732020) !important;
     filter: saturate(0.7) brightness(1.1);
+    border-color: #200f0f !important;
 }
 
 body.night-mode .card-back-purple {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3d1c61, #47345a);
+        linear-gradient(314deg, #3e235d, #4d3863) !important;
     filter: saturate(0.7) brightness(1.1);
+    border-color: #241436 !important;
 }
 
 /* Применение выбранного цвета рубашки для ночного режима */
@@ -1084,7 +1098,7 @@ body.night-mode[data-card-back="gray"] .flying-card {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3a3939 20%, #7a7a7a 100%) !important;
+        linear-gradient(314deg, #433f3f 20%, #898787 100%) !important;
     filter: saturate(1.1) brightness(0.93);
     border-color: #2a2a2a !important;
 }
@@ -1096,9 +1110,9 @@ body.night-mode[data-card-back="green"] .flying-card {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #13301f, #2d5a3f) !important;
+        linear-gradient(251deg, #153522, #2e553d) !important;
     filter: saturate(0.7) brightness(1.1);
-    border-color: #13301f !important;
+    border-color: #142119 !important;
 }
 
 body.night-mode[data-card-back="blue"] .opponent-card,
@@ -1108,9 +1122,9 @@ body.night-mode[data-card-back="blue"] .flying-card {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #1e2d3f, #174880) !important;
+        linear-gradient(288deg, #223143, #346295) !important;
     filter: saturate(0.7) brightness(1.1);
-    border-color: #1e2d3f !important;
+    border-color: #172231 !important;
 }
 
 body.night-mode[data-card-back="red"] .opponent-card,
@@ -1120,7 +1134,7 @@ body.night-mode[data-card-back="red"] .flying-card {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3d1e1e, #6b1111) !important;
+        linear-gradient(299deg, #311414, #732020) !important;
     filter: saturate(0.7) brightness(1.1);
     border-color: #200f0f !important;
 }
@@ -1132,7 +1146,7 @@ body.night-mode[data-card-back="purple"] .flying-card {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.15) 6px, rgba(0, 0, 0, 0.2) 7px),
-        linear-gradient(314deg, #3d1c61, #47345a) !important;
+        linear-gradient(314deg, #3e235d, #4d3863) !important;
     filter: saturate(0.7) brightness(1.1);
     border-color: #241436 !important;
 }
@@ -1198,16 +1212,16 @@ body.night-mode[data-background="green"] .game-circle {
 }
 
 body.night-mode[data-background="blue"] .game-table {
-    background: linear-gradient(199deg, #163423 10%, #0d080e 80%);
+    background: linear-gradient(166deg, #274b36 10%, #121d11 80%);
 }
 
 body.night-mode[data-background="blue"] .game-circle {
-    background: radial-gradient(circle, #1f4a2f 0%, #11281c 100%);
-    border-color: #2d6342;
+    background: radial-gradient(circle, #274b35 10%, #192920 90%);
+    border-color: #20472f;
 }
 
 body.night-mode[data-background="purple"] .game-table {
-    background: linear-gradient(67deg, #231b2a 20%, #12091e 100%);
+    background: linear-gradient(317deg, #211927 20%, #180f23 100%);
 }
 
 body.night-mode[data-background="purple"] .game-circle {
