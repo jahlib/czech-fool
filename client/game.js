@@ -19,7 +19,7 @@ class CardGame {
             '🙁': 'chat',
             '😡': 'error',
             '😈': 'rizz',
-            '😇': 'chat',
+            '😇': 'holy',
             '😠': 'error',
             '😄': 'haha',
             '😎': 'sigma',
@@ -28,7 +28,7 @@ class CardGame {
             '😐': 'plup',
             '👍': 'thum',
             '👎': 'thum',
-            '🤝': 'chat',
+            '🤝': 'thum',
             '🫰': 'mium',
             '🪬': 'mind',
             '🤯': 'explosion',
@@ -54,14 +54,14 @@ class CardGame {
             '⚔️': 'sword',
             '🧀': 'meme',
             '🎺': 'trumpet',
-            '🎁': 'chat',
+            '🎁': 'gift',
             '🔮': 'magic',
             '🎲': 'dice',
             '🎯': 'dipp',
-            '♥️': 'chat',
-            '♦️': 'chat',
-            '♣️': 'chat',
-            '♠️': 'chat'
+            '♥️': 'suit',
+            '♦️': 'suit',
+            '♣️': 'suit',
+            '♠️': 'suit'
         };
         
         // Инициализация звуков
@@ -115,7 +115,10 @@ class CardGame {
             explosion: new Audio('/sounds/explosion.aac'),
             mium: new Audio('/sounds/mium.aac'),
             plup: new Audio('/sounds/plup.aac'),
-            dipp: new Audio('/sounds/dipp.aac')
+            dipp: new Audio('/sounds/dipp.aac'),
+            holy: new Audio('/sounds/holy.aac'),
+            suit: new Audio('/sounds/suit.aac'),
+            gift: new Audio('/sounds/gift.aac')
         };
         
         this.initElements();
