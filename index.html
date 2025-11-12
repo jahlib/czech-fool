@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Чешский</title>
+    <!-- Раскомментируйте и укажите ваш WebSocket домен если используете reverse proxy -->
+    <!-- <meta name="ws-host" content="ws.domain.com"> -->
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="shortcut icon" href="/icon-192.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#667eea">
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    
+    <link rel="stylesheet" href="/style.css?v=3">
+    <link rel="stylesheet" href="/night-mode.css?v=1">
+</head>
+<body>
+    <div id="app">
+        <!-- Экран лобби -->
+        <div id="lobby-screen" class="screen active">
+            <div class="container">
+                <div class="lobby-header">
+                    <h1>🎴 Чешский</h1>
+                    <button id="night-mode-toggle-btn" class="night-mode-btn" title="Переключить ночной режим">
+                        <span class="sun-icon" style="display: none;">☀️</span>
+                        <span class="moon-icon">🌙</span>
+                    </button>
+                </div>
+                
+                <div id="create-room-section">
+                    <h2>Создать комнату</h2>
+                    <input type="text" id="nickname-input" placeholder="Введите никнейм" maxlength="20">
+                    <button id="create-room-btn" class="btn btn-primary">Создать комнату</button>
+                    
+                    <div id="bot-game-section">
+                        <h3>🤖 Играть с ботами</h3>
+                        <div class="bot-buttons">
+                            <button id="play-with-1-bot-btn" class="btn btn-bot">Играть с 1 ботом</button>
+                            <button id="play-with-2-bots-btn" class="btn btn-bot">Играть с 2 ботами</button>
+                            <button id="play-with-3-bots-btn" class="btn btn-bot">Играть с 3 ботами</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="rooms-section">
+                    <h2>Доступные комнаты</h2>
+                    <div id="rooms-list"></div>
+                </div>
+                
+                <div id="rules-section">
+                    <h2>📖 Правила игры</h2>
+                    <div id="lobby-rules-content" class="rules-content"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Экран комнаты -->
+        <div id="room-screen" class="screen">
+            <div class="container">
+                <div class="room-header">
+                    <h2>Комната</h2>
+                    <!-- Таймер в заголовке -->
+                    <div id="countdown-display" style="display: none;">
+                        <span class="countdown-timer-small" id="countdown-number">6</span>
+                    </div>
+                    <button id="leave-room-btn" class="btn btn-secondary">Покинуть</button>
+                </div>
+                
+                <div id="players-waiting">
+                    <h3>Игроки в комнате:</h3>
+                    <p class="hint">Игра начнётся когда все игроки будут готовы (минимум 2 игрока)</p>
+                    <div id="players-list"></div>
+                    
+                    <!-- Кнопка готов после списка игроков -->
+                    <button id="ready-toggle-btn" class="btn btn-primary">Готов</button>
+                    
+                    <!-- Настройки комнаты (только для создателя) -->
+                    <div id="room-settings" style="display: none;">
+                        <h3>Настройки игры</h3>
+                        
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">36 карт</span>
+                                <input type="checkbox" id="deck-size-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">52 карты</span>
+                            </label>
+                            <p class="hint-small">В режиме 36 карт восьмёрка не действует</p>
+                        </div>
+                    </div>
+
+                    <!-- Переключатель приватной/публичной комнаты -->
+                    <div class="room-settings" id="private-room-settings">
+                        <!-- Переключатель приватной комнаты -->
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Публичная</span>
+                                <input type="checkbox" id="private-room-toggle">
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Приватная</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Блок с ссылкой для приглашения (скрыт по умолчанию) -->
+                        <div id="invite-link-block" style="display: none;">
+                            <p class="invite-hint">Поделитесь ссылкой с друзьями:</p>
+                            <div class="invite-link-container">
+                                <code id="invite-link" class="invite-link"></code>
+                                <button id="copy-link-btn" class="btn btn-copy" title="Копировать ссылку"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M15 1.25H10.9436C9.10583 1.24998 7.65019 1.24997 6.51098 1.40314C5.33856 1.56076 4.38961 1.89288 3.64124 2.64124C2.89288 3.38961 2.56076 4.33856 2.40314 5.51098C2.24997 6.65019 2.24998 8.10582 2.25 9.94357V16C2.25 17.8722 3.62205 19.424 5.41551 19.7047C5.55348 20.4687 5.81753 21.1208 6.34835 21.6517C6.95027 22.2536 7.70814 22.5125 8.60825 22.6335C9.47522 22.75 10.5775 22.75 11.9451 22.75H15.0549C16.4225 22.75 17.5248 22.75 18.3918 22.6335C19.2919 22.5125 20.0497 22.2536 20.6517 21.6517C21.2536 21.0497 21.5125 20.2919 21.6335 19.3918C21.75 18.5248 21.75 17.4225 21.75 16.0549V10.9451C21.75 9.57754 21.75 8.47522 21.6335 7.60825C21.5125 6.70814 21.2536 5.95027 20.6517 5.34835C20.1208 4.81753 19.4687 4.55348 18.7047 4.41551C18.424 2.62205 16.8722 1.25 15 1.25ZM17.1293 4.27117C16.8265 3.38623 15.9876 2.75 15 2.75H11C9.09318 2.75 7.73851 2.75159 6.71085 2.88976C5.70476 3.02502 5.12511 3.27869 4.7019 3.7019C4.27869 4.12511 4.02502 4.70476 3.88976 5.71085C3.75159 6.73851 3.75 8.09318 3.75 10V16C3.75 16.9876 4.38624 17.8265 5.27117 18.1293C5.24998 17.5194 5.24999 16.8297 5.25 16.0549V10.9451C5.24998 9.57754 5.24996 8.47522 5.36652 7.60825C5.48754 6.70814 5.74643 5.95027 6.34835 5.34835C6.95027 4.74643 7.70814 4.48754 8.60825 4.36652C9.47522 4.24996 10.5775 4.24998 11.9451 4.25H15.0549C15.8297 4.24999 16.5194 4.24998 17.1293 4.27117ZM7.40901 6.40901C7.68577 6.13225 8.07435 5.9518 8.80812 5.85315C9.56347 5.75159 10.5646 5.75 12 5.75H15C16.4354 5.75 17.4365 5.75159 18.1919 5.85315C18.9257 5.9518 19.3142 6.13225 19.591 6.40901C19.8678 6.68577 20.0482 7.07435 20.1469 7.80812C20.2484 8.56347 20.25 9.56458 20.25 11V16C20.25 17.4354 20.2484 18.4365 20.1469 19.1919C20.0482 19.9257 19.8678 20.3142 19.591 20.591C19.3142 20.8678 18.9257 21.0482 18.1919 21.1469C17.4365 21.2484 16.4354 21.25 15 21.25H12C10.5646 21.25 9.56347 21.2484 8.80812 21.1469C8.07435 21.0482 7.68577 20.8678 7.40901 20.591C7.13225 20.3142 6.9518 19.9257 6.85315 19.1919C6.75159 18.4365 6.75 17.4354 6.75 16V11C6.75 9.56458 6.75159 8.56347 6.85315 7.80812C6.9518 7.07435 7.13225 6.68577 7.40901 6.40901Z" fill="#FFFFFF"/>
+</svg></button>
+                                <button id="share-link-btn" class="btn btn-share" title="Поделиться" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+<path d="M12 1.25H11.9426C9.63423 1.24999 7.82519 1.24998 6.41371 1.43975C4.96897 1.63399 3.82895 2.03933 2.93414 2.93414C2.03933 3.82895 1.63399 4.96897 1.43975 6.41371C1.24998 7.82519 1.24999 9.63423 1.25 11.9426V12.0574C1.24999 14.3658 1.24998 16.1748 1.43975 17.5863C1.63399 19.031 2.03933 20.1711 2.93414 21.0659C3.82895 21.9607 4.96897 22.366 6.41371 22.5603C7.82519 22.75 9.63423 22.75 11.9426 22.75H12.0574C14.3658 22.75 16.1748 22.75 17.5863 22.5603C19.031 22.366 20.1711 21.9607 21.0659 21.0659C21.9607 20.1711 22.366 19.031 22.5603 17.5863C22.75 16.1748 22.75 14.3658 22.75 12.0574V12C22.75 11.5858 22.4142 11.25 22 11.25C21.5858 11.25 21.25 11.5858 21.25 12C21.25 14.3782 21.2484 16.0864 21.0736 17.3864C20.9018 18.6648 20.5749 19.4355 20.0052 20.0052C19.4355 20.5749 18.6648 20.9018 17.3864 21.0736C16.0864 21.2484 14.3782 21.25 12 21.25C9.62178 21.25 7.91356 21.2484 6.61358 21.0736C5.33517 20.9018 4.56445 20.5749 3.9948 20.0052C3.42514 19.4355 3.09825 18.6648 2.92637 17.3864C2.75159 16.0864 2.75 14.3782 2.75 12C2.75 9.62178 2.75159 7.91356 2.92637 6.61358C3.09825 5.33517 3.42514 4.56445 3.9948 3.9948C4.56445 3.42514 5.33517 3.09825 6.61358 2.92637C7.91356 2.75159 9.62178 2.75 12 2.75C12.4142 2.75 12.75 2.41421 12.75 2C12.75 1.58579 12.4142 1.25 12 1.25Z" fill="#FFFFFF"/>
+<path d="M12.4697 10.4697C12.1768 10.7626 12.1768 11.2374 12.4697 11.5303C12.7626 11.8232 13.2374 11.8232 13.5303 11.5303L21.25 3.81066V7.34375C21.25 7.75796 21.5858 8.09375 22 8.09375C22.4142 8.09375 22.75 7.75796 22.75 7.34375V2C22.75 1.58579 22.4142 1.25 22 1.25H16.6562C16.242 1.25 15.9062 1.58579 15.9062 2C15.9062 2.41421 16.242 2.75 16.6562 2.75H20.1893L12.4697 10.4697Z" fill="#FFFFFF"/>
+</svg></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Экран ошибки -->
+        <div id="error-screen" class="screen">
+            <div class="error-container">
+                <div class="error-content">
+                    <h1>😕</h1>
+                    <h2>Комната не найдена</h2>
+                    <p id="error-message">Эта комната не существует или была удалена</p>
+                    <button id="go-home-btn" class="btn btn-primary">На главную</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Экран игры -->
+        <div id="game-screen" class="screen">
+            <div class="game-container">
+                <!-- Кнопка покинуть комнату -->
+                <button id="leave-game-btn" class="leave-game-btn" title="Покинуть комнату">
+                    <span class="leave-icon">🚪</span>
+                </button>
+                
+                <!-- Кнопка настроек -->
+                <button id="settings-btn" class="settings-btn" title="Настройки">⚙️</button>
+                
+                <!-- Кнопка правил -->
+                <button id="rules-btn" class="rules-btn" title="Правила игры">📖</button>
+                
+                <!-- Кнопка чата -->
+                <button id="chat-btn" class="chat-btn" title="Отправить сообщение">💬</button>
+                
+                <!-- Круговое игровое поле -->
+                <div class="game-table">
+                    <!-- Игровой лог -->
+                    <div id="game-log" class="game-log"></div>
+                    
+                    <!-- Контейнер для противников -->
+                    <div id="opponents-container">
+                        <!-- Игрок слева -->
+                        <div class="opponent-area opponent-left" id="opponent-left">
+                            <div class="opponent-info">
+                                <span class="opponent-name"></span>
+                                <span class="opponent-score"></span>
+                            </div>
+                            <div class="opponent-cards"></div>
+                        </div>
+                        
+                        <!-- Игрок по центру -->
+                        <div class="opponent-area opponent-top" id="opponent-top">
+                            <div class="opponent-info">
+                                <span class="opponent-name"></span>
+                                <span class="opponent-score"></span>
+                            </div>
+                            <div class="opponent-cards"></div>
+                        </div>
+                        
+                        <!-- Игрок справа -->
+                        <div class="opponent-area opponent-right" id="opponent-right">
+                            <div class="opponent-info">
+                                <span class="opponent-name"></span>
+                                <span class="opponent-score"></span>
+                            </div>
+                            <div class="opponent-cards"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Центральный круг с картой и колодой -->
+                    <div class="game-circle">
+                        <div class="center-area">
+                            <div class="center-card-wrapper">
+                                <!-- Индикатор выбранной масти -->
+                                <div id="chosen-suit-indicator" style="display: none;"></div>
+                                <div id="discard-pile" class="center-card"></div>
+                            </div>
+                            <div class="deck-area">
+                                <div class="deck-count-badge" id="deck-count">0</div>
+                                <div id="deck" class="card-pile">
+                                    <div class="card card-back">🎴</div>
+                                </div>
+                                <div class="deck-buttons">
+                                    <button id="draw-card-btn" class="btn btn-primary btn-sm">Взять</button>
+                                    <button id="skip-turn-btn" class="btn btn-secondary btn-sm" style="display: none;">Нету</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Контейнер игрока -->
+                    <div class="player-container">
+                        <!-- Информация об игроке -->
+                        <div class="player-info">
+                            <span class="player-name" id="player-name"></span>
+                            <span class="player-score" id="player-score"></span>
+                        </div>
+                        
+                        <!-- Карты игрока внизу -->
+                        <div class="player-hand">
+                            <div id="hand-cards"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно чата -->
+        <div id="chat-modal" class="modal">
+            <div class="modal-content chat-modal-content">
+                <h3>Отправить сообщение</h3>
+                <textarea id="chat-input" placeholder="Введите сообщение..." maxlength="200"></textarea>
+                <div class="chat-modal-buttons">
+                    <button id="send-chat-btn" class="btn btn-primary">Отправить</button>
+                    <button id="close-chat-btn" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно быстрых реакций -->
+        <div id="reaction-picker" class="reaction-picker">
+            <div class="reaction-picker-scroll">
+                <button class="reaction-btn" data-reaction="🙃">🙃</button>
+                <button class="reaction-btn" data-reaction="🙁">🙁</button>
+                <button class="reaction-btn" data-reaction="😡">😡</button>
+                <button class="reaction-btn" data-reaction="😈">😈</button>
+                <button class="reaction-btn" data-reaction="😇">😇</button>
+                <button class="reaction-btn" data-reaction="😠">😠</button>
+                <button class="reaction-btn" data-reaction="😄">😄</button>
+                <button class="reaction-btn" data-reaction="😎">😎</button>
+                <button class="reaction-btn" data-reaction="🤔">🤔</button>
+                <button class="reaction-btn" data-reaction="😤">😤</button>
+                <button class="reaction-btn" data-reaction="😐">😐</button>
+                <button class="reaction-btn" data-reaction="👍">👍</button>
+                <button class="reaction-btn" data-reaction="👎">👎</button>
+                <button class="reaction-btn" data-reaction="🤝">🤝</button>
+                <button class="reaction-btn" data-reaction="🫰">🫰</button>
+                <button class="reaction-btn" data-reaction="🪬">🪬</button>
+                <button class="reaction-btn" data-reaction="🤯">🤯</button>
+                <button class="reaction-btn" data-reaction="🤡">🤡</button>
+                <button class="reaction-btn" data-reaction="🤨">🤨</button>
+                <button class="reaction-btn" data-reaction="😑">😑</button>
+                <button class="reaction-btn" data-reaction="😌">😌</button>
+                <button class="reaction-btn" data-reaction="😴">😴</button>
+                <button class="reaction-btn" data-reaction="🌚">🌚</button>
+                <button class="reaction-btn" data-reaction="🐱">🐱</button>
+                <button class="reaction-btn" data-reaction="🐸">🐸</button>
+                <button class="reaction-btn" data-reaction="🐺">🐺</button>
+                <button class="reaction-btn" data-reaction="🐊">🐊</button>
+                <button class="reaction-btn" data-reaction="🐴">🐴</button>
+                <button class="reaction-btn" data-reaction="🐠">🐠</button>
+                <button class="reaction-btn" data-reaction="🦆">🦆</button>
+                <button class="reaction-btn" data-reaction="🌹">🌹</button>
+                <button class="reaction-btn" data-reaction="🗿">🗿</button>
+                <button class="reaction-btn" data-reaction="👁️">👁️</button>
+                <button class="reaction-btn" data-reaction="💩">💩</button>
+                <button class="reaction-btn" data-reaction="🔩">🔩</button>
+                <button class="reaction-btn" data-reaction="🔪">🔪</button>
+                <button class="reaction-btn" data-reaction="⚔️">⚔️</button>
+                <button class="reaction-btn" data-reaction="🧀">🧀</button>
+                <button class="reaction-btn" data-reaction="🎺">🎺</button>
+                <button class="reaction-btn" data-reaction="🎁">🎁</button>
+                <button class="reaction-btn" data-reaction="🔮">🔮</button>
+                <button class="reaction-btn" data-reaction="🎲">🎲</button>
+                <button class="reaction-btn" data-reaction="🎯">🎯</button>
+                <button class="reaction-btn" data-reaction="♥️">♥️</button>
+                <button class="reaction-btn" data-reaction="♦️">♦️</button>
+                <button class="reaction-btn" data-reaction="♣️">♣️</button>
+                <button class="reaction-btn" data-reaction="♠️">♠️</button>
+            </div>
+        </div>
+        
+        <!-- Модальное окно выбора масти -->
+        <div id="suit-modal" class="modal">
+            <div class="modal-content">
+                <h3>Выберите масть</h3>
+                <div class="suit-selector">
+                    <button class="suit-btn" data-suit="hearts"><span class="suit-emoji">♥️</span> Черви</button>
+                    <button class="suit-btn" data-suit="diamonds"><span class="suit-emoji">♦️</span> Бубны</button>
+                    <button class="suit-btn" data-suit="clubs"><span class="suit-emoji">♣️</span> Трефы</button>
+                    <button class="suit-btn" data-suit="spades"><span class="suit-emoji">♠️</span> Пики</button>
+                </div>
+                <div class="modal-buttons" style="margin-top: 15px;">
+                    <button id="cancel-suit-btn" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно результатов -->
+        <div id="results-modal" class="modal">
+            <div class="modal-content">
+                <h2>Игра окончена!</h2>
+                <div id="results-content"></div>
+                <button id="close-results-btn" class="btn btn-primary">Новая игра</button>
+            </div>
+        </div>
+        
+        <!-- Модальное окно присоединения к комнате -->
+        <div id="join-modal" class="modal">
+            <div class="modal-content">
+                <h3>Присоединиться к комнате</h3>
+                <input type="text" id="join-nickname-input" placeholder="Введите никнейм" maxlength="20">
+                <div class="modal-buttons">
+                    <button id="join-confirm-btn" class="btn btn-primary">Присоединиться</button>
+                    <button id="join-cancel-btn" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно оповещения -->
+        <div id="alert-modal" class="modal">
+            <div class="modal-content">
+                <h3>Сообщение</h3>
+                <p id="alert-text" style="margin: 10px 0 20px 0;"></p>
+                <div class="modal-buttons">
+                    <button id="alert-ok-btn" class="btn btn-primary">ОК</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно подтверждения выхода -->
+        <div id="leave-confirm-modal" class="modal">
+            <div class="modal-content">
+                <h3>Покинуть комнату?</h3>
+                <p style="margin: 10px 0 20px 0;">Вы уверены, что хотите покинуть игру?</p>
+                <div class="modal-buttons">
+                    <button id="leave-confirm-btn" class="btn btn-primary">Да, выйти</button>
+                    <button id="leave-cancel-btn" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно правил -->
+        <div id="rules-modal" class="modal">
+            <div class="modal-content rules-modal-content">
+                <button id="close-rules-btn" class="close-modal-btn">✕</button>
+                <h2>📖 Правила игры</h2>
+                <div id="rules-content" class="rules-content"></div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно настроек -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content settings-modal-content">
+                <button id="close-settings-btn" class="close-modal-btn">✕</button>
+                <h2>⚙️ Настройки</h2>
+                <div class="settings-content">
+                    <!-- Полноэкранный режим -->
+                    <div class="setting-item">
+                        <span class="setting-label">⛶ Полноэкранный режим</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="fullscreen-toggle">
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Звук -->
+                    <div class="setting-item">
+                        <span class="setting-label">🔊 Звук</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="sound-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Анимации -->
+                    <div class="setting-item">
+                        <span class="setting-label">💫 Анимации карт</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="animations-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Режим Про -->
+                    <div class="setting-item">
+                        <span class="setting-label">🎓 Режим Про</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="pro-mode-toggle">
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Ночной режим -->
+                    <div class="setting-item">
+                        <span class="setting-label">🌙 Ночной режим</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="night-mode-toggle">
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Белые масти (только в ночном режиме) -->
+                    <div class="setting-item" id="white-suits-setting" style="display: none;">
+                        <span class="setting-label">🤍 Белые масти</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="white-suits-toggle">
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Лог (только на мобильных) -->
+                    <div class="setting-item mobile-only">
+                        <span class="setting-label">📃 Показывать лог</span>
+                        <div class="deck-size-toggle">
+                            <label>
+                                <span class="deck-label">Выкл</span>
+                                <input type="checkbox" id="log-toggle" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="deck-label">Вкл</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Выбор цвета рубашки карт -->
+                    <div class="setting-item">
+                        <span class="setting-label">🎴 Цвет рубашки карт</span>
+                        <div class="card-back-selector">
+                            <div class="card-back-option" data-back="gray">
+                                <div class="card-back-preview card-back-gray"></div>
+                            </div>
+                            <div class="card-back-option" data-back="green">
+                                <div class="card-back-preview card-back-green"></div>
+                            </div>
+                            <div class="card-back-option" data-back="blue">
+                                <div class="card-back-preview card-back-blue"></div>
+                            </div>
+                            <div class="card-back-option" data-back="red">
+                                <div class="card-back-preview card-back-red"></div>
+                            </div>
+                            <div class="card-back-option" data-back="purple">
+                                <div class="card-back-preview card-back-purple"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Выбор цвета фона -->
+                    <div class="setting-item">
+                        <span class="setting-label">🎨 Цвет фона</span>
+                        <div class="background-selector">
+                            <div class="background-option" data-bg="default">
+                                <div class="background-preview bg-default"></div>
+                            </div>
+                            <div class="background-option" data-bg="green">
+                                <div class="background-preview bg-green"></div>
+                            </div>
+                            <div class="background-option" data-bg="blue">
+                                <div class="background-preview bg-blue"></div>
+                            </div>
+                            <div class="background-option" data-bg="purple">
+                                <div class="background-preview bg-purple"></div>
+                            </div>
+                            <div class="background-option" data-bg="orange">
+                                <div class="background-preview bg-orange"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/marked.min.js?v=3"></script>
+    <script src="/game.js?v=3"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed:', err);
+                    });
+            });
+        }
+        
+        // Функция проверки - находимся ли на главной странице (лобби)
+        function isOnLobbyScreen() {
+            const lobbyScreen = document.getElementById('lobby-screen');
+            return lobbyScreen && lobbyScreen.classList.contains('active');
+        }
+        
+        // Функция проверки - находится ли элемент внутри блока руки
+        function isInsidePlayerHand(element) {
+            while (element) {
+                if (element.classList && element.classList.contains('player-hand')) {
+                    return true;
+                }
+                element = element.parentElement;
+            }
+            return false;
+        }
+        
+        // Функция проверки - находится ли элемент внутри модалки с прокруткой
+        function isInsideScrollableModal(element) {
+            while (element) {
+                if (element.classList && (
+                    element.classList.contains('rules-modal-content') ||
+                    element.classList.contains('modal-content')
+                )) {
+                    return true;
+                }
+                element = element.parentElement;
+            }
+            return false;
+        }
+        
+        // Отключаем pull-to-refresh только НЕ на главной странице
+        let touchStartY = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: false });
+        
+        document.addEventListener('touchmove', function(e) {
+            // Разрешаем все жесты на главной странице
+            if (isOnLobbyScreen()) {
+                return;
+            }
+            
+            // Разрешаем скролл внутри блока руки игрока
+            if (isInsidePlayerHand(e.target)) {
+                return;
+            }
+            
+            // Разрешаем скролл внутри модалок
+            if (isInsideScrollableModal(e.target)) {
+                return;
+            }
+            
+            const touchY = e.touches[0].clientY;
+            const touchDiff = touchY - touchStartY;
+            
+            // Если пользователь тянет вниз на верху страницы - блокируем
+            if (touchDiff > 0 && window.scrollY === 0) {
+                e.preventDefault();
+            }
+            
+            // Блокируем мультитач
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Отключаем двойное нажатие для зума только НЕ на главной
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            // Разрешаем на главной странице
+            if (isOnLobbyScreen()) {
+                return;
+            }
+            
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Предотвращаем обновление страницы через клавиатуру только НЕ на главной
+        document.addEventListener('keydown', function(e) {
+            // Разрешаем на главной странице
+            if (isOnLobbyScreen()) {
+                return;
+            }
+            
+            if ((e.key === 'F5') || 
+                (e.ctrlKey && e.key === 'r') || 
+                (e.metaKey && e.key === 'r')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

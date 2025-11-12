@@ -7,9 +7,62 @@ class CardGame {
         this.hand = [];
         this.pendingCardToPlay = null;
         this.eightDrawnCards = [];  // ID карт взятых из колоды на восьмёрку
+        this.lastShakeTime = 0;  // Время последней тряски для кулдауна
+        this.lastReactionTime = 0;  // Время последней реакции для кулдауна
         
         // Загружаем состояние звука из localStorage
         this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+        
+        // Маппинг звуков для реакций
+        this.reactionSounds = {
+            '🙃': 'chat',
+            '🙁': 'chat',
+            '😡': 'error',
+            '😈': 'rizz',
+            '😇': 'chat',
+            '😠': 'error',
+            '😄': 'haha',
+            '😎': 'sigma',
+            '🤔': 'pogodika',
+            '😤': 'ufff',
+            '😐': 'chat',
+            '👍': 'thum',
+            '👎': 'thum',
+            '🤝': 'chat',
+            '🫰': 'chat',
+            '🪬': 'mind',
+            '🤯': 'chat',
+            '🤡': 'clown',
+            '🤨': 'vine',
+            '😑': 'chat',
+            '😌': 'chat',
+            '😴': 'deny',
+            '🌚': 'cave',
+            '🐱': 'cat',
+            '🐸': 'frog',
+            '🐺': 'driff',
+            '🐊': 'dance',
+            '🐴': 'horse',
+            '🐠': 'fish',
+            '🦆': 'duck',
+            '🌹': 'wow',
+            '🗿': 'huh',
+            '👁️': 'eye',
+            '💩': 'fart',
+            '🔩': 'pipe',
+            '🔪': 'okay',
+            '⚔️': 'sword',
+            '🧀': 'meme',
+            '🎺': 'trumpet',
+            '🎁': 'chat',
+            '🔮': 'magic',
+            '🎲': 'dice',
+            '🎯': 'chat',
+            '♥️': 'chat',
+            '♦️': 'chat',
+            '♣️': 'chat',
+            '♠️': 'chat'
+        };
         
         // Инициализация звуков
         this.sounds = {
@@ -20,6 +73,7 @@ class CardGame {
             skip: new Audio('/sounds/skip.aac'),
             alert: new Audio('/sounds/alert.aac'),
             chat: new Audio('/sounds/chat.aac'),
+            frog: new Audio('/sounds/frog.aac'),
             win: new Audio('/sounds/win.aac'),
             winqueen: new Audio('/sounds/winqueen.aac'),
             lose: new Audio('/sounds/lose.aac'),
@@ -28,7 +82,36 @@ class CardGame {
             seven: new Audio('/sounds/seven.aac'),
             shuffle: new Audio('/sounds/shuffle.aac'),
             ace: new Audio('/sounds/ace.aac'),
-            eightplace: new Audio('/sounds/eightplace.aac')
+            eightplace: new Audio('/sounds/eightplace.aac'),
+            cat: new Audio('/sounds/cat.aac'),
+            okay: new Audio('/sounds/okay.aac'),
+            sword: new Audio('/sounds/sword.aac'),
+            pipe: new Audio('/sounds/pipe.aac'),
+            huh: new Audio('/sounds/huh.aac'),
+            pogodika: new Audio('/sounds/pogodika.aac'),
+            dance: new Audio('/sounds/dance.aac'),
+            fart: new Audio('/sounds/fart.aac'),
+            wow: new Audio('/sounds/wow.aac'),
+            cave: new Audio('/sounds/cave.aac'),
+            trumpet: new Audio('/sounds/trumpet.aac'),
+            driff: new Audio('/sounds/driff.aac'),
+            meme: new Audio('/sounds/meme.aac'),
+            error: new Audio('/sounds/error.aac'),
+            vine: new Audio('/sounds/vine.aac'),
+            duck: new Audio('/sounds/duck.aac'),
+            thum: new Audio('/sounds/thum.aac'),
+            eye: new Audio('/sounds/eye.aac'),
+            sigma: new Audio('/sounds/sigma.aac'),
+            magic: new Audio('/sounds/magic.aac'),
+            rizz: new Audio('/sounds/rizz.aac'),
+            mind: new Audio('/sounds/mind.aac'),
+            haha: new Audio('/sounds/haha.aac'),
+            ufff: new Audio('/sounds/ufff.aac'),
+            clown: new Audio('/sounds/clown.aac'),
+            deny: new Audio('/sounds/deny.aac'),
+            dice: new Audio('/sounds/dice.aac'),
+            fish: new Audio('/sounds/fish.aac'),
+            horse: new Audio('/sounds/horse.aac')
         };
         
         this.initElements();
@@ -78,14 +161,24 @@ class CardGame {
     }
     
     playSound(soundName) {
-        // Не воспроизводим звуки если страница скрыта
-        if (this.soundEnabled && this.sounds[soundName] && this.pageVisible) {
-            // Используем существующий объект вместо клонирования
-            const sound = this.sounds[soundName];
-            sound.currentTime = 0; // Сбрасываем на начало для повторного воспроизведения
-            sound.volume = 0.5;
-            sound.play().catch(err => {}); // Убираем console.log для производительности
+        if (!this.soundEnabled || !this.sounds[soundName]) {
+            return;
         }
+        
+        // Проверяем на каком экране мы находимся
+        const isOnLobby = this.lobbyScreen && this.lobbyScreen.classList.contains('active');
+        
+        // Если на главной странице и вкладка скрыта - не воспроизводим звук
+        if (isOnLobby && !this.pageVisible) {
+            return;
+        }
+        
+        // Во время игры (room или game экран) звуки работают даже в фоне
+        // Используем существующий объект вместо клонирования
+        const sound = this.sounds[soundName];
+        sound.currentTime = 0; // Сбрасываем на начало для повторного воспроизведения
+        sound.volume = 0.5;
+        sound.play().catch(err => {}); // Убираем console.log для производительности
     }
     
     toggleSound() {
@@ -96,6 +189,145 @@ class CardGame {
     toggleAnimations() {
         this.animationsEnabled = this.animationsToggle.checked;
         localStorage.setItem('animationsEnabled', this.animationsEnabled);
+    }
+    
+    toggleProMode() {
+        this.proModeEnabled = this.proModeToggle.checked;
+        localStorage.setItem('proModeEnabled', this.proModeEnabled);
+        
+        // Обновляем отображение карт в руке если игра идёт
+        if (this.hand && this.hand.length > 0 && this.topCard) {
+            this.updateHand(this.topCard, this.chosenSuit);
+        }
+    }
+    
+    toggleNightMode() {
+        this.nightModeEnabled = this.nightModeToggle.checked;
+        localStorage.setItem('nightModeEnabled', this.nightModeEnabled);
+        
+        if (this.nightModeEnabled) {
+            document.body.classList.add('night-mode');
+            // Показываем настройку белых мастей
+            if (this.whiteSuitsSetting) {
+                this.whiteSuitsSetting.style.display = 'flex';
+            }
+            // Восстанавливаем состояние белых мастей если оно было сохранено
+            const savedWhiteSuits = localStorage.getItem('whiteSuitsEnabled');
+            if (savedWhiteSuits === 'true') {
+                this.whiteSuitsEnabled = true;
+                if (this.whiteSuitsToggle) {
+                    this.whiteSuitsToggle.checked = true;
+                }
+                document.body.classList.add('white-suits');
+            }
+        } else {
+            document.body.classList.remove('night-mode');
+            // Скрываем настройку белых мастей
+            if (this.whiteSuitsSetting) {
+                this.whiteSuitsSetting.style.display = 'none';
+            }
+            // Выключаем белые масти
+            this.whiteSuitsEnabled = false;
+            document.body.classList.remove('white-suits');
+        }
+        
+        this.updateNightModeButton();
+    }
+    
+    toggleNightModeFromButton() {
+        this.nightModeEnabled = !this.nightModeEnabled;
+        localStorage.setItem('nightModeEnabled', this.nightModeEnabled);
+        
+        if (this.nightModeEnabled) {
+            document.body.classList.add('night-mode');
+            // Показываем настройку белых мастей
+            if (this.whiteSuitsSetting) {
+                this.whiteSuitsSetting.style.display = 'flex';
+            }
+            // Восстанавливаем состояние белых мастей если оно было сохранено
+            const savedWhiteSuits = localStorage.getItem('whiteSuitsEnabled');
+            if (savedWhiteSuits === 'true') {
+                this.whiteSuitsEnabled = true;
+                if (this.whiteSuitsToggle) {
+                    this.whiteSuitsToggle.checked = true;
+                }
+                document.body.classList.add('white-suits');
+            }
+        } else {
+            document.body.classList.remove('night-mode');
+            // Скрываем настройку белых мастей
+            if (this.whiteSuitsSetting) {
+                this.whiteSuitsSetting.style.display = 'none';
+            }
+            // Выключаем белые масти
+            this.whiteSuitsEnabled = false;
+            document.body.classList.remove('white-suits');
+        }
+        
+        // Синхронизируем с переключателем в настройках
+        if (this.nightModeToggle) {
+            this.nightModeToggle.checked = this.nightModeEnabled;
+        }
+        
+        this.updateNightModeButton();
+    }
+    
+    updateNightModeButton() {
+        if (!this.nightModeToggleBtn) return;
+        
+        const sunIcon = this.nightModeToggleBtn.querySelector('.sun-icon');
+        const moonIcon = this.nightModeToggleBtn.querySelector('.moon-icon');
+        
+        if (this.nightModeEnabled) {
+            // Ночной режим включен - показываем солнце (переключит на дневной)
+            if (sunIcon) sunIcon.style.display = 'inline';
+            if (moonIcon) moonIcon.style.display = 'none';
+        } else {
+            // Дневной режим - показываем луну (переключит на ночной)
+            if (sunIcon) sunIcon.style.display = 'none';
+            if (moonIcon) moonIcon.style.display = 'inline';
+        }
+    }
+    
+    toggleWhiteSuits() {
+        this.whiteSuitsEnabled = this.whiteSuitsToggle.checked;
+        localStorage.setItem('whiteSuitsEnabled', this.whiteSuitsEnabled);
+        
+        if (this.whiteSuitsEnabled) {
+            document.body.classList.add('white-suits');
+        } else {
+            document.body.classList.remove('white-suits');
+        }
+    }
+    
+    setCardBackColor(color) {
+        this.cardBackColor = color;
+        localStorage.setItem('cardBackColor', color);
+        document.body.setAttribute('data-card-back', color);
+        
+        // Обновляем выделение в селекторе
+        document.querySelectorAll('.card-back-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        const selectedOption = document.querySelector(`.card-back-option[data-back="${color}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+    }
+    
+    setBackgroundColor(color) {
+        this.backgroundColor = color;
+        localStorage.setItem('backgroundColor', color);
+        document.body.setAttribute('data-background', color);
+        
+        // Обновляем выделение в селекторе
+        document.querySelectorAll('.background-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        const selectedOption = document.querySelector(`.background-option[data-bg="${color}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
     }
 
     showAlert(message) {
@@ -154,8 +386,18 @@ class CardGame {
     
     goToLobby() {
         this.clearLocalStorage();
+        
+        // Закрываем WebSocket соединение перед перезагрузкой
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.close();
+        }
+        
         window.history.pushState({}, '', '/');
-        location.reload();
+        
+        // Небольшая задержка чтобы сообщение успело отправиться
+        setTimeout(() => {
+            location.reload();
+        }, 40);
     }
     
     initElements() {
@@ -175,6 +417,7 @@ class CardGame {
         this.inviteLink = document.getElementById('invite-link');
         this.copyLinkBtn = document.getElementById('copy-link-btn');
         this.shareLinkBtn = document.getElementById('share-link-btn');
+        this.nightModeToggleBtn = document.getElementById('night-mode-toggle-btn');
         
         // Room elements
         this.playersList = document.getElementById('players-list');
@@ -223,6 +466,10 @@ class CardGame {
         this.sendChatBtn = document.getElementById('send-chat-btn');
         this.closeChatBtn = document.getElementById('close-chat-btn');
         
+        // Reaction elements
+        this.reactionPicker = document.getElementById('reaction-picker');
+        this.playerInfo = document.querySelector('.player-info');
+        
         // Rules elements
         this.rulesBtn = document.getElementById('rules-btn');
         this.rulesModal = document.getElementById('rules-modal');
@@ -237,6 +484,10 @@ class CardGame {
         this.fullscreenToggle = document.getElementById('fullscreen-toggle');
         this.soundToggle = document.getElementById('sound-toggle');
         this.animationsToggle = document.getElementById('animations-toggle');
+        this.proModeToggle = document.getElementById('pro-mode-toggle');
+        this.nightModeToggle = document.getElementById('night-mode-toggle');
+        this.whiteSuitsToggle = document.getElementById('white-suits-toggle');
+        this.whiteSuitsSetting = document.getElementById('white-suits-setting');
         this.logToggle = document.getElementById('log-toggle');
         
         // Leave game button and modal
@@ -253,6 +504,43 @@ class CardGame {
         // Инициализируем состояние анимаций
         const savedAnimations = localStorage.getItem('animationsEnabled');
         this.animationsEnabled = savedAnimations !== null ? savedAnimations === 'true' : true;
+        
+        // Инициализируем режим Про
+        const savedProMode = localStorage.getItem('proModeEnabled');
+        this.proModeEnabled = savedProMode === 'true';
+        
+        // Инициализируем ночной режим
+        const savedNightMode = localStorage.getItem('nightModeEnabled');
+        this.nightModeEnabled = savedNightMode === 'true';
+        if (this.nightModeEnabled) {
+            document.body.classList.add('night-mode');
+        }
+        
+        // Инициализируем белые масти
+        const savedWhiteSuits = localStorage.getItem('whiteSuitsEnabled');
+        this.whiteSuitsEnabled = savedWhiteSuits === 'true';
+        
+        // Показываем настройку белых мастей только если ночной режим включен
+        if (this.nightModeEnabled && this.whiteSuitsSetting) {
+            this.whiteSuitsSetting.style.display = 'flex';
+            // Применяем белые масти если они были включены
+            if (this.whiteSuitsEnabled) {
+                document.body.classList.add('white-suits');
+            }
+        }
+        
+        // Инициализируем цвет рубашки карт
+        const savedCardBack = localStorage.getItem('cardBackColor') || 'gray';
+        this.cardBackColor = savedCardBack;
+        document.body.setAttribute('data-card-back', savedCardBack);
+        
+        // Инициализируем цвет фона
+        const savedBackground = localStorage.getItem('backgroundColor') || 'default';
+        this.backgroundColor = savedBackground;
+        document.body.setAttribute('data-background', savedBackground);
+        
+        // Обновляем иконку кнопки ночного режима
+        this.updateNightModeButton();
     }
     
     initEventListeners() {
@@ -271,6 +559,11 @@ class CardGame {
         // Show share button if Web Share API is available
         if (navigator.share) {
             this.shareLinkBtn.style.display = 'block';
+        }
+        
+        // Night mode toggle button on lobby
+        if (this.nightModeToggleBtn) {
+            this.nightModeToggleBtn.addEventListener('click', () => this.toggleNightModeFromButton());
         }
         
         this.readyToggleBtn.addEventListener('click', () => this.toggleReady());
@@ -293,6 +586,9 @@ class CardGame {
         this.fullscreenToggle.addEventListener('change', () => this.toggleFullscreen());
         this.soundToggle.addEventListener('change', () => this.toggleSound());
         this.animationsToggle.addEventListener('change', () => this.toggleAnimations());
+        this.proModeToggle.addEventListener('change', () => this.toggleProMode());
+        this.nightModeToggle.addEventListener('change', () => this.toggleNightMode());
+        this.whiteSuitsToggle.addEventListener('change', () => this.toggleWhiteSuits());
         this.logToggle.addEventListener('change', () => this.toggleLog());
         
         // Leave game button
@@ -303,7 +599,7 @@ class CardGame {
         // Suit selection
         document.querySelectorAll('.suit-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const suit = e.target.dataset.suit;
+                const suit = e.currentTarget.dataset.suit;
                 this.selectSuit(suit);
             });
         });
@@ -327,6 +623,49 @@ class CardGame {
                 e.preventDefault();
                 this.sendChatMessage();
             }
+        });
+        
+        // Reaction handlers - клик по блоку с никнеймом
+        if (this.playerInfo) {
+            this.playerInfo.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.showReactionPicker(e);
+            });
+        }
+        
+        document.querySelectorAll('.reaction-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const reaction = e.currentTarget.dataset.reaction;
+                this.sendReaction(reaction);
+                this.hideReactionPicker();
+            });
+        });
+        
+        // Закрываем пикер при клике вне его
+        document.addEventListener('click', (e) => {
+            if (this.reactionPicker && 
+                this.reactionPicker.classList.contains('active') &&
+                !this.reactionPicker.contains(e.target) &&
+                (!this.playerInfo || !this.playerInfo.contains(e.target))) {
+                this.hideReactionPicker();
+            }
+        });
+        
+        // Card back color selector
+        document.querySelectorAll('.card-back-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const backColor = e.currentTarget.dataset.back;
+                this.setCardBackColor(backColor);
+            });
+        });
+        
+        // Background color selector
+        document.querySelectorAll('.background-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const bgColor = e.currentTarget.dataset.bg;
+                this.setBackgroundColor(bgColor);
+            });
         });
         
         // Rules handlers
@@ -353,6 +692,38 @@ class CardGame {
                 this.pendingCardToPlay = null;
             });
         }
+        
+        // Закрытие модалок по клику на фон
+        this.setupModalBackdropClose();
+    }
+    
+    setupModalBackdropClose() {
+        // Список всех модалок
+        const modals = [
+            { element: this.settingsModal, closeMethod: () => this.closeSettings() },
+            { element: this.resultsModal, closeMethod: () => this.closeResultsModal() },
+            { element: this.rulesModal, closeMethod: () => this.closeRules() },
+            { element: this.alertModal, closeMethod: () => this.alertModal.classList.remove('active') },
+            { element: this.suitModal, closeMethod: () => {
+                this.suitModal.classList.remove('active');
+                this.pendingCardToPlay = null;
+            }},
+            { element: this.chatModal, closeMethod: () => this.chatModal.classList.remove('active') },
+            { element: this.joinModal, closeMethod: () => this.joinModal.classList.remove('active') },
+            { element: this.leaveConfirmModal, closeMethod: () => this.leaveConfirmModal.classList.remove('active') }
+        ];
+        
+        // Добавляем обработчик для каждой модалки
+        modals.forEach(modal => {
+            if (modal.element) {
+                modal.element.addEventListener('click', (e) => {
+                    // Закрываем только если клик был по самой модалке (фону), а не по её содержимому
+                    if (e.target === modal.element) {
+                        modal.closeMethod();
+                    }
+                });
+            }
+        });
     }
     
     connect(reconnect = false) {
@@ -531,7 +902,7 @@ class CardGame {
                             this.animateDrawCards(data.forced_draw_player_id, data.forced_draw_count);
                         }, 300);
                         
-                        const cardName = `${data.top_card.rank}${this.getSuitSymbol(data.top_card.suit)}`;
+                        const cardName = `${data.top_card.rank}${this.getSuitSymbolForLog(data.top_card.suit)}`;
                         const cardsText = data.forced_draw_count === 1 ? '1 карту' : `${data.forced_draw_count} карты`;
                         this.addLogEntry(`${data.forced_draw_player_nickname} взял ${cardsText} от ${cardName}`);
                     }
@@ -588,7 +959,7 @@ class CardGame {
                 }
                 
                 // Логируем событие
-                const cardName = `${data.card.rank}${this.getSuitSymbol(data.card.suit)}`;
+                const cardName = `${data.card.rank} ${this.getSuitSymbolForLog(data.card.suit)}`;
                 this.addLogEntry(`${data.player_nickname} сыграл ${cardName}`);
                 
                 // Если выбрана масть дамой
@@ -634,7 +1005,7 @@ class CardGame {
                 const cardsText = data.cards_count === 1 ? '1 карту' : `${data.cards_count} карты`;
                 if (data.waiting_for_eight) {
                     const topCard = data.top_card;
-                    this.addLogEntry(`${data.player_nickname} взял ${cardsText} от ${topCard.rank}${this.getSuitSymbol(topCard.suit)}`);
+                    this.addLogEntry(`${data.player_nickname} взял ${cardsText} от ${topCard.rank} ${this.getSuitSymbolForLog(topCard.suit)}`);
                 } else {
                     const cardsText = data.cards_count === 1 ? 'карту' : 'карты';
                     this.addLogEntry(`${data.player_nickname} взял ${data.cards_count} ${cardsText}`);
@@ -688,7 +1059,12 @@ class CardGame {
                         chatClass = `chat-other chat-color-${colorIndex}`;
                     }
                     
+                    // В лог пишем с ником
                     this.addLogEntry(data.message, chatClass);
+                    
+                    // В пузыре показываем только текст без ника
+                    const bubbleText = data.message_text || data.message;
+                    this.showChatBubble(data.player_id, bubbleText);
                 }
                 break;
             case 'game_ended':
@@ -732,6 +1108,18 @@ class CardGame {
             case 'player_reconnected':
                 // Игрок переподключился
                 this.addLogEntry(`${data.nickname} переподключился`);
+                break;
+            case 'shake_discard':
+                // Тряска карты сброса
+                this.animateShakeDiscard();
+                this.playSound('alert');
+                break;
+            case 'reaction':
+                // Быстрая реакция от игрока
+                // Используем маппинг звуков для реакций
+                const soundName = this.reactionSounds[data.emoji] || 'chat';
+                this.playSound(soundName);
+                this.showReactionBubble(data.player_id, data.emoji);
                 break;
             case 'deck_size_changed':
                 // Размер колоды изменён
@@ -956,6 +1344,11 @@ class CardGame {
     }
     
     leaveRoom() {
+        // Отправляем сообщение о выходе из комнаты
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.send({ type: 'leave_room' });
+        }
+        
         // Скрываем блок с ссылкой если он был показан
         if (this.inviteLinkBlock) {
             this.inviteLinkBlock.style.display = 'none';
@@ -976,21 +1369,24 @@ class CardGame {
     }
     
     updateRoomSettings(room) {
-        // Показываем настройки только создателю комнаты и только до начала игры
+        // Показываем настройки только создателю комнаты и только до начала первого раунда
         const isCreator = room.creator_id === this.playerId;
         const gameNotStarted = !room.game_started;
         
-        // Проверяем что ни у кого нет очков (игра ещё не начиналась)
+        // Проверяем что ни у кого нет очков (игра ещё не начиналась ни разу)
+        // Это ключевая проверка - между раундами game_started=false, но очки уже есть
         const noScores = room.players.every(p => p.score === 0);
         
         // Проверяем есть ли боты в комнате
         const hasBot = room.players.some(p => p.is_bot);
         
+        // Настройки комнаты (переключатель 36/52) показываем только до первого раунда
         const shouldShow = isCreator && gameNotStarted && noScores;
         
         this.roomSettings.style.display = shouldShow ? 'block' : 'none';
         
-        // Блок приватной комнаты показываем только если нет ботов
+        // Блок приватной комнаты показываем ТОЛЬКО при создании комнаты (noScores) и без ботов
+        // Между раундами он не должен показываться, даже если game_started=false
         if (this.privateRoomSettings) {
             this.privateRoomSettings.style.display = (shouldShow && !hasBot) ? 'block' : 'none';
         }
@@ -1019,6 +1415,8 @@ class CardGame {
         this.discardPile.innerHTML = '';
         if (data.top_card) {
             const cardElement = this.createCardElement(data.top_card, false);
+            cardElement.style.cursor = 'pointer';
+            cardElement.addEventListener('click', () => this.shakeDiscardPile());
             this.discardPile.appendChild(cardElement);
         }
         
@@ -1026,7 +1424,9 @@ class CardGame {
         // Показываем индикатор всегда когда есть выбранная масть (после дамы)
         if (data.chosen_suit) {
             this.chosenSuitIndicator.style.display = 'block';
-            this.chosenSuitIndicator.textContent = this.getSuitSymbol(data.chosen_suit);
+            const suitEmoji = this.getSuitSymbol(data.chosen_suit);
+            const suitClass = data.chosen_suit; // hearts, diamonds, clubs, spades
+            this.chosenSuitIndicator.innerHTML = `<span class="suit-emoji-indicator ${suitClass}">${suitEmoji}</span>`;
         } else {
             this.chosenSuitIndicator.style.display = 'none';
         }
@@ -1178,6 +1578,10 @@ class CardGame {
     }
     
     updateHand(topCard, chosenSuit) {
+        // Сохраняем для использования при переключении режима Про
+        this.topCard = topCard;
+        this.chosenSuit = chosenSuit;
+        
         this.handCards.innerHTML = '';
         
         this.hand.forEach(card => {
@@ -1188,8 +1592,17 @@ class CardGame {
                            this.canPlayCard(card, topCard, chosenSuit, this.waitingForEight, this.eightDrawnCards);
             
             if (!canPlay) {
-                cardElement.classList.add('disabled');
+                // В режиме Про карты остаются яркими (не добавляем disabled)
+                // В обычном режиме затемняем неподходящие карты
+                if (this.proModeEnabled) {
+                    cardElement.classList.remove('disabled');
+                    // В режиме Про добавляем обработчик клика даже для неподходящих карт
+                    cardElement.addEventListener('click', () => this.playCard(card));
+                } else {
+                    cardElement.classList.add('disabled');
+                }
             } else {
+                cardElement.classList.remove('disabled');
                 cardElement.addEventListener('click', () => this.playCard(card));
             }
             
@@ -1248,6 +1661,16 @@ class CardGame {
             'diamonds': '♦️',
             'clubs': '♣️',
             'spades': '♠️'
+        };
+        return symbols[suit] || '';
+    }
+    
+    getSuitSymbolForLog(suit) {
+        const symbols = {
+            'hearts': '<span class="suit-emoji-log hearts">♥️</span>',
+            'diamonds': '<span class="suit-emoji-log diamonds">♦️</span>',
+            'clubs': '<span class="suit-emoji-log clubs">♣️</span>',
+            'spades': '<span class="suit-emoji-log spades">♠️</span>'
         };
         return symbols[suit] || '';
     }
@@ -1320,7 +1743,28 @@ class CardGame {
             return;
         }
         
-        this.send({ type: 'skip_turn' });
+        this.send({
+            type: 'skip_turn'
+        });
+    }
+    
+    shakeDiscardPile() {
+        // Проверяем кулдаун (5 секунд)
+        const now = Date.now();
+        const cooldown = 5000; // 5 секунд в миллисекундах
+        
+        if (now - this.lastShakeTime < cooldown) {
+            // Просто игнорируем клик если кулдаун активен
+            return;
+        }
+        
+        // Обновляем время последней тряски
+        this.lastShakeTime = now;
+        
+        // Отправляем событие тряски на сервер
+        this.send({
+            type: 'shake_discard'
+        });
     }
     
     showCountdown(seconds) {
@@ -1351,7 +1795,33 @@ class CardGame {
         // Синхронизируем состояние переключателей с текущими настройками
         this.soundToggle.checked = this.soundEnabled;
         this.animationsToggle.checked = this.animationsEnabled;
+        this.proModeToggle.checked = this.proModeEnabled;
+        this.nightModeToggle.checked = this.nightModeEnabled;
+        this.whiteSuitsToggle.checked = this.whiteSuitsEnabled;
         this.fullscreenToggle.checked = !!document.fullscreenElement;
+        
+        // Показываем/скрываем настройку белых мастей в зависимости от ночного режима
+        if (this.whiteSuitsSetting) {
+            this.whiteSuitsSetting.style.display = this.nightModeEnabled ? 'flex' : 'none';
+        }
+        
+        // Синхронизируем выбранный цвет рубашки
+        document.querySelectorAll('.card-back-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        const selectedOption = document.querySelector(`.card-back-option[data-back="${this.cardBackColor}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+        
+        // Синхронизируем выбранный цвет фона
+        document.querySelectorAll('.background-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        const selectedBgOption = document.querySelector(`.background-option[data-bg="${this.backgroundColor}"]`);
+        if (selectedBgOption) {
+            selectedBgOption.classList.add('selected');
+        }
         
         // Синхронизируем состояние лога (проверяем есть ли класс hidden)
         if (this.gameLog) {
@@ -1380,7 +1850,7 @@ class CardGame {
         
         const entry = document.createElement('div');
         entry.className = extraClass ? `log-entry ${extraClass}` : 'log-entry';
-        entry.textContent = message;
+        entry.innerHTML = message;
         
         // Добавляем в начало (новые сверху)
         this.gameLog.insertBefore(entry, this.gameLog.firstChild);
@@ -1470,9 +1940,15 @@ class CardGame {
                        </div>`
                     : '';
                 
+                // Текст для обнуления при 101
+                const resetText = result.reset_to_zero
+                    ? `<p style="color: #ff9800; font-weight: bold; font-size: 1.1em;">🎯 Ровно 101! Очки обнулены!</p>`
+                    : '';
+                
                 resultItem.innerHTML = `
                     <h4>${result.nickname}</h4>
                     <p>Очки за раунд: +${result.points}</p>
+                    ${resetText}
                     <p>Всего очков: ${result.total_score}</p>
                     ${cardsHtml}
                 `;
@@ -1502,6 +1978,12 @@ class CardGame {
     closeResultsModal() {
         this.resultsModal.classList.remove('active');
         this.showScreen('room');
+        
+        // Обновляем настройки комнаты чтобы скрыть блок приватной комнаты после первого раунда
+        if (this.currentRoom) {
+            this.updateRoomSettings(this.currentRoom);
+        }
+        
         // Удаляем обработчик Enter
         if (this.resultsEnterHandler) {
             document.removeEventListener('keydown', this.resultsEnterHandler);
@@ -1533,6 +2015,205 @@ class CardGame {
         });
         
         this.closeChat();
+    }
+    
+    showReactionPicker(e) {
+        e.stopPropagation();
+        
+        if (!this.reactionPicker) return;
+        
+        // Проверяем кулдаун (5 секунд)
+        const now = Date.now();
+        const cooldown = 5000; // 5 секунд в миллисекундах
+        
+        if (now - this.lastReactionTime < cooldown) {
+            // Просто игнорируем клик если кулдаун активен
+            return;
+        }
+        
+        // Получаем координаты блока руки (.player-hand)
+        const playerHand = document.querySelector('.player-hand');
+        if (!playerHand) return;
+        
+        const rect = playerHand.getBoundingClientRect();
+        
+        // Позиционируем пикер НАД блоком руки по центру
+        const vh = window.innerHeight / 100;
+        this.reactionPicker.style.left = `${rect.left + rect.width / 2}px`;
+        this.reactionPicker.style.transform = 'translateX(-50%)';
+        this.reactionPicker.style.top = `${rect.top - 70 - vh}px`; // Над рукой + 1vh выше
+        
+        this.reactionPicker.classList.add('active');
+        
+        // Предотвращаем конфликт свайпа с другими элементами
+        const scrollContainer = this.reactionPicker.querySelector('.reaction-picker-scroll');
+        if (scrollContainer) {
+            scrollContainer.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            }, { passive: true, once: false });
+            
+            scrollContainer.addEventListener('touchmove', (e) => {
+                e.stopPropagation();
+            }, { passive: true, once: false });
+            
+            // Drag-скролл мышкой (как на телефоне)
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            let hasMoved = false;
+            
+            scrollContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                hasMoved = false;
+                scrollContainer.style.scrollBehavior = 'auto';
+                startX = e.pageX;
+                scrollLeft = scrollContainer.scrollLeft;
+            });
+            
+            scrollContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+                scrollContainer.style.scrollBehavior = 'smooth';
+            });
+            
+            scrollContainer.addEventListener('mouseup', () => {
+                isDown = false;
+                scrollContainer.style.scrollBehavior = 'smooth';
+            });
+            
+            scrollContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX;
+                const walk = x - startX;
+                
+                // Если сдвинули больше чем на 5px, считаем это скроллом
+                if (Math.abs(walk) > 5) {
+                    hasMoved = true;
+                }
+                
+                scrollContainer.scrollLeft = scrollLeft - walk;
+            });
+            
+            // Предотвращаем клик на кнопках если был скролл
+            scrollContainer.addEventListener('click', (e) => {
+                if (hasMoved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hasMoved = false;
+                }
+            }, true);
+            
+            // Скролл колёсиком мыши по горизонтали
+            scrollContainer.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                scrollContainer.scrollLeft += e.deltaY * 2.42; // Ускоряем скролл в 2 раза
+            }, { passive: false });
+        }
+    }
+    
+    hideReactionPicker() {
+        if (this.reactionPicker) {
+            this.reactionPicker.classList.remove('active');
+        }
+    }
+    
+    sendReaction(emoji) {
+        // Обновляем время последней реакции
+        this.lastReactionTime = Date.now();
+        
+        this.send({
+            type: 'reaction',
+            emoji: emoji
+        });
+    }
+    
+    showReactionBubble(playerId, emoji) {
+        // Находим область игрока
+        let targetElement;
+        if (playerId === this.playerId) {
+            // Реакция от нас самих - показываем над нашими картами
+            targetElement = this.handCards;
+        } else {
+            // Реакция от противника - находим блок с ником и очками
+            const opponentArea = this.getOpponentAreaById(playerId);
+            if (opponentArea) {
+                // Берём блок opponent-info (ник и очки) для центрирования
+                targetElement = opponentArea.querySelector('.opponent-info');
+            }
+        }
+        
+        if (!targetElement) return;
+        
+        // Создаём пузырёк
+        const bubble = document.createElement('div');
+        bubble.className = 'reaction-bubble';
+        bubble.textContent = emoji;
+        
+        // Позиционируем пузырёк и добавляем стрелочку
+        const rect = targetElement.getBoundingClientRect();
+        bubble.style.left = `${rect.left + rect.width / 2}px`; // Центр элемента
+        bubble.style.transform = 'translateX(-50%)'; // Центрируем пузырёк
+        
+        if (playerId === this.playerId) {
+            // Наш пузырёк - НАД картами, стрелка ВНИЗ на наши карты
+            bubble.style.top = `${rect.top - 70}px`;
+            bubble.classList.add('from-me');
+        } else {
+            // Пузырёк противника - ПОД блоком с ником, стрелка ВВЕРХ
+            bubble.style.top = `${rect.bottom + 10}px`;
+            bubble.classList.add('from-opponent');
+        }
+        
+        document.body.appendChild(bubble);
+        
+        // Удаляем пузырёк после анимации (3 секунды для реакций)
+        setTimeout(() => {
+            bubble.remove();
+        }, 4200);
+    }
+    
+    showChatBubble(playerId, message) {
+        // Находим область игрока
+        let targetElement;
+        if (playerId === this.playerId) {
+            // Сообщение от нас - показываем над нашими картами
+            targetElement = this.handCards;
+        } else {
+            // Сообщение от противника - находим блок с ником и очками
+            const opponentArea = this.getOpponentAreaById(playerId);
+            if (opponentArea) {
+                targetElement = opponentArea.querySelector('.opponent-info');
+            }
+        }
+        
+        if (!targetElement) return;
+        
+        // Создаём пузырёк для сообщения
+        const bubble = document.createElement('div');
+        bubble.className = 'reaction-bubble chat-bubble';
+        bubble.textContent = message;
+        
+        // Позиционируем пузырёк
+        const rect = targetElement.getBoundingClientRect();
+        bubble.style.left = `${rect.left + rect.width / 2}px`;
+        bubble.style.transform = 'translateX(-50%)';
+        
+        if (playerId === this.playerId) {
+            // Наш пузырёк - НАД картами
+            bubble.style.top = `${rect.top - 70}px`;
+            bubble.classList.add('from-me');
+        } else {
+            // Пузырёк противника - ПОД блоком с ником
+            bubble.style.top = `${rect.bottom + 10}px`;
+            bubble.classList.add('from-opponent');
+        }
+        
+        document.body.appendChild(bubble);
+        
+        // Удаляем пузырёк после 5 секунд (дольше чем реакции)
+        setTimeout(() => {
+            bubble.remove();
+        }, 10000);
     }
     
     handleKeyPress(e) {
@@ -1786,6 +2467,19 @@ class CardGame {
                 deck.classList.remove('deck-shuffling');
             }, 600);
         }, cardCount * 80);
+    }
+    
+    // Анимация тряски карты сброса
+    animateShakeDiscard() {
+        if (!this.discardPile) return;
+        
+        // Добавляем класс для анимации тряски
+        this.discardPile.classList.add('shaking');
+        
+        // Убираем класс после завершения анимации
+        setTimeout(() => {
+            this.discardPile.classList.remove('shaking');
+        }, 500);
     }
     
     getPlayerColorIndex(playerId) {
