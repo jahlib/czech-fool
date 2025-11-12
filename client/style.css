@@ -4,9 +4,9 @@
     box-sizing: border-box;
 }
 
-/* Плавные переходы для всех элементов кроме летящих карт и тряски */
-*:not(.flying-card):not(.flying-card *):not(.shaking):not(.shaking *):not(.card):not(.card *):not(.deck-shuffling):not(.deck-shuffling *) {
-    transition: all 0.3s ease;
+/* Плавные переходы только для цветов и фона - оптимизировано для производительности */
+*:not(.flying-card):not(.flying-card *):not(.shaking):not(.shaking *):not(.card):not(.card *):not(.deck-shuffling):not(.deck-shuffling *):not(.reaction-bubble):not(.reaction-bubble *) {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
 }
 
 html {
@@ -99,8 +99,8 @@ body[data-background="orange"] {
     --theme-primary-dark: #9d8e16;
     --theme-secondary: #8f8927;
     --theme-secondary-dark: #837423;
-    --theme-accent: #cdcd2e;
-    --theme-accent-dark: #b5af2e;
+    --theme-accent: #ffff94;
+    --theme-accent-dark: #e3db28;
     --theme-bg-light: #f2f0e8;
     --theme-bg-medium: #e2ded0;
     --theme-bg-dark: #d1b02e;
@@ -1312,7 +1312,7 @@ border: 2px solid #ffd700;
     color: #000;
 }
 
-.card:hover:not(.card-back) {
+.card:hover:not(.card-back):not(#discard-pile .card) {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
@@ -2333,6 +2333,10 @@ body .suit-emoji-log.spades {
                 top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 opacity 0.4s ease;
     animation: cardSpin 0.4s linear;
+    /* Оптимизации для производительности */
+    will-change: transform, left, top, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .flying-card.arrived {
@@ -2342,10 +2346,10 @@ body .suit-emoji-log.spades {
 
 @keyframes cardSpin {
     0% {
-        transform: rotate(0deg);
+        transform: rotate(0deg) translateZ(0);
     }
     100% {
-        transform: rotate(360deg);
+        transform: rotate(360deg) translateZ(0);
     }
 }
 
@@ -2469,9 +2473,12 @@ body .suit-emoji-log.spades {
     font-size: 32px;
     z-index: 9999;
     pointer-events: none;
-    transition: all 0.3s ease;
     animation: reactionFloat 4.2s ease forwards;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    /* Оптимизации для производительности */
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* Стрелочка пузырька */

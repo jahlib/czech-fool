@@ -52,13 +52,13 @@ body.night-mode[data-background="blue"] {
     --theme-accent-dark: #1f4a2f;
     --theme-bg-light: #163423;
     --theme-bg-medium: #11281c;
-    --theme-bg-dark: #0d080e;
+    --theme-bg-dark: #0e150df2;
     --theme-border: #1f4a2f;
     --theme-success: #2d6342;
     --theme-success-bg: #163423;
-    --theme-toggle-off: #11281c;
-    --theme-toggle-on: #3d8a5f;
-    --theme-modal-overlay: rgba(13, 8, 14, 0.95);
+    --theme-toggle-off: #1a3326;
+    --theme-toggle-on: #3f6f3a;
+    --theme-modal-overlay: rgb(2 3 2 / 95%);
 }
 
 /* Фиолетовая ночная тема */
@@ -553,7 +553,7 @@ body.night-mode .card.clubs .card-suit {
 }
 
 
-body.night-mode .card:hover:not(.disabled) {
+body.night-mode .card:hover:not(.disabled):not(#discard-pile .card) {
     border-color: #374151;
     box-shadow: 0 0 20px #060606, 0 0 10px #adadad;
 }
@@ -1212,7 +1212,7 @@ body.night-mode[data-background="green"] .game-circle {
 }
 
 body.night-mode[data-background="blue"] .game-table {
-    background: linear-gradient(166deg, #274b36 10%, #121d11 80%);
+    background: linear-gradient(166deg, #143723bf 10%, #0a110af5 80%);
 }
 
 body.night-mode[data-background="blue"] .game-circle {
