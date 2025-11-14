@@ -5,7 +5,7 @@ body.night-mode:not([data-background]),
 body.night-mode[data-background="default"] {
     --theme-primary: #3b5998;
     --theme-primary-hover: #5b79b8;
-    --theme-primary-dark: #2a3d52;
+    --theme-primary-dark: #101317;
     --theme-secondary: #2d4159;
     --theme-secondary-dark: #b1b6bb;
     --theme-accent: #5273b8;
