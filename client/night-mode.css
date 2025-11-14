@@ -238,7 +238,7 @@ body.night-mode #bot-game-section h3 {
 }
 
 body.night-mode .btn-bot {
-    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-dark) 100%);
+    background: var(--theme-primary);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
