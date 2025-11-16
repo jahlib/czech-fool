@@ -5,7 +5,7 @@ body.night-mode:not([data-background]),
 body.night-mode[data-background="default"] {
     --theme-primary: #3b5998;
     --theme-primary-hover: #5b79b8;
-    --theme-primary-dark: #101317;
+    --theme-primary-dark: #151d26;
     --theme-secondary: #2d4159;
     --theme-secondary-dark: #b1b6bb;
     --theme-accent: #5273b8;
@@ -25,7 +25,7 @@ body.night-mode[data-background="default"] {
 body.night-mode[data-background="green"] {
     --theme-primary: #b8956d;
     --theme-primary-hover: #d8b58d;
-    --theme-primary-dark: #4a3d32;
+    --theme-primary-dark: #3c2f24;
     --theme-secondary: #5c4c3e;
     --theme-secondary-dark: #4a3d32;
     --theme-accent: #8a7360;

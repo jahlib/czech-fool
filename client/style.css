@@ -1737,7 +1737,7 @@ body .suit-emoji-log.diamonds {
 /* Чёрные масти в чате (логе) */
 body .suit-emoji-log.clubs,
 body .suit-emoji-log.spades {
-    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 0.8px #c7c7c75d);
+    filter: contrast(4) saturate(0.5) drop-shadow(0px 0px 1.4px #ffffff);
 }
 
 .suit-btn:hover {
@@ -2644,9 +2644,9 @@ body .suit-emoji-log.spades {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
-        linear-gradient(314deg, #3a5a7f, #4a7ab0) !important;
+        linear-gradient(314deg, #32547c, #3a6392) !important;
     filter: saturate(0.7) brightness(1.1);
-    border-color: #153a5a !important;
+    border-color: #182835 !important;
 }
 
 .card-back-red {
@@ -2699,9 +2699,9 @@ body[data-card-back="blue"] .flying-card {
     background: 
         repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
         repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.15) 7px),
-        linear-gradient(314deg, #3a5a7f, #4a7ab0) !important;
+        linear-gradient(314deg, #32547c, #3a6392) !important;
     filter: saturate(0.7) brightness(1.1);
-    border-color: #153a5a !important;
+    border-color: #182835 !important;
 }
 
 body[data-card-back="red"] .opponent-card,
